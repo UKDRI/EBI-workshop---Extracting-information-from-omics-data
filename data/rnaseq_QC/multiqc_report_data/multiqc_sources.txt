@@ -1,0 +1,181 @@
+Module	Section	Sample Name	Source
+Picard	DuplicationMetrics	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/picard/markduplicates/BR2-EC_bRNA.markdup.sorted.MarkDuplicates.metrics.txt
+Picard	DuplicationMetrics	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/picard/markduplicates/LG1-EC_bRNA.markdup.sorted.MarkDuplicates.metrics.txt
+Picard	DuplicationMetrics	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/picard/markduplicates/LV3-EC_bRNA.markdup.sorted.MarkDuplicates.metrics.txt
+Picard	DuplicationMetrics	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/picard/markduplicates/LV1-EC_bRNA.markdup.sorted.MarkDuplicates.metrics.txt
+Picard	DuplicationMetrics	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/picard/markduplicates/LV2-EC_bRNA.markdup.sorted.MarkDuplicates.metrics.txt
+Picard	DuplicationMetrics	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/picard/markduplicates/LG2-EC_bRNA.markdup.sorted.MarkDuplicates.metrics.txt
+Picard	DuplicationMetrics	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/picard/markduplicates/BR3-EC_bRNA.markdup.sorted.MarkDuplicates.metrics.txt
+Picard	DuplicationMetrics	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/picard/markduplicates/LG3-EC_bRNA.markdup.sorted.MarkDuplicates.metrics.txt
+Picard	DuplicationMetrics	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/picard/markduplicates/BR1-EC_bRNA.markdup.sorted.MarkDuplicates.metrics.txt
+QualiMap	rna_genome_results	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LV1-EC_bRNA/rnaseq_qc_results.txt
+QualiMap	rna_genome_results	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/BR1-EC_bRNA/rnaseq_qc_results.txt
+QualiMap	rna_genome_results	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LV3-EC_bRNA/rnaseq_qc_results.txt
+QualiMap	rna_genome_results	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/BR2-EC_bRNA/rnaseq_qc_results.txt
+QualiMap	rna_genome_results	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/BR3-EC_bRNA/rnaseq_qc_results.txt
+QualiMap	rna_genome_results	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LG3-EC_bRNA/rnaseq_qc_results.txt
+QualiMap	rna_genome_results	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LG1-EC_bRNA/rnaseq_qc_results.txt
+QualiMap	rna_genome_results	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LG2-EC_bRNA/rnaseq_qc_results.txt
+QualiMap	rna_genome_results	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LV2-EC_bRNA/rnaseq_qc_results.txt
+QualiMap	rna_coverage_histogram	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LV1-EC_bRNA/raw_data_qualimapReport/coverage_profile_along_genes_(total).txt
+QualiMap	rna_coverage_histogram	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/BR1-EC_bRNA/raw_data_qualimapReport/coverage_profile_along_genes_(total).txt
+QualiMap	rna_coverage_histogram	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LV3-EC_bRNA/raw_data_qualimapReport/coverage_profile_along_genes_(total).txt
+QualiMap	rna_coverage_histogram	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/BR2-EC_bRNA/raw_data_qualimapReport/coverage_profile_along_genes_(total).txt
+QualiMap	rna_coverage_histogram	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/BR3-EC_bRNA/raw_data_qualimapReport/coverage_profile_along_genes_(total).txt
+QualiMap	rna_coverage_histogram	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LG3-EC_bRNA/raw_data_qualimapReport/coverage_profile_along_genes_(total).txt
+QualiMap	rna_coverage_histogram	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LG1-EC_bRNA/raw_data_qualimapReport/coverage_profile_along_genes_(total).txt
+QualiMap	rna_coverage_histogram	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LG2-EC_bRNA/raw_data_qualimapReport/coverage_profile_along_genes_(total).txt
+QualiMap	rna_coverage_histogram	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/qualimap/LV2-EC_bRNA/raw_data_qualimapReport/coverage_profile_along_genes_(total).txt
+RSeQC	read_distribution	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_distribution/BR2-EC_bRNA.read_distribution.txt
+RSeQC	read_distribution	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_distribution/LV1-EC_bRNA.read_distribution.txt
+RSeQC	read_distribution	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_distribution/LG2-EC_bRNA.read_distribution.txt
+RSeQC	read_distribution	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_distribution/LV2-EC_bRNA.read_distribution.txt
+RSeQC	read_distribution	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_distribution/LV3-EC_bRNA.read_distribution.txt
+RSeQC	read_distribution	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_distribution/LG3-EC_bRNA.read_distribution.txt
+RSeQC	read_distribution	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_distribution/BR3-EC_bRNA.read_distribution.txt
+RSeQC	read_distribution	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_distribution/BR1-EC_bRNA.read_distribution.txt
+RSeQC	read_distribution	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_distribution/LG1-EC_bRNA.read_distribution.txt
+RSeQC	inner_distance	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/inner_distance/LG2-EC_bRNA.inner_distance_freq.txt
+RSeQC	inner_distance	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/inner_distance/BR1-EC_bRNA.inner_distance_freq.txt
+RSeQC	inner_distance	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/inner_distance/BR3-EC_bRNA.inner_distance_freq.txt
+RSeQC	inner_distance	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/inner_distance/LG1-EC_bRNA.inner_distance_freq.txt
+RSeQC	inner_distance	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/inner_distance/BR2-EC_bRNA.inner_distance_freq.txt
+RSeQC	inner_distance	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/inner_distance/LV1-EC_bRNA.inner_distance_freq.txt
+RSeQC	inner_distance	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/inner_distance/LV3-EC_bRNA.inner_distance_freq.txt
+RSeQC	inner_distance	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/inner_distance/LG3-EC_bRNA.inner_distance_freq.txt
+RSeQC	inner_distance	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/inner_distance/LV2-EC_bRNA.inner_distance_freq.txt
+RSeQC	read_duplication	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_duplication/LV2-EC_bRNA.pos.DupRate.xls
+RSeQC	read_duplication	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_duplication/LG1-EC_bRNA.pos.DupRate.xls
+RSeQC	read_duplication	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_duplication/LG3-EC_bRNA.pos.DupRate.xls
+RSeQC	read_duplication	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_duplication/LV1-EC_bRNA.pos.DupRate.xls
+RSeQC	read_duplication	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_duplication/BR1-EC_bRNA.pos.DupRate.xls
+RSeQC	read_duplication	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_duplication/BR2-EC_bRNA.pos.DupRate.xls
+RSeQC	read_duplication	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_duplication/BR3-EC_bRNA.pos.DupRate.xls
+RSeQC	read_duplication	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_duplication/LV3-EC_bRNA.pos.DupRate.xls
+RSeQC	read_duplication	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/read_duplication/LG2-EC_bRNA.pos.DupRate.xls
+RSeQC	junction_annotation	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_annotation/LG3-EC_bRNA.junction_annotation.log
+RSeQC	junction_annotation	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_annotation/LV1-EC_bRNA.junction_annotation.log
+RSeQC	junction_annotation	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_annotation/BR3-EC_bRNA.junction_annotation.log
+RSeQC	junction_annotation	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_annotation/LG2-EC_bRNA.junction_annotation.log
+RSeQC	junction_annotation	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_annotation/LV3-EC_bRNA.junction_annotation.log
+RSeQC	junction_annotation	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_annotation/BR1-EC_bRNA.junction_annotation.log
+RSeQC	junction_annotation	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_annotation/LG1-EC_bRNA.junction_annotation.log
+RSeQC	junction_annotation	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_annotation/BR2-EC_bRNA.junction_annotation.log
+RSeQC	junction_annotation	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_annotation/LV2-EC_bRNA.junction_annotation.log
+RSeQC	junction_saturation	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_saturation/LV3-EC_bRNA.junctionSaturation_plot.r
+RSeQC	junction_saturation	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_saturation/LG1-EC_bRNA.junctionSaturation_plot.r
+RSeQC	junction_saturation	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_saturation/LG3-EC_bRNA.junctionSaturation_plot.r
+RSeQC	junction_saturation	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_saturation/BR3-EC_bRNA.junctionSaturation_plot.r
+RSeQC	junction_saturation	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_saturation/BR2-EC_bRNA.junctionSaturation_plot.r
+RSeQC	junction_saturation	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_saturation/LG2-EC_bRNA.junctionSaturation_plot.r
+RSeQC	junction_saturation	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_saturation/LV2-EC_bRNA.junctionSaturation_plot.r
+RSeQC	junction_saturation	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_saturation/BR1-EC_bRNA.junctionSaturation_plot.r
+RSeQC	junction_saturation	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/junction_saturation/LV1-EC_bRNA.junctionSaturation_plot.r
+RSeQC	infer_experiment	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/infer_experiment/BR2-EC_bRNA.infer_experiment.txt
+RSeQC	infer_experiment	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/infer_experiment/LV1-EC_bRNA.infer_experiment.txt
+RSeQC	infer_experiment	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/infer_experiment/LV2-EC_bRNA.infer_experiment.txt
+RSeQC	infer_experiment	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/infer_experiment/LG3-EC_bRNA.infer_experiment.txt
+RSeQC	infer_experiment	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/infer_experiment/BR1-EC_bRNA.infer_experiment.txt
+RSeQC	infer_experiment	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/infer_experiment/LV3-EC_bRNA.infer_experiment.txt
+RSeQC	infer_experiment	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/infer_experiment/BR3-EC_bRNA.infer_experiment.txt
+RSeQC	infer_experiment	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/infer_experiment/LG2-EC_bRNA.infer_experiment.txt
+RSeQC	infer_experiment	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/infer_experiment/LG1-EC_bRNA.infer_experiment.txt
+RSeQC	bam_stat	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/bam_stat/LG3-EC_bRNA.bam_stat.txt
+RSeQC	bam_stat	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/bam_stat/LV2-EC_bRNA.bam_stat.txt
+RSeQC	bam_stat	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/bam_stat/LG1-EC_bRNA.bam_stat.txt
+RSeQC	bam_stat	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/bam_stat/LV3-EC_bRNA.bam_stat.txt
+RSeQC	bam_stat	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/bam_stat/LG2-EC_bRNA.bam_stat.txt
+RSeQC	bam_stat	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/bam_stat/BR1-EC_bRNA.bam_stat.txt
+RSeQC	bam_stat	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/bam_stat/BR2-EC_bRNA.bam_stat.txt
+RSeQC	bam_stat	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/bam_stat/LV1-EC_bRNA.bam_stat.txt
+RSeQC	bam_stat	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/rseqc/bam_stat/BR3-EC_bRNA.bam_stat.txt
+Samtools	stats	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/stats/BR3-EC_bRNA.markdup.sorted.bam.stats
+Samtools	stats	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/stats/LV3-EC_bRNA.markdup.sorted.bam.stats
+Samtools	stats	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/stats/BR1-EC_bRNA.markdup.sorted.bam.stats
+Samtools	stats	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/stats/LG3-EC_bRNA.markdup.sorted.bam.stats
+Samtools	stats	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/stats/BR2-EC_bRNA.markdup.sorted.bam.stats
+Samtools	stats	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/stats/LG1-EC_bRNA.markdup.sorted.bam.stats
+Samtools	stats	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/stats/LV2-EC_bRNA.markdup.sorted.bam.stats
+Samtools	stats	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/stats/LV1-EC_bRNA.markdup.sorted.bam.stats
+Samtools	stats	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/stats/LG2-EC_bRNA.markdup.sorted.bam.stats
+Samtools	flagstat	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/flagstat/LG2-EC_bRNA.markdup.sorted.bam.flagstat
+Samtools	flagstat	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/flagstat/BR3-EC_bRNA.markdup.sorted.bam.flagstat
+Samtools	flagstat	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/flagstat/LG3-EC_bRNA.markdup.sorted.bam.flagstat
+Samtools	flagstat	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/flagstat/BR1-EC_bRNA.markdup.sorted.bam.flagstat
+Samtools	flagstat	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/flagstat/LV3-EC_bRNA.markdup.sorted.bam.flagstat
+Samtools	flagstat	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/flagstat/BR2-EC_bRNA.markdup.sorted.bam.flagstat
+Samtools	flagstat	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/flagstat/LV2-EC_bRNA.markdup.sorted.bam.flagstat
+Samtools	flagstat	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/flagstat/LV1-EC_bRNA.markdup.sorted.bam.flagstat
+Samtools	flagstat	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/flagstat/LG1-EC_bRNA.markdup.sorted.bam.flagstat
+Samtools	idxstats	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/idxstats/LV2-EC_bRNA.markdup.sorted.bam.idxstats
+Samtools	idxstats	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/idxstats/LV3-EC_bRNA.markdup.sorted.bam.idxstats
+Samtools	idxstats	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/idxstats/LG3-EC_bRNA.markdup.sorted.bam.idxstats
+Samtools	idxstats	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/idxstats/BR3-EC_bRNA.markdup.sorted.bam.idxstats
+Samtools	idxstats	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/idxstats/BR1-EC_bRNA.markdup.sorted.bam.idxstats
+Samtools	idxstats	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/idxstats/BR2-EC_bRNA.markdup.sorted.bam.idxstats
+Samtools	idxstats	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/idxstats/LG2-EC_bRNA.markdup.sorted.bam.idxstats
+Samtools	idxstats	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/idxstats/LG1-EC_bRNA.markdup.sorted.bam.idxstats
+Samtools	idxstats	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/samtools/idxstats/LV1-EC_bRNA.markdup.sorted.bam.idxstats
+STAR	SummaryLog	BR2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/star/BR2-EC_bRNA.Log.final.out
+STAR	SummaryLog	LG2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/star/LG2-EC_bRNA.Log.final.out
+STAR	SummaryLog	LV1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/star/LV1-EC_bRNA.Log.final.out
+STAR	SummaryLog	BR3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/star/BR3-EC_bRNA.Log.final.out
+STAR	SummaryLog	LG3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/star/LG3-EC_bRNA.Log.final.out
+STAR	SummaryLog	BR1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/star/BR1-EC_bRNA.Log.final.out
+STAR	SummaryLog	LV2-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/star/LV2-EC_bRNA.Log.final.out
+STAR	SummaryLog	LG1-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/star/LG1-EC_bRNA.Log.final.out
+STAR	SummaryLog	LV3-EC_bRNA	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/star/LV3-EC_bRNA.Log.final.out
+FastQC (raw)	all_sections	LV3-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LV3-EC_bRNA_1_fastqc.zip
+FastQC (raw)	all_sections	LG2-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LG2-EC_bRNA_1_fastqc.zip
+FastQC (raw)	all_sections	BR3-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/BR3-EC_bRNA_2_fastqc.zip
+FastQC (raw)	all_sections	LG3-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LG3-EC_bRNA_2_fastqc.zip
+FastQC (raw)	all_sections	LV2-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LV2-EC_bRNA_1_fastqc.zip
+FastQC (raw)	all_sections	BR2-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/BR2-EC_bRNA_2_fastqc.zip
+FastQC (raw)	all_sections	LV1-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LV1-EC_bRNA_2_fastqc.zip
+FastQC (raw)	all_sections	BR1-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/BR1-EC_bRNA_1_fastqc.zip
+FastQC (raw)	all_sections	LV1-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LV1-EC_bRNA_1_fastqc.zip
+FastQC (raw)	all_sections	LG3-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LG3-EC_bRNA_1_fastqc.zip
+FastQC (raw)	all_sections	LG1-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LG1-EC_bRNA_2_fastqc.zip
+FastQC (raw)	all_sections	BR2-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/BR2-EC_bRNA_1_fastqc.zip
+FastQC (raw)	all_sections	LV2-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LV2-EC_bRNA_2_fastqc.zip
+FastQC (raw)	all_sections	LV3-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LV3-EC_bRNA_2_fastqc.zip
+FastQC (raw)	all_sections	BR1-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/BR1-EC_bRNA_2_fastqc.zip
+FastQC (raw)	all_sections	BR3-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/BR3-EC_bRNA_1_fastqc.zip
+FastQC (raw)	all_sections	LG2-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LG2-EC_bRNA_2_fastqc.zip
+FastQC (raw)	all_sections	LG1-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/raw/LG1-EC_bRNA_1_fastqc.zip
+Cutadapt	all_sections	LG2-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LG2-EC_bRNA_1.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	BR1-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/BR1-EC_bRNA_2.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	BR3-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/BR3-EC_bRNA_2.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LV1-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LV1-EC_bRNA_1.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LG3-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LG3-EC_bRNA_2.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	BR2-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/BR2-EC_bRNA_1.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LG1-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LG1-EC_bRNA_1.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	BR2-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/BR2-EC_bRNA_2.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LV3-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LV3-EC_bRNA_2.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LG3-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LG3-EC_bRNA_1.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	BR1-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/BR1-EC_bRNA_1.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LV2-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LV2-EC_bRNA_2.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LV1-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LV1-EC_bRNA_2.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LG2-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LG2-EC_bRNA_2.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	BR3-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/BR3-EC_bRNA_1.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LG1-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LG1-EC_bRNA_2.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LV2-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LV2-EC_bRNA_1.fastq.gz_trimming_report.txt
+Cutadapt	all_sections	LV3-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/trim_log/LV3-EC_bRNA_1.fastq.gz_trimming_report.txt
+FastQC (trimmed)	all_sections	LG3-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LG3-EC_bRNA_1_val_1_fastqc.zip
+FastQC (trimmed)	all_sections	LV2-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LV2-EC_bRNA_1_val_1_fastqc.zip
+FastQC (trimmed)	all_sections	LG1-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LG1-EC_bRNA_2_val_2_fastqc.zip
+FastQC (trimmed)	all_sections	BR2-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/BR2-EC_bRNA_1_val_1_fastqc.zip
+FastQC (trimmed)	all_sections	LG1-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LG1-EC_bRNA_1_val_1_fastqc.zip
+FastQC (trimmed)	all_sections	LV3-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LV3-EC_bRNA_2_val_2_fastqc.zip
+FastQC (trimmed)	all_sections	BR3-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/BR3-EC_bRNA_1_val_1_fastqc.zip
+FastQC (trimmed)	all_sections	BR3-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/BR3-EC_bRNA_2_val_2_fastqc.zip
+FastQC (trimmed)	all_sections	BR2-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/BR2-EC_bRNA_2_val_2_fastqc.zip
+FastQC (trimmed)	all_sections	LG3-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LG3-EC_bRNA_2_val_2_fastqc.zip
+FastQC (trimmed)	all_sections	LV2-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LV2-EC_bRNA_2_val_2_fastqc.zip
+FastQC (trimmed)	all_sections	LV1-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LV1-EC_bRNA_2_val_2_fastqc.zip
+FastQC (trimmed)	all_sections	BR1-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/BR1-EC_bRNA_1_val_1_fastqc.zip
+FastQC (trimmed)	all_sections	LV3-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LV3-EC_bRNA_1_val_1_fastqc.zip
+FastQC (trimmed)	all_sections	LG2-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LG2-EC_bRNA_1_val_1_fastqc.zip
+FastQC (trimmed)	all_sections	LG2-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LG2-EC_bRNA_2_val_2_fastqc.zip
+FastQC (trimmed)	all_sections	BR1-EC_bRNA_2	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/BR1-EC_bRNA_2_val_2_fastqc.zip
+FastQC (trimmed)	all_sections	LV1-EC_bRNA_1	/nemo/lab/ulej/home/users/luscomben/users/capitac/ebi-course-24-march/work/6c/11588a500effbd9dfaf1f10e5b77c2/fastqc/trim/LV1-EC_bRNA_1_val_1_fastqc.zip

@@ -1,0 +1,12 @@
+Sample	total_passed	total_failed	secondary_passed	secondary_failed	supplementary_passed	supplementary_failed	duplicates_passed	duplicates_failed	mapped_passed	mapped_failed	mapped_passed_pct	mapped_failed_pct	paired in sequencing_passed	paired in sequencing_failed	read1_passed	read1_failed	read2_passed	read2_failed	properly paired_passed	properly paired_failed	properly paired_passed_pct	properly paired_failed_pct	with itself and mate mapped_passed	with itself and mate mapped_failed	singletons_passed	singletons_failed	singletons_passed_pct	singletons_failed_pct	with mate mapped to a different chr_passed	with mate mapped to a different chr_failed	with mate mapped to a different chr (mapQ >= 5)_passed	with mate mapped to a different chr (mapQ >= 5)_failed	flagstat_total
+BR_EC_ATAC_REP1	63661782	0	0	0	0	0	0	0	63661782	0	100.0	nan	63661782	0	31830891	0	31830891	0	62386698	0	98.0	nan	63661782	0	0	0	0.0	nan	0	0	0	0	63661782
+BR_EC_ATAC_REP2	74420782	0	0	0	0	0	0	0	74420782	0	100.0	nan	74420782	0	37210391	0	37210391	0	73375540	0	98.6	nan	74420782	0	0	0	0.0	nan	0	0	0	0	74420782
+BR_EC_ATAC_REP3	27552972	0	0	0	0	0	0	0	27552972	0	100.0	nan	27552972	0	13776486	0	13776486	0	26798952	0	97.26	nan	27552972	0	0	0	0.0	nan	0	0	0	0	27552972
+BR_EC_ATAC_REP4	24616140	0	0	0	0	0	0	0	24616140	0	100.0	nan	24616140	0	12308070	0	12308070	0	23936414	0	97.24	nan	24616140	0	0	0	0.0	nan	0	0	0	0	24616140
+LG_EC_ATAC_REP1	28387920	0	0	0	0	0	0	0	28387920	0	100.0	nan	28387920	0	14193960	0	14193960	0	27921318	0	98.36	nan	28387920	0	0	0	0.0	nan	0	0	0	0	28387920
+LG_EC_ATAC_REP2	20948214	0	0	0	0	0	0	0	20948214	0	100.0	nan	20948214	0	10474107	0	10474107	0	20488236	0	97.8	nan	20948214	0	0	0	0.0	nan	0	0	0	0	20948214
+LG_EC_ATAC_REP3	29297582	0	0	0	0	0	0	0	29297582	0	100.0	nan	29297582	0	14648791	0	14648791	0	29157900	0	99.52	nan	29297582	0	0	0	0.0	nan	0	0	0	0	29297582
+LG_EC_ATAC_REP4	50400574	0	0	0	0	0	0	0	50400574	0	100.0	nan	50400574	0	25200287	0	25200287	0	49547118	0	98.31	nan	50400574	0	0	0	0.0	nan	0	0	0	0	50400574
+LV_EC_ATAC_REP1	68733086	0	0	0	0	0	0	0	68733086	0	100.0	nan	68733086	0	34366543	0	34366543	0	67756248	0	98.58	nan	68733086	0	0	0	0.0	nan	0	0	0	0	68733086
+LV_EC_ATAC_REP2	15119108	0	0	0	0	0	0	0	15119108	0	100.0	nan	15119108	0	7559554	0	7559554	0	14686262	0	97.14	nan	15119108	0	0	0	0.0	nan	0	0	0	0	15119108
+LV_EC_ATAC_REP3	12389448	0	0	0	0	0	0	0	12389448	0	100.0	nan	12389448	0	6194724	0	6194724	0	12073410	0	97.45	nan	12389448	0	0	0	0.0	nan	0	0	0	0	12389448

@@ -1,0 +1,4 @@
+Sample	BR_EC_ATAC.mRp.clN_peaks	LG_EC_ATAC.mRp.clN_peaks	LV_EC_ATAC.mRp.clN_peaks
+BR_EC_ATAC	81522.0		
+LG_EC_ATAC		48602.0	
+LV_EC_ATAC			36943.0

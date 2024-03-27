@@ -1,0 +1,19 @@
+Sample	Filename	File type	Encoding	Total Sequences	Total Bases	Sequences flagged as poor quality	Sequence length	%GC	total_deduplicated_percentage	avg_sequence_length	median_sequence_length	basic_statistics	per_base_sequence_quality	per_sequence_quality_scores	per_base_sequence_content	per_sequence_gc_content	per_base_n_content	sequence_length_distribution	sequence_duplication_levels	overrepresented_sequences	adapter_content
+BR1-EC_bRNA_1	BR1-EC_bRNA_1.gz	Conventional base calls	Sanger / Illumina 1.9	50334052.0	5 Gbp	0.0	101.0	43.0	58.86741163878867	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	fail	pass
+BR1-EC_bRNA_2	BR1-EC_bRNA_2.gz	Conventional base calls	Sanger / Illumina 1.9	50334052.0	5 Gbp	0.0	101.0	43.0	63.24581235698735	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	pass	pass
+BR2-EC_bRNA_1	BR2-EC_bRNA_1.gz	Conventional base calls	Sanger / Illumina 1.9	54554534.0	5.5 Gbp	0.0	101.0	45.0	51.74338518318946	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	fail	pass
+BR2-EC_bRNA_2	BR2-EC_bRNA_2.gz	Conventional base calls	Sanger / Illumina 1.9	54554534.0	5.5 Gbp	0.0	101.0	45.0	60.37170839672397	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	pass	warn
+BR3-EC_bRNA_1	BR3-EC_bRNA_1.gz	Conventional base calls	Sanger / Illumina 1.9	60591148.0	6.1 Gbp	0.0	101.0	44.0	53.175643257041926	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	fail	pass
+BR3-EC_bRNA_2	BR3-EC_bRNA_2.gz	Conventional base calls	Sanger / Illumina 1.9	60591148.0	6.1 Gbp	0.0	101.0	45.0	58.81824073751013	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	pass	pass
+LG1-EC_bRNA_1	LG1-EC_bRNA_1.gz	Conventional base calls	Sanger / Illumina 1.9	31045148.0	3.1 Gbp	0.0	101.0	46.0	63.410154946892185	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	fail	warn
+LG1-EC_bRNA_2	LG1-EC_bRNA_2.gz	Conventional base calls	Sanger / Illumina 1.9	31045148.0	3.1 Gbp	0.0	101.0	46.0	64.55760661950308	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	fail	warn
+LG2-EC_bRNA_1	LG2-EC_bRNA_1.gz	Conventional base calls	Sanger / Illumina 1.9	7866556.0	794.5 Mbp	0.0	101.0	48.0	58.87055259542363	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	fail	fail
+LG2-EC_bRNA_2	LG2-EC_bRNA_2.gz	Conventional base calls	Sanger / Illumina 1.9	7866556.0	794.5 Mbp	0.0	101.0	49.0	61.276252898475256	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	fail	fail
+LG3-EC_bRNA_1	LG3-EC_bRNA_1.gz	Conventional base calls	Sanger / Illumina 1.9	17547894.0	1.7 Gbp	0.0	101.0	47.0	62.79181446675739	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	fail	warn
+LG3-EC_bRNA_2	LG3-EC_bRNA_2.gz	Conventional base calls	Sanger / Illumina 1.9	17547894.0	1.7 Gbp	0.0	101.0	47.0	64.15677763473549	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	fail	warn
+LV1-EC_bRNA_1	LV1-EC_bRNA_1.gz	Conventional base calls	Sanger / Illumina 1.9	51208648.0	5.1 Gbp	0.0	101.0	44.0	47.96653227141513	101.0	101	pass	pass	pass	fail	pass	pass	pass	fail	fail	pass
+LV1-EC_bRNA_2	LV1-EC_bRNA_2.gz	Conventional base calls	Sanger / Illumina 1.9	51208648.0	5.1 Gbp	0.0	101.0	44.0	51.38873614260721	101.0	101	pass	pass	pass	fail	pass	pass	pass	warn	pass	pass
+LV2-EC_bRNA_1	LV2-EC_bRNA_1.gz	Conventional base calls	Sanger / Illumina 1.9	61410857.0	6.2 Gbp	0.0	101.0	45.0	36.03336461412535	101.0	101	pass	pass	pass	fail	warn	pass	pass	fail	fail	pass
+LV2-EC_bRNA_2	LV2-EC_bRNA_2.gz	Conventional base calls	Sanger / Illumina 1.9	61410857.0	6.2 Gbp	0.0	101.0	45.0	39.58649542670125	101.0	101	pass	pass	pass	fail	warn	pass	pass	fail	pass	pass
+LV3-EC_bRNA_1	LV3-EC_bRNA_1.gz	Conventional base calls	Sanger / Illumina 1.9	57848724.0	5.8 Gbp	0.0	101.0	45.0	47.137139150435495	101.0	101	pass	pass	pass	fail	pass	pass	pass	fail	fail	pass
+LV3-EC_bRNA_2	LV3-EC_bRNA_2.gz	Conventional base calls	Sanger / Illumina 1.9	57848724.0	5.8 Gbp	0.0	101.0	45.0	49.70256401243484	101.0	101	pass	pass	pass	fail	pass	pass	pass	fail	pass	pass

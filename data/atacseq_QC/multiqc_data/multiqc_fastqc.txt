@@ -1,0 +1,23 @@
+Sample	Filename	File type	Encoding	Total Sequences	Sequences flagged as poor quality	Sequence length	%GC	total_deduplicated_percentage	avg_sequence_length	basic_statistics	per_base_sequence_quality	per_sequence_quality_scores	per_base_sequence_content	per_sequence_gc_content	per_base_n_content	sequence_length_distribution	sequence_duplication_levels	overrepresented_sequences	adapter_content
+BR_EC_ATAC_REP1_T1_1	BR_EC_ATAC_REP1_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	71163750.0	0.0	50.0	45.0	50.1642291120885	50.0	pass	pass	pass	warn	warn	pass	pass	warn	pass	pass
+BR_EC_ATAC_REP1_T1_2	BR_EC_ATAC_REP1_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	71163750.0	0.0	50.0	45.0	51.40419651609892	50.0	pass	pass	pass	warn	warn	pass	pass	warn	pass	pass
+BR_EC_ATAC_REP2_T1_1	BR_EC_ATAC_REP2_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	66140042.0	0.0	50.0	44.0	67.71671692924808	50.0	pass	pass	pass	warn	pass	pass	pass	warn	pass	pass
+BR_EC_ATAC_REP2_T1_2	BR_EC_ATAC_REP2_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	66140042.0	0.0	50.0	44.0	68.10308341784807	50.0	pass	pass	pass	warn	pass	pass	pass	warn	pass	pass
+BR_EC_ATAC_REP3_T1_1	BR_EC_ATAC_REP3_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	43250853.0	0.0	76.0	46.0	58.419562040457265	76.0	pass	pass	pass	warn	pass	warn	pass	warn	pass	fail
+BR_EC_ATAC_REP3_T1_2	BR_EC_ATAC_REP3_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	43250853.0	0.0	76.0	46.0	62.380441347633095	76.0	pass	pass	pass	warn	pass	warn	pass	warn	pass	fail
+BR_EC_ATAC_REP4_T1_1	BR_EC_ATAC_REP4_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	40499924.0	0.0	76.0	45.0	57.37278053834023	76.0	pass	pass	pass	warn	warn	warn	pass	warn	pass	fail
+BR_EC_ATAC_REP4_T1_2	BR_EC_ATAC_REP4_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	40499924.0	0.0	76.0	45.0	61.27253479614314	76.0	pass	pass	pass	warn	pass	warn	pass	warn	pass	fail
+LG_EC_ATAC_REP1_T1_1	LG_EC_ATAC_REP1_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	35704645.0	0.0	76.0	46.0	65.55038437218337	76.0	pass	pass	pass	warn	pass	warn	pass	warn	pass	fail
+LG_EC_ATAC_REP1_T1_2	LG_EC_ATAC_REP1_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	35704645.0	0.0	76.0	46.0	68.21862110511883	76.0	pass	pass	pass	warn	pass	warn	pass	warn	pass	fail
+LG_EC_ATAC_REP2_T1_1	LG_EC_ATAC_REP2_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	27175146.0	0.0	76.0	46.0	67.81379298372009	76.0	pass	pass	pass	warn	pass	warn	pass	warn	pass	fail
+LG_EC_ATAC_REP2_T1_2	LG_EC_ATAC_REP2_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	27175146.0	0.0	76.0	46.0	69.778269308622	76.0	pass	pass	pass	warn	pass	warn	pass	warn	pass	fail
+LG_EC_ATAC_REP3_T1_1	LG_EC_ATAC_REP3_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	29145756.0	0.0	76.0	46.0	73.762700037073	76.0	pass	pass	pass	warn	pass	warn	pass	pass	pass	fail
+LG_EC_ATAC_REP3_T1_2	LG_EC_ATAC_REP3_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	29145756.0	0.0	76.0	46.0	76.62317775387594	76.0	pass	pass	pass	warn	warn	warn	pass	pass	pass	fail
+LG_EC_ATAC_REP4_T1_1	LG_EC_ATAC_REP4_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	71817096.0	0.0	50.0	45.0	44.424061961944055	50.0	pass	pass	pass	fail	warn	pass	pass	fail	fail	fail
+LG_EC_ATAC_REP4_T1_2	LG_EC_ATAC_REP4_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	71817096.0	0.0	50.0	45.0	45.19828120861567	50.0	pass	pass	pass	fail	warn	pass	pass	fail	fail	fail
+LV_EC_ATAC_REP1_T1_1	LV_EC_ATAC_REP1_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	64515194.0	0.0	50.0	45.0	65.40321326049686	50.0	pass	pass	pass	warn	pass	pass	pass	warn	pass	pass
+LV_EC_ATAC_REP1_T1_2	LV_EC_ATAC_REP1_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	64515194.0	0.0	50.0	44.0	66.17286817739446	50.0	pass	pass	pass	warn	pass	pass	pass	warn	pass	pass
+LV_EC_ATAC_REP2_T1_1	LV_EC_ATAC_REP2_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	16465257.0	0.0	76.0	46.0	71.00593771656938	76.0	pass	pass	pass	warn	warn	pass	pass	pass	pass	fail
+LV_EC_ATAC_REP2_T1_2	LV_EC_ATAC_REP2_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	16465257.0	0.0	76.0	46.0	73.40017627832192	76.0	pass	pass	pass	warn	warn	pass	pass	pass	pass	fail
+LV_EC_ATAC_REP3_T1_1	LV_EC_ATAC_REP3_T1_1.gz	Conventional base calls	Sanger / Illumina 1.9	14894855.0	0.0	76.0	45.0	70.28007168974656	76.0	pass	pass	pass	warn	pass	pass	pass	pass	pass	fail
+LV_EC_ATAC_REP3_T1_2	LV_EC_ATAC_REP3_T1_2.gz	Conventional base calls	Sanger / Illumina 1.9	14894855.0	0.0	76.0	45.0	72.77839898508849	76.0	pass	pass	pass	warn	pass	pass	pass	pass	pass	fail

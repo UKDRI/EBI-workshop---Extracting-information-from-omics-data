@@ -1,0 +1,12 @@
+Sample	BR_EC_ATAC_REP1.mLb.clN_peaks	BR_EC_ATAC_REP2.mLb.clN_peaks	BR_EC_ATAC_REP3.mLb.clN_peaks	BR_EC_ATAC_REP4.mLb.clN_peaks	LG_EC_ATAC_REP1.mLb.clN_peaks	LG_EC_ATAC_REP2.mLb.clN_peaks	LG_EC_ATAC_REP3.mLb.clN_peaks	LG_EC_ATAC_REP4.mLb.clN_peaks	LV_EC_ATAC_REP1.mLb.clN_peaks	LV_EC_ATAC_REP2.mLb.clN_peaks	LV_EC_ATAC_REP3.mLb.clN_peaks
+BR_EC_ATAC_REP1	53551.0										
+BR_EC_ATAC_REP2		33440.0									
+BR_EC_ATAC_REP3			29561.0								
+BR_EC_ATAC_REP4				30809.0							
+LG_EC_ATAC_REP1					17325.0						
+LG_EC_ATAC_REP2						23406.0					
+LG_EC_ATAC_REP3							15065.0				
+LG_EC_ATAC_REP4								22734.0			
+LV_EC_ATAC_REP1									27246.0		
+LV_EC_ATAC_REP2										11427.0	
+LV_EC_ATAC_REP3											12875.0
