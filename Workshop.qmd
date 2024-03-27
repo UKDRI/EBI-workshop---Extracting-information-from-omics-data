@@ -1,0 +1,224 @@
+---
+title: "Extracting information from omics data workshop"
+author: "Charlotte Capitanchik"
+format: 
+  html:
+    df-print: kable
+editor: visual
+---
+
+## Load libraries
+
+```{r}
+#| warning: false
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(DESeq2)
+library(tximport)
+library(pheatmap)
+library(gprofiler2)
+library(clusterProfiler)
+library(enrichplot)
+library(DOSE)
+library(ggrepel)
+```
+
+## Load the RNA-Seq data
+
+We already pre-processed the RNA-Seq and ATAC-Seq data using nf-core/fetchngs, nf-core/rnaseq and nf-core/atacseq. We looked at the MultiQC reports to get an initial idea of the quality of the data.\
+\
+Now we'll load the RNA-Seq data to start to get an impression of what might be special about the brain endothelial cells and see if we can re-produce some of the results from the manuscript.
+
+```{r}
+tx2genefile = 'data/count_tables/tx2gene.tsv'
+tx2gene = read.delim(tx2genefile, header=FALSE)[, 1:3]
+
+directory_path <- "data/count_tables"
+files = list.files(path = directory_path,pattern = "quant.sf", recursive = TRUE, full.names = TRUE)
+
+txi = tximport(files, type="salmon", tx2gene=tx2gene)
+samples = sapply(files, function(path) {basename(dirname(path))})
+condition = sapply(files, function(path) {
+  folder_name <- basename(dirname(path))
+  sub("([123]-.*)", "", folder_name)
+})
+
+data = data.frame(condition = condition)
+rownames(data) = samples
+
+data
+```
+
+We use the DeSeq2 library to perform differential gene expression analysis and also to normalise our counts for making plots such as PCA, heatmaps .etc
+
+```{r}
+dds <- DESeqDataSetFromTximport(txi, colData=data, design=~condition)
+dds <- DESeq(dds)
+vsd <- vst(dds, blind=TRUE)
+# this gives log2(n + 1)
+ntd <- normTransform(dds)
+
+```
+
+```{r}
+pcaData <- plotPCA(vsd, intgroup="condition", returnData=TRUE)
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+ggplot(pcaData, aes(PC1, PC2, color=condition)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed() +
+  theme_few()
+```
+
+We were worried about cell stress pathways as these samples were collected directly after FACs sorting. Let's look at highly expressed genes in each condition and see if these are enriched in stress-related GO terms.
+
+```{r}
+select <- order(rowMeans(counts(dds,normalized=TRUE)),
+                decreasing=TRUE)[1:300]
+top300 <- as.data.frame(assay(ntd)[select,])
+
+go_enrich = gost(rownames(top300), organism = "mmusculus",ordered_query = TRUE)
+gostplot(go_enrich, interactive = TRUE)
+```
+
+```{r}
+# modify the g:Profiler data frame
+gp_mod = go_enrich$result[,c("query", "source", "term_id",
+                                "term_name", "p_value", "query_size", 
+                                "intersection_size", "term_size", 
+                                "effective_domain_size")]
+gp_mod$GeneRatio = paste0(gp_mod$intersection_size,  "/", gp_mod$query_size)
+gp_mod$BgRatio = paste0(gp_mod$term_size, "/", gp_mod$effective_domain_size)
+
+names(gp_mod) = c("Cluster", "Category", "ID", "Description", "p.adjust", 
+                    "query_size", "Count", "term_size", "effective_domain_size", 
+                    "GeneRatio", "BgRatio")
+
+row.names(gp_mod) = gp_mod$ID
+
+# define as enrichResult object
+gp_mod_enrich  = new("enrichResult", result = gp_mod)
+enrichplot::dotplot(gp_mod_enrich)
+```
+
+#### **Q) What do you think? Do our cells seem stressed?**
+
+Now lets look for genes enriched in brain endothelial cells compared to lung or liver...
+
+```{r}
+res = results(dds)
+resultsNames(dds)
+```
+
+We want genes that are overexpressed in brain compared to both lung and liver. In this set up this will be represented by genes that have a negative log2FoldChange in the comparisons named above.\
+\
+What kind of thresholds should we use for log2FoldChange and adjusted p value? Another visualization can help us to decide, let's have a look at volcano plots for both comparisons..\
+
+```{r}
+foldchange=0.5
+pval=0.05
+
+PlotVolcano <-function(comparison){
+  de = lfcShrink(dds, coef=comparison, type="apeglm")
+  resul = as.data.frame(de)
+  resul$geneID <- rownames(resul)
+  de <- merge(resul, tx2gene, by.x = "geneID", by.y = "V2", all.x = TRUE, all.y = FALSE)
+  
+  de = de %>% filter(!is.na(log2FoldChange)) %>% select(-V1) %>% unique()
+  
+  # get numbers of diff genes for labelling
+  n_unchanged <- de %>% filter(log2FoldChange < foldchange & log2FoldChange > -(foldchange)) %>% nrow()
+  n_up <- de %>% filter(log2FoldChange >= foldchange & padj < pval) %>% nrow()
+  n_down <- de %>% filter(log2FoldChange <= -(foldchange) & padj < pval) %>% nrow()
+  
+  de$diffexpressed <- paste0("Unchanged (",n_unchanged,")")
+  de$diffexpressed[de$log2FoldChange >= foldchange & de$padj < pval] <- paste0("Up (",n_up,")")
+  de$diffexpressed[de$log2FoldChange <= -(foldchange) & de$padj < pval] <- paste0("Down (",n_down,")")
+  
+  # set colours vector
+  if (n_up == 0 & n_down == 0){
+      cvec = c("#84A1AB")
+  } else if (n_up == 0){
+      cvec = c("#B02302", "#84A1AB")
+  } else if (n_down == 0){
+      cvec = c("#84A1AB", "#61B002")
+  } else {
+      cvec = c("#B02302", "#84A1AB", "#61B002")
+  }
+  
+  # label genes that are differentially expressed
+  de$delabel <- NA
+  de$delabel[de$diffexpressed != "NO"] <- de$V3[de$diffexpressed != "NO"]
+  de=de[order(de$padj),]
+  
+  
+  # Volcano plot
+  ggplot(data=de, aes(x=log2FoldChange, y=-log10(padj), label=delabel)) +
+          geom_vline(xintercept=c(-(foldchange), foldchange), col="light grey", linetype="dashed") +
+          geom_hline(yintercept=-log10(pval), col="light grey", linetype="dashed") +
+          geom_point(aes(color=diffexpressed), alpha=0.5) +
+          geom_text_repel(data=de[1:50,],aes(x = log2FoldChange, y = -log10(padj),label=V3),max.overlaps=50) +
+          scale_color_manual(values=cvec) +
+          theme_few() +theme(aspect.ratio=1)
+}
+```
+
+```{r}
+PlotVolcano("condition_LG_vs_BR")
+```
+
+```{r}
+PlotVolcano("condition_LV_vs_BR")
+```
+
+#### **Q) Do these thresholds seem reasonable?**
+
+Let's look at genes that are overexpressed in brain compared to both lung and liver. We will perform the GO analysis again to see what kind of gene networks they are a part of.\
+
+```{r}
+brainliver = lfcShrink(dds, coef="condition_LV_vs_BR", type="apeglm") %>%
+  as.data.frame() %>%
+  filter(padj<0.001 & log2FoldChange <= -2) %>%
+  rownames()
+brainlung = lfcShrink(dds, coef="condition_LG_vs_BR", type="apeglm") %>%
+  as.data.frame() %>%
+  filter(padj<0.001 & log2FoldChange <= -2) %>%
+  rownames()
+
+length(brainlung)
+length(brainliver)
+
+# get genes that appear in both lists
+brain_enriched = intersect(brainlung,brainliver) %>% unique()
+length(brain_enriched)
+```
+
+```{r}
+go_enrich = gost(brain_enriched, organism = "mmusculus")
+gostplot(go_enrich, interactive = TRUE)
+```
+
+```{r}
+# modify the g:Profiler data frame
+gp_mod = go_enrich$result[,c("query", "source", "term_id",
+                                "term_name", "p_value", "query_size", 
+                                "intersection_size", "term_size", 
+                                "effective_domain_size")]
+gp_mod$GeneRatio = paste0(gp_mod$intersection_size,  "/", gp_mod$query_size)
+gp_mod$BgRatio = paste0(gp_mod$term_size, "/", gp_mod$effective_domain_size)
+
+names(gp_mod) = c("Cluster", "Category", "ID", "Description", "p.adjust", 
+                    "query_size", "Count", "term_size", "effective_domain_size", 
+                    "GeneRatio", "BgRatio")
+
+row.names(gp_mod) = gp_mod$ID
+
+# define as enrichResult object
+gp_mod_enrich  = new("enrichResult", result = gp_mod)
+gp_mod
+barplot(gp_mod_enrich, showCategory = 40, font.size = 16) + 
+  ggplot2::facet_grid(~Cluster) +
+  ggplot2::ylab("Intersection size")
+```
