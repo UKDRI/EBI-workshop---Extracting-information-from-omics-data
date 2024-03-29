@@ -394,6 +394,7 @@ results_list_entrez <- lapply(results_list, function(df) {
 })
 ```
 
+Now we can get our top 10/5/1% of genes by pval for each contrast. 
 
 ```{r}
 # Get the total number of genes for MAGMA
@@ -419,23 +420,34 @@ top_genes_list <- map(results_list_entrez, ~.x[order(.x$pvalue), ]) %>%
 top_genes_list <- flatten(top_genes_list)
 ```
 
+MAGMA wants an input file with each row denoting a group to test (in single cell seq data this is typically celltypes).
+The row starts with the group label followed by a space and then a space seperated list of the entrez IDs, so now we get our data into that format and save each percent to a different file.
+
 ```{r}
-# Function to extract genes for a given celltype and write them to a file
-write_genes <- function(df, celltype, df_name) {
-  genes <- df$gene[df$cluster == celltype]
-  filename <- here::here("03_data/995_ldsc_inputs/01_celltype_markers",
-                   paste0("ldsc_", celltype, "_", level, "_", subset, "_top-", 
-                          df_name, "-percent.tsv"))
-  writeLines(genes, filename)
-}
+# Merge list to one df and take the relevant columns
+magma_genes <- purrr::list_rbind(top_genes_list) |>
+  dplyr::select(entrez_id, contrast, percent_genes)
 
-# Function to process each dataframe
-process_dataframe <- function(df, df_name) {
-  unique_celltypes <- unique(df$cluster)
-  map(unique_celltypes, ~write_genes(df, .x, df_name))
-}
+head(magma_genes)
 
-# Apply the process_dataframe function to each dataframe in the list
-map(names(top_genes), ~process_dataframe(top_genes[[.x]], .x))
+# Split the dataframe by the percent column
+dfs_by_percent <- split(magma_genes, magma_genes$percent_genes)
+
+# Create a file for each percent
+lapply(names(dfs_by_percent), function(percent) {
+  # Subset the dataframe for the current percent
+  subset_df <- dfs_by_percent[[percent]]
+  
+  # Split the subset by group
+  groups <- split(subset_df$entrez_id, subset_df$contrast)
+  
+  # Create lines for each group with the format: group_label ID1 ID2 ID3 ...
+  lines <- sapply(names(groups), function(group) {
+    paste(group, paste(groups[[group]], collapse = " "))
+  }, USE.NAMES = FALSE)
+  
+  # Write to a file named by the percent value
+  writeLines(lines, con = here::here("data/magma", paste0("magma_input_genes_", percent, ".txt")))
+})
 ```
 
