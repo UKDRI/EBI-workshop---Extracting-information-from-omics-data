@@ -44,6 +44,7 @@ library(purrr)
 library(readr)
 library(here)
 library(apeglm)
+library(biomaRt)
 ```
 
 ## Load the RNA-Seq data
@@ -82,7 +83,6 @@ dds <- DESeq(dds)
 vsd <- vst(dds, blind=TRUE)
 # this gives log2(n + 1)
 ntd <- normTransform(dds)
-
 ```
 
 ```{r}
@@ -154,12 +154,12 @@ PlotVolcano <-function(comparison){
   resul$geneID <- rownames(resul)
   de <- merge(resul, tx2gene, by.x = "geneID", by.y = "V2", all.x = TRUE, all.y = FALSE)
   
-  de = de %>% filter(!is.na(log2FoldChange)) %>% select(-V1) %>% unique()
+  de = de %>% dplyr::filter(!is.na(log2FoldChange)) %>% dplyr::select(-V1) %>% unique()
   
   # get numbers of diff genes for labelling
-  n_unchanged <- de %>% filter(log2FoldChange < foldchange & log2FoldChange > -(foldchange)) %>% nrow()
-  n_up <- de %>% filter(log2FoldChange >= foldchange & padj < pval) %>% nrow()
-  n_down <- de %>% filter(log2FoldChange <= -(foldchange) & padj < pval) %>% nrow()
+  n_unchanged <- de %>% dplyr::filter(log2FoldChange < foldchange & log2FoldChange > -(foldchange)) %>% nrow()
+  n_up <- de %>% dplyr::filter(log2FoldChange >= foldchange & padj < pval) %>% nrow()
+  n_down <- de %>% dplyr::filter(log2FoldChange <= -(foldchange) & padj < pval) %>% nrow()
   
   de$diffexpressed <- paste0("Unchanged (",n_unchanged,")")
   de$diffexpressed[de$log2FoldChange >= foldchange & de$padj < pval] <- paste0("Up (",n_up,")")
@@ -294,20 +294,19 @@ pairwise_combinations <- combn(as.character(conditions), 2, simplify = FALSE)
 # Now, pairwise_combinations is a list of vectors, each containing a pair of 
 # conditions
 
-# Generate a list to hold the contrast results
-results_list <-
-  setNames(vector("list", length(pairwise_combinations)),
-           sapply(pairwise_combinations, function(x)
-             paste(x, collapse = "_vs_")))
+# Generate a names for the results list
+list_names <- map_chr(pairwise_combinations, ~ paste0(.x, collapse = "_vs_"))
 
 # Use lapply to go through each combination and get the results
-results_list <- lapply(seq_along(pairwise_combinations), function(i) {
-  pair <- pairwise_combinations[[i]]
-  results(dds, contrast=c("condition", pair[1], pair[2])) |>
-    as.data.frame() |>
-    dplyr::mutate(contrast = paste0(pair[1], "_vs_", pair[2])) |>
-    tibble::rownames_to_column(var = "gene")
-})
+results_list <-
+  lapply(seq_along(pairwise_combinations), function(i) {
+    pair <- pairwise_combinations[[i]]
+    results(dds, contrast = c("condition", pair[1], pair[2])) |>
+      as.data.frame() |>
+      dplyr::mutate(contrast = paste0(pair[1], "_vs_", pair[2])) |>
+      tibble::rownames_to_column(var = "gene")
+  }) |>
+  purrr::set_names(list_names)
 
 # Bind the dataframes by row
 res <- purrr::list_rbind(results_list) |>
@@ -323,3 +322,120 @@ table(res$contrast)
 # Save data
 readr::write_tsv(res, here::here("data/ppi/differential_genes.tsv"))
 ```
+
+# Data for MAGMA
+
+Now for MAGMA we want some gene lists that are most specific to our three groups, and people typically use either the top 5% or 10% as a proportion of the total number of genes, but let's add the top 1% as well just to see how stable any results we see are.
+
+Before we do this, MAGMA requires genes in the entrez format, so we'll have to swap from the ensemble IDs we currently have.
+
+```{r}
+#| eval: false
+# Choose a mirror for ensembl - try a different one if you get errors
+ensembl <- useEnsembl(biomart = "ensembl", mirror = "www")
+
+# Select the mouse and human datasets from the chosen Ensembl mirror
+mouse <- useDataset("mmusculus_gene_ensembl", mart = ensembl)
+human <- useDataset("hsapiens_gene_ensembl", mart = ensembl)
+
+# Convert Ensembl IDs to Entrez IDs for all the genes in the list
+results_list_entrez <- lapply(results_list, function(df) {
+  genes <- df$gene
+  entrez_ids <-
+    getLDS(
+      attributes = c('ensembl_gene_id'),
+      filters = 'ensembl_gene_id',
+      values = genes,
+      mart = mouse,
+      attributesL = c("entrezgene_id"),
+      martL = human
+    )
+  # Remove rows with NA Entrez IDs if present
+  entrez_ids <- entrez_ids[!is.na(entrez_ids$entrezgene_id),]
+  
+  # Get unique Ensembl-Entrez pairs by keeping the first occurrence
+  entrez_ids <- entrez_ids[!duplicated(entrez_ids$ensembl_gene_id),]
+  # Merge the data frames to include only genes with Entrez IDs
+  df <-
+    dplyr::left_join(df, unique(entrez_ids), by = join_by(gene == ensembl_gene_id))
+})
+```
+
+I'm getting a server error when using bioMart, so I'll just manually download the current mouse ensembl IDs and their human orthologues, plus the human IDs and the corresponding entrez IDs and do it the old fashioned way...
+
+You can manually download the needed files from ensembl [here](https://www.ensembl.org/biomart/martview/36e75d7104c3e03ac8414d5a564d1485).
+
+```{r}
+# Get human and mouse IDs
+human_ids <- readr::read_tsv(here::here("data/human_mart_export.txt")) |>
+  janitor::clean_names()
+mouse_ids <- readr::read_tsv(here::here("data/mouse_mart_export.txt")) |>
+  janitor::clean_names()
+
+# Merge IDs
+joined_ids <- mouse_ids |>
+  dplyr::left_join(
+    human_ids,
+    by = join_by(human_gene_stable_id == gene_stable_id),
+    relationship = "many-to-many"
+  ) |>
+  dplyr::mutate(entrez_id = as.character(ncbi_gene_formerly_entrezgene_id)) |>
+  dplyr::select(gene_stable_id, entrez_id) |>
+  dplyr::filter(!is.na(entrez_id)) |>
+  unique()
+
+# Get unique Ensembl-Entrez pairs by keeping the first occurrence
+entrez_ids <- joined_ids[!duplicated(joined_ids$gene_stable_id),]
+
+results_list_entrez <- lapply(results_list, function(df) {
+  df <- df |>
+    dplyr::left_join(entrez_ids, by = join_by(gene == gene_stable_id)) |>
+    dplyr::filter(!is.na(entrez_id))
+})
+```
+
+
+```{r}
+# Get the total number of genes for MAGMA
+total_gene_n <- nrow(txi$counts)
+# Set percentages to get
+percentages <- c(10, 5, 1)
+
+# Rank genes and select top percentages for each comparison ordered by pval
+top_genes_list <- map(results_list_entrez, ~.x[order(.x$pvalue), ]) %>%
+  map(function(res_ordered) {
+    map(percentages, function(percentage) {
+      # Number of genes to get based on %
+      top_n <- ceiling(total_gene_n * (percentage / 100))
+      # Return the dataframe with the number of genes and a column of the %
+      res_ordered |>
+        dplyr::mutate(percent_genes = percentage) |>
+        head(top_n) 
+    })
+  })
+
+# Flatten the nested list to have a simple list where each element is a top 
+# gene list
+top_genes_list <- flatten(top_genes_list)
+```
+
+```{r}
+# Function to extract genes for a given celltype and write them to a file
+write_genes <- function(df, celltype, df_name) {
+  genes <- df$gene[df$cluster == celltype]
+  filename <- here::here("03_data/995_ldsc_inputs/01_celltype_markers",
+                   paste0("ldsc_", celltype, "_", level, "_", subset, "_top-", 
+                          df_name, "-percent.tsv"))
+  writeLines(genes, filename)
+}
+
+# Function to process each dataframe
+process_dataframe <- function(df, df_name) {
+  unique_celltypes <- unique(df$cluster)
+  map(unique_celltypes, ~write_genes(df, .x, df_name))
+}
+
+# Apply the process_dataframe function to each dataframe in the list
+map(names(top_genes), ~process_dataframe(top_genes[[.x]], .x))
+```
+
