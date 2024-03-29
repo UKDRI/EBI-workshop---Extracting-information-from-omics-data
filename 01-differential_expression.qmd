@@ -2,15 +2,25 @@
 title: "Extracting information from omics data workshop"
 author: 
   - name: "Charlotte Capitanchik"
+    affiliation:
+      - id: dri
+        name: UK Dementia Research Institue
+        url: https://ukdri.ac.uk/
   - name: "Gabriel Mateus Bernardo Harrington"
     orcid: 0000-0001-6075-3619
-    affilitation:
-        - name: Cardiff University
-          city: Cardiff
-          url: https://www.cardiff.ac.uk/
+    affiliation: 
+      - name: Cardiff University
+        city: Cardiff
+        url: www.cardiff.ac.uk
+      - ref: dri
+abstract: |
+  The intro to the workshop! Here we have a look at some QC and do some 
+  differential gene expression
+license: "CC BY-SA"
 format: 
   html:
     df-print: kable
+    code-fold: show
 editor: visual
 ---
 
@@ -45,10 +55,10 @@ We looked at the MultiQC reports to get an initial idea of the quality of the da
 Now we'll load the RNA-Seq data to start to get an impression of what might be special about the brain endothelial cells and see if we can re-produce some of the results from the manuscript.
 
 ```{r}
-tx2genefile = 'data/count_tables/tx2gene.tsv'
+tx2genefile = here::here('data/count_tables/tx2gene.tsv')
 tx2gene = read.delim(tx2genefile, header=FALSE)[, 1:3]
 
-directory_path <- "data/count_tables"
+directory_path <- here::here("data/count_tables")
 files = list.files(path = directory_path,pattern = "quant.sf", recursive = TRUE, full.names = TRUE)
 
 txi = tximport(files, type="salmon", tx2gene=tx2gene)
@@ -244,7 +254,7 @@ barplot(gp_mod_enrich, showCategory = 40, font.size = 16) +
 
 # Data for the PPI
 
-For the protein-protein interaction networks we want the differential gene list for our various contrats
+For the protein-protein interaction networks we want the differential gene lists for our various contrasts.
 
 ```{r}
 # Remind ourselves of the conditions we have
@@ -264,11 +274,7 @@ lg_vs_lv <- results(dds, contrast = c("condition", "LG", "LV")) |>
   tibble::rownames_to_column(var = "gene")
 ```
 
-```{r}
-
-```
-
-Note that repetative code is generally a bad sign suggesting you should stop and consider making a more generalisable function that you can reuse.
+Note that repetitive code is generally a bad sign suggesting you should stop and consider making a more generalisable function that you can reuse.
 This functional code will be much easier to make changes to and reduces the chance of errors being introduced when copy pasting code around (did you notice the error in the above chunk?).
 A rule of thumb is to stop if you find yourself copying the same code more than 3 times, but it's always good practise to try and make your code as generalisable as possible, so you and others can more easily reuse it!
 
@@ -304,10 +310,16 @@ results_list <- lapply(seq_along(pairwise_combinations), function(i) {
 })
 
 # Bind the dataframes by row
-res <- purrr::list_rbind(results_list)
+res <- purrr::list_rbind(results_list) |>
+  # Filter to significant differential genes
+  dplyr::filter(padj < 0.05)
+
 # Check output
 head(res)
 str(res)
+# Get number of sig genes per contrast
+table(res$contrast)
+
 # Save data
 readr::write_tsv(res, here::here("data/ppi/differential_genes.tsv"))
 ```
