@@ -1,6 +1,13 @@
 ---
 title: "Extracting information from omics data workshop"
-author: "Charlotte Capitanchik"
+author: 
+  - name: "Charlotte Capitanchik"
+  - name: "Gabriel Mateus Bernardo Harrington"
+    orcid: 0000-0001-6075-3619
+    affilitation:
+        - name: Cardiff University
+          city: Cardiff
+          url: https://www.cardiff.ac.uk/
 format: 
   html:
     df-print: kable
@@ -26,6 +33,7 @@ library(tibble)
 library(purrr)
 library(readr)
 library(here)
+library(apeglm)
 ```
 
 ## Load the RNA-Seq data
@@ -268,7 +276,8 @@ The above block only has 3 repetitive bits where we process the 3 contrasts in t
 For the sake of practise, can you make a function that will do this for an arbitrary number of contrasts?
 
 ```{r}
-# Add your code to functionalise the extraction of results dataframes from dds here
+# Add your code to functionalise the extraction of results dataframes from dds 
+# here
 
 # Define your conditions
 conditions <- unique(dds@colData$condition)
@@ -276,11 +285,14 @@ conditions <- unique(dds@colData$condition)
 # Use combn to get all unique pairwise combinations
 pairwise_combinations <- combn(as.character(conditions), 2, simplify = FALSE)
 
-# Now, pairwise_combinations is a list of vectors, each containing a pair of conditions
+# Now, pairwise_combinations is a list of vectors, each containing a pair of 
+# conditions
 
 # Generate a list to hold the contrast results
-results_list <- setNames(vector("list", length(pairwise_combinations)), 
-                         sapply(pairwise_combinations, function(x) paste(x, collapse = "_vs_")))
+results_list <-
+  setNames(vector("list", length(pairwise_combinations)),
+           sapply(pairwise_combinations, function(x)
+             paste(x, collapse = "_vs_")))
 
 # Use lapply to go through each combination and get the results
 results_list <- lapply(seq_along(pairwise_combinations), function(i) {
@@ -291,9 +303,11 @@ results_list <- lapply(seq_along(pairwise_combinations), function(i) {
     tibble::rownames_to_column(var = "gene")
 })
 
-# bind the dataframes by row
+# Bind the dataframes by row
 res <- purrr::list_rbind(results_list)
+# Check output
 head(res)
-
+str(res)
+# Save data
 readr::write_tsv(res, here::here("data/ppi/differential_genes.tsv"))
 ```
