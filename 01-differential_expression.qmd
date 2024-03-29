@@ -22,11 +22,17 @@ library(clusterProfiler)
 library(enrichplot)
 library(DOSE)
 library(ggrepel)
+library(tibble)
+library(purrr)
+library(readr)
+library(here)
 ```
 
 ## Load the RNA-Seq data
 
-We already pre-processed the RNA-Seq and ATAC-Seq data using nf-core/fetchngs, nf-core/rnaseq and nf-core/atacseq. We looked at the MultiQC reports to get an initial idea of the quality of the data.\
+We already pre-processed the RNA-Seq and ATAC-Seq data using nf-core/fetchngs, nf-core/rnaseq and nf-core/atacseq.
+We looked at the MultiQC reports to get an initial idea of the quality of the data.\
+
 \
 Now we'll load the RNA-Seq data to start to get an impression of what might be special about the brain endothelial cells and see if we can re-produce some of the results from the manuscript.
 
@@ -72,7 +78,8 @@ ggplot(pcaData, aes(PC1, PC2, color=condition)) +
   theme_few()
 ```
 
-We were worried about cell stress pathways as these samples were collected directly after FACs sorting. Let's look at highly expressed genes in each condition and see if these are enriched in stress-related GO terms.
+We were worried about cell stress pathways as these samples were collected directly after FACs sorting.
+Let's look at highly expressed genes in each condition and see if these are enriched in stress-related GO terms.
 
 ```{r}
 select <- order(rowMeans(counts(dds,normalized=TRUE)),
@@ -112,9 +119,12 @@ res = results(dds)
 resultsNames(dds)
 ```
 
-We want genes that are overexpressed in brain compared to both lung and liver. In this set up this will be represented by genes that have a negative log2FoldChange in the comparisons named above.\
+We want genes that are overexpressed in brain compared to both lung and liver.
+In this set up this will be represented by genes that have a negative log2FoldChange in the comparisons named above.\
+
 \
-What kind of thresholds should we use for log2FoldChange and adjusted p value? Another visualization can help us to decide, let's have a look at volcano plots for both comparisons..\
+What kind of thresholds should we use for log2FoldChange and adjusted p value?
+Another visualization can help us to decide, let's have a look at volcano plots for both comparisons..\
 
 ```{r}
 foldchange=0.5
@@ -175,7 +185,8 @@ PlotVolcano("condition_LV_vs_BR")
 
 #### **Q) Do these thresholds seem reasonable?**
 
-Let's look at genes that are overexpressed in brain compared to both lung and liver. We will perform the GO analysis again to see what kind of gene networks they are a part of.\
+Let's look at genes that are overexpressed in brain compared to both lung and liver.
+We will perform the GO analysis again to see what kind of gene networks they are a part of.\
 
 ```{r}
 brainliver = lfcShrink(dds, coef="condition_LV_vs_BR", type="apeglm") %>%
@@ -221,4 +232,68 @@ gp_mod
 barplot(gp_mod_enrich, showCategory = 40, font.size = 16) + 
   ggplot2::facet_grid(~Cluster) +
   ggplot2::ylab("Intersection size")
+```
+
+# Data for the PPI
+
+For the protein-protein interaction networks we want the differential gene list for our various contrats
+
+```{r}
+# Remind ourselves of the conditions we have
+unique(dds@colData$condition)
+# So we could get these contrast one by one:
+lg_vs_br <- results(dds, contrast = c("condition", "LG", "BR")) |>
+  as.data.frame() |>
+  dplyr::mutate(contrast = "LG_vs_BR") |>
+  tibble::rownames_to_column(var = "gene")
+lv_vs_br <- results(dds, contrast = c("condition", "LV", "BR")) |>
+  as.data.frame() |>
+  dplyr::mutate(contrast = "LV_vs_BR") |>
+  tibble::rownames_to_column(var = "gene")
+lg_vs_lv <- results(dds, contrast = c("condition", "LG", "LV")) |>
+  as.data.frame() |>
+  dplyr::mutate(contrast = "LV_vs_BR") |>
+  tibble::rownames_to_column(var = "gene")
+```
+
+```{r}
+
+```
+
+Note that repetative code is generally a bad sign suggesting you should stop and consider making a more generalisable function that you can reuse.
+This functional code will be much easier to make changes to and reduces the chance of errors being introduced when copy pasting code around (did you notice the error in the above chunk?).
+A rule of thumb is to stop if you find yourself copying the same code more than 3 times, but it's always good practise to try and make your code as generalisable as possible, so you and others can more easily reuse it!
+
+The above block only has 3 repetitive bits where we process the 3 contrasts in the same way, but you can see how this quickly become tedious and messy, imagine if we had more contrasts!
+For the sake of practise, can you make a function that will do this for an arbitrary number of contrasts?
+
+```{r}
+# Add your code to functionalise the extraction of results dataframes from dds here
+
+# Define your conditions
+conditions <- unique(dds@colData$condition)
+
+# Use combn to get all unique pairwise combinations
+pairwise_combinations <- combn(as.character(conditions), 2, simplify = FALSE)
+
+# Now, pairwise_combinations is a list of vectors, each containing a pair of conditions
+
+# Generate a list to hold the contrast results
+results_list <- setNames(vector("list", length(pairwise_combinations)), 
+                         sapply(pairwise_combinations, function(x) paste(x, collapse = "_vs_")))
+
+# Use lapply to go through each combination and get the results
+results_list <- lapply(seq_along(pairwise_combinations), function(i) {
+  pair <- pairwise_combinations[[i]]
+  results(dds, contrast=c("condition", pair[1], pair[2])) |>
+    as.data.frame() |>
+    dplyr::mutate(contrast = paste0(pair[1], "_vs_", pair[2])) |>
+    tibble::rownames_to_column(var = "gene")
+})
+
+# bind the dataframes by row
+res <- purrr::list_rbind(results_list)
+head(res)
+
+readr::write_tsv(res, here::here("data/ppi/differential_genes.tsv"))
 ```
