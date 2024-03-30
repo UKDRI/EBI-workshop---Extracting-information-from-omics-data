@@ -410,6 +410,8 @@ top_genes_list <- map(results_list_entrez, ~.x[order(.x$pvalue), ]) %>%
       top_n <- ceiling(total_gene_n * (percentage / 100))
       # Return the dataframe with the number of genes and a column of the %
       res_ordered |>
+        # exclude duplicated entrez_ids
+        dplyr::distinct(entrez_id, .keep_all = TRUE) |>
         dplyr::mutate(percent_genes = percentage) |>
         head(top_n) 
     })
