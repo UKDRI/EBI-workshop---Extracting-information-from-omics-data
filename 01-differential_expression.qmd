@@ -447,7 +447,7 @@ lapply(names(dfs_by_percent), function(percent) {
   }, USE.NAMES = FALSE)
   
   # Write to a file named by the percent value
-  writeLines(lines, con = here::here("data/magma", paste0("magma_input_genes_", percent, ".txt")))
+  writeLines(lines, con = here::here("data/magma", paste0("magma_input_genes_", percent, "_percent.magma.txt")))
 })
 ```
 
