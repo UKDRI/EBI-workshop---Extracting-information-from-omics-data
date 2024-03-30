@@ -1,0 +1,271 @@
+---
+title: "MAGMA Run"
+author: "Gabriel Mateus Bernardo Harrington"
+format: 
+  html:
+    code-fold: show
+execute: 
+  eval: false
+---
+
+```{r}
+#| purl: false
+#| eval: true
+here::i_am("scripts/magma_run.qmd")
+```
+
+Here is a rough outline of the steps one performs to prep the other input files for MAGMA and then ultimately run it with your gene lists.
+The first 2 chunks are preparing the GWAS summary stats your want to use.
+These 2 processing steps can take a little while to run, so we've generated the files for you in advance, but the last step is nice and quick as it's just running the regression.
+
+# Step 1 - Get SNP to Gene annotations
+
+First step is to annotate SNPs to genes, and an important choice here is what window one uses around the gene when annotating the SNPs to them.
+A few standard choices are 35Kb upstream and 10Kb downstream (what we use here), but some also use 25Kb or 50Kb up/downstream.
+In practise you might want to play around with some standard window sizes and/or check the literature in your field to see what's common. 
+
+As an aside, quarto can support shell script by changing the "{r}" in the block header to "{bash}" if you use knitr as the computational engine.
+There's docs about this [here](https://quarto.org/docs/computations/execution-options.html#engine-binding), including the different if you're using Jupyter as the engine instead.
+
+```{bash}
+#| purl: false
+#!/bin/bash
+
+WORK_DIR="path/to/magma/inputs"
+cd $WORK_DIR
+
+# SNP file from the reference
+SNP_Loc_File=${WORK_DIR}"g1000_eur.bim"
+# Gene location file - make sure build is correct
+Gene_Loc_File=${WORK_DIR}"NCBI37.3.gene.loc"
+Output_Prefix="NCBI37_annotated_window_35k10k"
+
+magma \
+    --annotate window=35,10 \
+    --snp-loc $SNP_Loc_File \
+    --gene-loc $Gene_Loc_File \
+    --out $Output_Prefix
+
+Output_Prefix="NCBI37_annotated_nowindow"
+
+magma \
+    --annotate window=0\
+    --snp-loc $SNP_Loc_File \
+    --gene-loc $Gene_Loc_File \
+    --out $Output_Prefix
+```
+
+# Step 2 - process GWAS summary stats
+
+Here we use our gene annotations from the prior step with summary stats from our GWAS summary stats.
+You can find many GWAS summary statistics on the [Open GWAS project](https://gwas.mrcieu.ac.uk/), but note that not all published GWAS stats are on there, so you may have to contact the authors of your prefered study for the stats in the worst case.
+
+We have a few summary stats prepared, but I'll just show some code for Alzheimer's disease (AD).
+AD is an interesting case as the APOE gene is such a dominating hit in the GWAS that it's common to run analysis with and without APOE included.
+The other think to keep in mind with AD is the use of proxy cases from UK BioBank.
+This is where folk who self report a first-degree relative as having had "dementia" or "AD", they are automatically assumed to have AD as well, and so treated as a case in the latest AD GWAS.
+This is somewhat controversial (perhaps unsurprisingly!), and so some folk also like to do these kinds of analysis with and without the proxy cases included in the summary stats.
+I won't do this here in the interest of simplisity, but it's good to keep in mind.
+
+```{bash}
+#| purl: false
+#!/bin/bash
+
+WORK_DIR="path/to/magma/inputs"
+
+# PLINK files from reference (.bed/.bim/.fam)
+Data_File=${WORK_DIR}"g1000_eur"
+# Output of step 1
+Annot_File=${WORK_DIR}"NCBI37_annotated_window_35k10k.genes.annot"
+
+#### With proxies and APOE - 35k10k window
+
+mkdir temp_annot_35k10k_nobb # make a temporary directory to host the intermediate files
+
+Annot_File=${WORK_DIR}"NCBI37_annotated_window_35k10k.genes.annot"
+SNP_Pval_File="Bellenguez_2022_sumstats/GCST90027158_buildGRCh37_noATGC_forMAGMA.tsv"
+Output_Prefix="EUROPEUKBB_35k10k"
+
+
+# run magma in parallel, 10 threads in this case
+parallel magma \
+   --batch {} 10 \
+   --bfile $Data_File \
+   --gene-annot $Annot_File \
+   --gene-model snp-wise=mean \
+   --pval $SNP_Pval_File ncol=N \
+   --out temp_annot_35k10k_nobb/$Output_Prefix \
+::: {1..10}
+
+# merge all intermediate files generated under the temp_annot files
+# and send out for one single file set
+
+magma \
+   --merge temp_annot_35k10k_nobb/$Output_Prefix \
+   --out temp_annot_35k10k_nobb/$Output_Prefix
+
+# extract merged files for subsequent analysis
+
+cp ./temp_annot_35k10k_nobb/$Output_Prefix.genes.* .
+
+# remove the temporary directory
+
+rm -r temp_annot_35k10k_nobb
+
+#### With proxies and APOE - no window
+
+mkdir temp_annot_nobb # make a temporary directory to host the intermediate files
+
+Annot_File=${WORK_DIR}"NCBI37_annotated_nowindow.genes.annot"
+SNP_Pval_File="Bellenguez_2022_sumstats/GCST90027158_buildGRCh37_noATGC_forMAGMA.tsv"
+Output_Prefix="EUROPEUKBB_nowindow"
+
+
+# run magma in parallel, 10 threads in this case
+
+parallel magma \
+   --batch {} 10 \
+   --bfile $Data_File \
+   --gene-annot $Annot_File \
+   --gene-model snp-wise=mean \
+   --pval $SNP_Pval_File ncol=N \
+   --out temp_annot_nobb/$Output_Prefix \
+::: {1..10}
+
+# merge all intermediate files generated under the temp_annot files
+# and send out for one single file set
+
+magma \
+   --merge temp_annot_nobb/$Output_Prefix \
+   --out temp_annot_nobb/$Output_Prefix
+
+# extract merged files for subsequent analysis
+
+cp ./temp_annot_nobb/$Output_Prefix.genes.* .
+
+# remove the temporary directory
+
+rm -r temp_annot_nobb
+
+#### With proxies and without APOE - no window
+
+mkdir temp_annot_nobb # make a temporary directory to host the intermediate files
+
+Annot_File=${WORK_DIR}"NCBI37_annotated_nowindow.genes.annot"
+SNP_Pval_File="Bellenguez_2022_sumstats/GCST90027158_buildGRCh37_noATGC_noAPOE_forMAGMA.tsv"
+Output_Prefix="EUROPEUKBB_nowindow_noAPOE"
+
+# run magma in parallel, 10 threads in this case
+parallel magma \
+   --batch {} 10 \
+   --bfile $Data_File \
+   --gene-annot $Annot_File \
+   --gene-model snp-wise=mean \
+   --pval $SNP_Pval_File ncol=N \
+   --out temp_annot_nobb/$Output_Prefix \
+::: {1..10}
+
+# merge all intermediate files generated under the temp_annot files
+# and send out for one single file set
+
+magma \
+   --merge temp_annot_nobb/$Output_Prefix \
+   --out temp_annot_nobb/$Output_Prefix
+
+# extract merged files for subsequent analysis
+
+cp ./temp_annot_nobb/$Output_Prefix.genes.* .
+
+# remove the temporary directory
+
+rm -r temp_annot_nobb
+
+#### With proxies and without APOE - 35k10k window
+
+mkdir temp_annot_nobb # make a temporary directory to host the intermediate files
+
+Annot_File=${WORK_DIR}"NCBI37_annotated_window_35k10k.genes.annot"
+SNP_Pval_File="Bellenguez_2022_sumstats/GCST90027158_buildGRCh37_noATGC_noAPOE_forMAGMA.tsv"
+Output_Prefix="EUROPEUKBB_35k10k_noAPOE"
+
+# run magma in parallel, 10 threads in this case
+parallel magma \
+   --batch {} 10 \
+   --bfile $Data_File \
+   --gene-annot $Annot_File \
+   --gene-model snp-wise=mean \
+   --pval $SNP_Pval_File ncol=N \
+   --out temp_annot_nobb/$Output_Prefix \
+::: {1..10}
+
+# merge all intermediate files generated under the temp_annot files
+# and send out for one single file set
+
+magma \
+   --merge temp_annot_nobb/$Output_Prefix \
+   --out temp_annot_nobb/$Output_Prefix
+
+# extract merged files for subsequent analysis
+
+cp ./temp_annot_nobb/$Output_Prefix.genes.* .
+
+# remove the temporary directory
+
+rm -r temp_annot_nobb
+```
+
+# Step 3 - Run the MAGMA regression
+
+Here is the last bit where we actually get our results!
+
+```{r}
+#!/bin/bash
+
+WORK_DIR="~/2024-03-29_ebi_workshop/data/magma"
+cd $WORK_DIR
+export WORK_DIR
+
+# Populate Set_Annot_Files array with files matching '*.magma.txt'
+Set_Annot_Files=(${WORK_DIR}/*.magma.txt)
+# Populate Gene_Results_Files array with files matching '*.genes.raw'
+Gene_Results_Files=(${WORK_DIR}/*.genes.raw)
+
+# Function to run magma with given files and output prefix
+run_magma() {
+    local Set_Annot_File=$1
+    local Gene_Results_File=$2
+    local annot_name=$(basename "${Set_Annot_File}" .magma.txt)
+    local gene_name=$(basename "${Gene_Results_File}" .genes.raw)
+    local Output_Prefix="./results/${annot_name}_${gene_name}"
+
+    # Run magma command
+    magma \
+        --gene-results $Gene_Results_File \
+        --set-annot $Set_Annot_File \
+        --out $Output_Prefix
+}
+
+# Export the function so it can be used by parallel
+export -f run_magma
+
+# Use parallel to run the combinations
+parallel run_magma ::: "${Set_Annot_Files[@]}" ::: "${Gene_Results_Files[@]}"
+```
+
+You might have noticed I set R as the language of the prior block even though it's bash code.
+I do this so we can use purl to extract this code block to a script file by itself.
+You can purl with bash blocks, but the code gets commented out, so I just leave it as R (just don't forget to set `eval: false` for the R blocks with bash code!).
+This is also why I have set `purl: false` in the other code blocks.
+
+```{r}
+#| purl: false
+#| eval: true
+#| message: false
+#| results: hide
+knitr::purl(
+  here::here("scripts/magma_run.qmd"),
+  here::here("scripts/magma_run.sh"),
+  documentation = 0
+)
+```
+
