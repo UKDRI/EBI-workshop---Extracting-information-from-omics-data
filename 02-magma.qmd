@@ -1,0 +1,215 @@
+---
+title: "MAGMA risk analysis"
+author: "Gabriel Mateus Bernardo Harrington"
+format: 
+  html:
+    code-fold: show
+    code-links: 
+      - text: Data Prep Code
+        icon: file-code
+        href: 01-differential_expression.html
+      - text: MAGMA Run Code
+        icon: file-code
+        href: scripts/magma_run.html
+---
+
+## Load libraries
+
+```{r}
+#| warning: false
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(tximport)
+library(pheatmap)
+library(tibble)
+library(purrr)
+library(readr)
+library(here)
+library(stringr)
+library(gt)
+library(ComplexHeatmap)
+```
+
+## Load the MAGMA outputs
+
+So in our case we're interested in the `.gsa.out` files MAGMA has produced as these contain the stats for if our gene lists were significantly enriched for our risk genes.
+A fun complication is the our schizophrenia and white matter hyperintensitie outputs have a 4 line header to skip when reading the file in, whereas all the others have a 3 line header.
+
+```{r}
+#| eval: true
+# List files
+files <- list.files(here::here("data/magma/results"), 
+                    pattern = "*.gsa.out", full.names = TRUE)
+# separate scz files
+files_scz <- files[grepl("_scz|_wmh_", files)]
+files_no_scz <- files[!files %in% files_scz]
+# Read data
+data <-
+  map(files_no_scz, ~ read.delim(
+    .x,
+    skip = 3,
+    header = TRUE,
+    sep = ""
+  ))
+data_scz <-
+  map(files_scz, ~ read.delim(
+    .x,
+    skip = 4,
+    header = TRUE,
+    sep = ""
+  ))
+
+
+# Function to add the group and adjust the pvals
+process_magma_data <-
+  function(df,
+           filename) {
+    df <- df |> 
+      # Add groups and adjusted pvals to data
+      dplyr::mutate(group = filename, 
+                    p_adj = p.adjust(P, method = "bonferroni"))
+    return(df)
+  }
+scz <- map2(data_scz, files_scz, ~ process_magma_data(.x, .y)) |>
+  list_rbind() |>
+  as_tibble()
+non_scz <- map2(data, files_no_scz, process_magma_data) |>
+  list_rbind() |>
+  as_tibble()
+# combine data
+df <- rbind(scz, non_scz)
+
+# Use str_extract() to extract get the percent of genes used
+df$percent_genes <- str_extract(df$group, "\\d+_percent")
+# clean up the group strings
+df$group <- basename(df$group) |>
+  str_replace("magma_input_genes_", "") |>
+  str_replace("\\d+_percent_", "") |>
+  str_replace("_gene_analysis", "") |>
+  str_replace(".gsa.out", "")
+
+gt::gt(head(df))
+```
+
+# Results
+
+Let's get a quick table of significant associations
+
+```{r}
+df |>
+  dplyr::filter(p_adj < 0.05) |>
+  dplyr::select(-c(TYPE)) |>
+  DT::datatable()
+```
+
+## Heatmaps
+
+Let's try making a heatmap to visualise the results as well
+
+```{r}
+# Transform the p-values to -log10(p-value) to enhance the visualization of small p-values
+df$log_p <- -log10(df$p_adj)
+
+# Nest data on broad groups
+df_nest <- df |> 
+  dplyr::arrange(group) |>
+  dplyr::group_by(percent_genes) |>
+  tidyr::nest()
+
+get_heatmap_data <- function(df) {
+  # Prepare the data for the heatmap
+  heatmap_data <- df |>
+    dplyr::select(VARIABLE, log_p, group) |>
+    tidyr::pivot_wider(names_from = VARIABLE, values_from = log_p) |>
+    as.data.frame()
+  
+  rownames(heatmap_data) <- heatmap_data$group
+  # Remove the first column if it contains row names (cell types)
+  heatmap_data <- heatmap_data[, -1]
+  heatmap <- t(heatmap_data)
+  # Replace any NAs with 0
+  #heatmap[is.na(heatmap)] <- 0
+  return(heatmap)
+}
+heatmap_data <- map(df_nest$data, get_heatmap_data) |>
+  set_names(paste0("group_", df_nest$percent_genes))
+```
+
+This is a little elaborate, but the function overlays some standard significant thresholds over the heatmap.
+
+```{r}
+make_heatmap <- function(heatmap_data, plot_title) {
+  # Define significance thresholds
+  sig_threshold1 <- -log10(0.05) # Corresponds to p < 0.05
+  sig_threshold2 <- -log10(0.01) # Corresponds to p < 0.01
+  sig_threshold3 <- -log10(0.001) # Corresponds to p < 0.001
+  
+  # Create an annotation matrix with the same dimensions as 'heatmap'
+  annotation_matrix <-
+    matrix(
+      "",
+      nrow = nrow(heatmap_data),
+      ncol = ncol(heatmap_data)
+    )
+  
+  # Populate the annotation matrix with '*', '**', or '***' based on significance levels
+  annotation_matrix[heatmap_data > sig_threshold3] <-
+    "***"
+  annotation_matrix[heatmap_data > sig_threshold2 &
+                      heatmap_data <= sig_threshold3] <- "**"
+  annotation_matrix[heatmap_data > sig_threshold1 &
+                      heatmap_data <= sig_threshold2] <- "*"
+  
+  # Define a color palette for the heatmap
+  color_palette <- colorRampPalette(c("blue", "white", "red"))(100)
+  
+  # Create the heatmap with customizations
+  plot <- Heatmap(
+    heatmap_data,
+    name = "-log10(p-value)",
+    col = color_palette,
+    # Use the defined color palette
+    cell_fun = function(j, i, x, y, width, height, fill) {
+      if (annotation_matrix[i, j] != "") {
+        grid.text(annotation_matrix[i, j], x, y, gp = gpar(col = "black", fontsize = 10))
+      }
+    },
+    # Adjust the clustering method if necessary
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    # Show row and column names
+    show_row_names = TRUE,
+    show_column_names = TRUE,
+    # Adjust the size of row and column names
+    row_names_gp = gpar(fontsize = 10),
+    #column_names_rot = 45,
+    column_names_gp = gpar(fontsize = 8),
+    column_names_max_height = max_text_height(colnames(heatmap_data),
+                                              gp = gpar(fontsize = 500)),
+    column_title = plot_title
+  )
+  
+  return(plot)
+  
+}
+
+# Get heatmaps
+heatmaps <-
+  map2(heatmap_data,
+         names(heatmap_data) |>
+         str_replace("group_", "top_"),
+       make_heatmap)
+# Print them together
+hmap_list <- heatmaps$group_1_percent + heatmaps$group_5_percent + heatmaps$group_10_percent
+```
+
+```{r}
+#| label: fig-magma-heatmap
+#| fig-width: 10
+#| fig-cap: "Heatmap of log10 adjusted pvals from MAGMA ran against several GWAS backgrounds"
+hmap_list
+```
+
+Notice anything interesting about the results in @fig-magma-heatmap?
+Feel free to write up your thoughts below!
