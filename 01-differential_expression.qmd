@@ -45,12 +45,16 @@ library(readr)
 library(here)
 library(apeglm)
 library(biomaRt)
+library(AnnotationHub)
+library(memes)
+library(GADEM)
+library(TFBSTools)
+library(JASPAR2024)
 ```
 
 ## Load the RNA-Seq data
 
-We already pre-processed the RNA-Seq and ATAC-Seq data using nf-core/fetchngs, nf-core/rnaseq and nf-core/atacseq.
-We looked at the MultiQC reports to get an initial idea of the quality of the data.\
+We already pre-processed the RNA-Seq and ATAC-Seq data using nf-core/fetchngs, nf-core/rnaseq and nf-core/atacseq. We looked at the MultiQC reports to get an initial idea of the quality of the data.\
 
 \
 Now we'll load the RNA-Seq data to start to get an impression of what might be special about the brain endothelial cells and see if we can re-produce some of the results from the manuscript.
@@ -96,8 +100,7 @@ ggplot(pcaData, aes(PC1, PC2, color=condition)) +
   theme_few()
 ```
 
-We were worried about cell stress pathways as these samples were collected directly after FACs sorting.
-Let's look at highly expressed genes in each condition and see if these are enriched in stress-related GO terms.
+We were worried about cell stress pathways as these samples were collected directly after FACs sorting. Let's look at highly expressed genes in each condition and see if these are enriched in stress-related GO terms.
 
 ```{r}
 select <- order(rowMeans(counts(dds,normalized=TRUE)),
@@ -137,12 +140,10 @@ res = results(dds)
 resultsNames(dds)
 ```
 
-We want genes that are overexpressed in brain compared to both lung and liver.
-In this set up this will be represented by genes that have a negative log2FoldChange in the comparisons named above.\
+We want genes that are overexpressed in brain compared to both lung and liver. In this set up this will be represented by genes that have a negative log2FoldChange in the comparisons named above.\
 
 \
-What kind of thresholds should we use for log2FoldChange and adjusted p value?
-Another visualization can help us to decide, let's have a look at volcano plots for both comparisons..\
+What kind of thresholds should we use for log2FoldChange and adjusted p value? Another visualization can help us to decide, let's have a look at volcano plots for both comparisons..\
 
 ```{r}
 foldchange=0.5
@@ -203,8 +204,7 @@ PlotVolcano("condition_LV_vs_BR")
 
 #### **Q) Do these thresholds seem reasonable?**
 
-Let's look at genes that are overexpressed in brain compared to both lung and liver.
-We will perform the GO analysis again to see what kind of gene networks they are a part of.\
+Let's look at genes that are overexpressed in brain compared to both lung and liver. We will perform the GO analysis again to see what kind of gene networks they are a part of.\
 
 ```{r}
 brainliver = lfcShrink(dds, coef="condition_LV_vs_BR", type="apeglm") %>%
@@ -252,6 +252,83 @@ barplot(gp_mod_enrich, showCategory = 40, font.size = 16) +
   ggplot2::ylab("Intersection size")
 ```
 
+# Integrating ATAC-Seq
+
+We also have ATAC-seq data - notice one of the outputs from nf-core/atacseq is to label ATAC-seq peaks to their nearest gene - this is more of an art than science.\
+\
+You can read [the documentation](https://nf-co.re/atacseq/2.1.2) to find out how it was done - note this step:
+
+5.  Annotate peaks relative to gene features ([`HOMER`](http://homer.ucsd.edu/homer/download.html))
+
+Can you find out what settings were used? by looking at the Github repo we can find the code of the [HOMER AnnotatePeaks module](https://github.com/nf-core/atacseq/blob/2.1.2/modules/nf-core/homer/annotatepeaks/main.nf).
+
+Extra arguments are passed in the args variable which in pipelines is usually set in conf/modules.config. We can see that the only extra arg that is set is '-gid', when we look at the HOMER documentation we can't actually find this parameter, it takes some extra googling to find this means "use gene_id instead of transcript_id when parsing GTF file". Welcome to bioinformatics! ;) \
+\
+In the nextflow module code we can see the version of HOMER used is homer=4.11 - so we have used whatever the default params are for HOMER v.4.11. We can learn about these by reading HOMER annotatepeaks docs.
+
+```{r}
+atac_annot = read.delim("data/count_tables/consensus_peaks.mRp.clN.annotatePeaks.txt")
+colnames(atac_annot)
+```
+
+Let's look at the distance to nearest PromoterID
+
+```{r}
+options(scipen = 999)
+ggplot(atac_annot,aes(x=Distance.to.TSS)) + geom_density() + theme_few()
+```
+
+Some peaks seem implausibly far from genes, let's restrict to +/- 1000 nt away - how many peaks do we lose?
+
+```{r}
+filt_atac_annot = atac_annot %>% filter(abs(Distance.to.TSS) <= 1000)
+```
+
+Are any of these ATAC peaks associated with our unique brain genes?
+
+```{r}
+filt_atac_annot = atac_annot %>% mutate(brain_enriched=Entrez.ID %in% brain_enriched)
+filt_atac_annot %>%
+  group_by(brain_enriched) %>% 
+  summarise(total=n())
+```
+
+Let's get the sequences of these ATAC peaks to see if we can identify TF(s) that might regulate our brain-specific genes.
+
+```{r}
+brain_peaks = makeGRangesFromDataFrame(filt_atac_annot %>% filter(brain_enriched==TRUE), keep.extra.columns = TRUE)
+```
+
+How long are our peaks generally? Should we expand/reduce them?
+
+```{r}
+hist(end(brain_peaks) - start(brain_peaks))
+```
+
+Let's take them as they are for now, but might be worth resizing to make them shorter.
+
+Let's merge overlapping peaks - do we have any?
+
+```{r}
+length(brain_peaks)
+brain_peaks = GenomicRanges::reduce(brain_peaks)
+length(brain_peaks)
+```
+
+Let's resize our peaks to be 100bp long (+/- 50 from peak centers) and get the sequences.
+
+```{r}
+brain_peaks_resized = resize(brain_peaks, width = 100, fix='center')
+
+ah <- AnnotationHub()
+query(ah, c("Mus musculus","Ensembl","twobit"))
+mouse.genome = ah[["AH49773"]]
+```
+
+```{r}
+memes::get_sequence(brain_peaks_resized, mouse.genome)
+```
+
 # Data for the PPI
 
 For the protein-protein interaction networks we want the differential gene lists for our various contrasts.
@@ -274,12 +351,9 @@ lg_vs_lv <- results(dds, contrast = c("condition", "LG", "LV")) |>
   tibble::rownames_to_column(var = "gene")
 ```
 
-Note that repetitive code is generally a bad sign suggesting you should stop and consider making a more generalisable function that you can reuse.
-This functional code will be much easier to make changes to and reduces the chance of errors being introduced when copy pasting code around (did you notice the error in the above chunk?).
-A rule of thumb is to stop if you find yourself copying the same code more than 3 times, but it's always good practise to try and make your code as generalisable as possible, so you and others can more easily reuse it!
+Note that repetitive code is generally a bad sign suggesting you should stop and consider making a more generalisable function that you can reuse. This functional code will be much easier to make changes to and reduces the chance of errors being introduced when copy pasting code around (did you notice the error in the above chunk?). A rule of thumb is to stop if you find yourself copying the same code more than 3 times, but it's always good practise to try and make your code as generalisable as possible, so you and others can more easily reuse it!
 
-The above block only has 3 repetitive bits where we process the 3 contrasts in the same way, but you can see how this quickly become tedious and messy, imagine if we had more contrasts!
-For the sake of practise, can you make a function that will do this for an arbitrary number of contrasts?
+The above block only has 3 repetitive bits where we process the 3 contrasts in the same way, but you can see how this quickly become tedious and messy, imagine if we had more contrasts! For the sake of practise, can you make a function that will do this for an arbitrary number of contrasts?
 
 ```{r}
 # Add your code to functionalise the extraction of results dataframes from dds 
@@ -327,7 +401,7 @@ readr::write_tsv(res, here::here("data/ppi/differential_genes.tsv"))
 
 Now for MAGMA we want some gene lists that are most specific to our three groups, and people typically use either the top 5% or 10% as a proportion of the total number of genes, but let's add the top 1% as well just to see how stable any results we see are.
 
-Before we do this, MAGMA requires genes in the entrez format, so we'll have to swap from the ensemble IDs we currently have.
+Before we do this, MAGMA requires genes in the entrez format, so we'll have to swap from the ensembl IDs we currently have.
 
 ```{r}
 #| eval: false
@@ -337,6 +411,7 @@ ensembl <- useEnsembl(biomart = "ensembl", mirror = "www")
 # Select the mouse and human datasets from the chosen Ensembl mirror
 mouse <- useDataset("mmusculus_gene_ensembl", mart = ensembl)
 human <- useDataset("hsapiens_gene_ensembl", mart = ensembl)
+
 
 # Convert Ensembl IDs to Entrez IDs for all the genes in the list
 results_list_entrez <- lapply(results_list, function(df) {
@@ -361,7 +436,7 @@ results_list_entrez <- lapply(results_list, function(df) {
 })
 ```
 
-I'm getting a server error when using bioMart, so I'll just manually download the current mouse ensembl IDs and their human orthologues, plus the human IDs and the corresponding entrez IDs and do it the old fashioned way...
+If you get a server error when using bioMart, or it's taking too long we can manually download the current mouse ensembl IDs and their human orthologues, plus the human IDs and the corresponding entrez IDs and do it the old fashioned way...
 
 You can manually download the needed files from ensembl [here](https://www.ensembl.org/biomart/martview/36e75d7104c3e03ac8414d5a564d1485).
 
@@ -394,7 +469,7 @@ results_list_entrez <- lapply(results_list, function(df) {
 })
 ```
 
-Now we can get our top 10/5/1% of genes by pval for each contrast. 
+Now we can get our top 10/5/1% of genes by pval for each contrast.
 
 ```{r}
 # Get the total number of genes for MAGMA
@@ -422,8 +497,7 @@ top_genes_list <- map(results_list_entrez, ~.x[order(.x$pvalue), ]) %>%
 top_genes_list <- flatten(top_genes_list)
 ```
 
-MAGMA wants an input file with each row denoting a group to test (in single cell seq data this is typically celltypes).
-The row starts with the group label followed by a space and then a space seperated list of the entrez IDs, so now we get our data into that format and save each percent to a different file.
+MAGMA wants an input file with each row denoting a group to test (in single cell seq data this is typically celltypes). The row starts with the group label followed by a space and then a space seperated list of the entrez IDs, so now we get our data into that format and save each percent to a different file.
 
 ```{r}
 # Merge list to one df and take the relevant columns
@@ -452,4 +526,3 @@ lapply(names(dfs_by_percent), function(percent) {
   writeLines(lines, con = here::here("data/magma", paste0("magma_input_genes_", percent, "_percent.magma.txt")))
 })
 ```
-
