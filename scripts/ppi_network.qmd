@@ -1,0 +1,1609 @@
+---
+title: "Protein Protein Interaction (PPI) resources"
+author: 
+  - name: "Jimena Monzón Sandoval"
+    orcid: 0000-0002-4190-2188
+    affiliation: 
+      - name: Cardiff University
+        city: Cardiff
+        url: www.cardiff.ac.uk
+date: 'Last update: `r date()`'
+execute: 
+  eval: false
+format: 
+  html:
+    theme: spacelab
+---
+
+# Resources
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r message=FALSE, warning=FALSE}
+
+library(stringr)
+library(R.utils)
+
+library(org.Hs.eg.db)
+library(ensembldb)
+library(EnsDb.Hsapiens.v86)
+
+library(ggplot2)
+library(ggrepel)
+library(MetBrewer)
+library(cowplot)
+
+```
+
+## Sources
+
+Links to each database:
+
++ [*APID*](http://cicblade.dep.usal.es:8080/APID/init.action) Agile Protein Interactomes DataServer. Integration of known experimentally validated protein-protein physical interactions (PPIs).
+
++ [*BIOGRID*](https://thebiogrid.org/) Biological General Repository for Interaction Datasets. Genetic and protein interaction data from model organisms and humans.
+
++ [*BIOPLEX*](https://bioplex.hms.harvard.edu/). Bioplex 3.0, comprehensive experimentally derived model of the human interactome.
+
++ [*CORUM*](http://mips.helmholtz-muenchen.de/corum/) the COmprehensive ResoUrce of Mammalian protein complexes.
+
++ [*HITPREDICT*](http://www.hitpredict.org/) Physical protein-protein interactions with reliability scores.
+
++ [*HURI*](http://www.interactome-atlas.org/) The Human Reference Interactome.
+
++ [*INTACT*](https://www.ebi.ac.uk/intact/home) IntAct Molecular Interaction Database.
+
++ [*MINT*](https://mint.bio.uniroma2.it/) The Molecular INTeraction Database.
+
++ [*REACTOME*](https://reactome.org/download-data). Open-source, open access, manually curated and peer-reviewed pathway database
+
++ [*STRING*](https://string-db.org/). STRING is a Core Data Resource as designated by Global Biodata Coalition and ELIXIR.
+
+```{r eval=FALSE}
+
+dir.create(path = "./02_Datasets/")
+
+```
+
+## ID Mapping
+
++ All datasets were mapped to Ensembl Gene ID from either Entrez, Uniprot or Ensembl Protein ID.
+
+### Entrez
+
+```{r entrez}
+
+# Annotations Entrez ID to Ensembl Gene ID
+x <- org.Hs.egENSEMBL
+# Get the entrez gene IDs that are mapped to an Ensembl ID
+mapped_genes <- mappedkeys(x)
+# Convert to a list
+xx <- as.list(x[mapped_genes])
+
+# Built a Dataframe with unique Entrez IDs, possible multiple Ensembl Gene IDs delimited by "||"
+entrez_to_ensembl <- matrix(NA, nrow = 1, ncol = 2)
+for(i in 1:length(xx)){
+  if(length(unlist(xx[i])) == 1){
+    gci <- cbind(names(xx[i]), unlist(xx[i]))
+  } else {
+    gci <- cbind(names(xx[i]), paste0(unlist(xx[i]), collapse = "||"))
+  }
+  entrez_to_ensembl <- rbind(entrez_to_ensembl, gci)
+  rm(gci)
+}
+rm(i, x, mapped_genes, xx)
+entrez_to_ensembl <- entrez_to_ensembl[-1, ]
+rownames(entrez_to_ensembl) <- 1:nrow(entrez_to_ensembl)
+colnames(entrez_to_ensembl) <- c("Entrez_ID", "Ensembl_GeneID")
+entrez_to_ensembl <- data.frame(entrez_to_ensembl)
+
+```
+
+### Uniprot
+
+```{r uniprot}
+
+# Uniprot annotations from Ensembl
+edb <- EnsDb.Hsapiens.v86
+txs <- genes(edb, columns = c("uniprot_id"))
+uniprot_to_ensembl <- mcols(txs)
+colnames(uniprot_to_ensembl) <- c("Uniprot_ID", "Ensembl_GeneID")
+
+# Remove genes that do not match any Uniprot ID
+if(length(which(is.na(uniprot_to_ensembl$Uniprot_ID) == TRUE)) > 0) {
+ uniprot_to_ensembl <- uniprot_to_ensembl[-which(is.na(uniprot_to_ensembl$Uniprot_ID) == TRUE), ] 
+}
+rm(edb, txs)
+
+uniprot_to_ensembl <- uniprot_to_ensembl[order(uniprot_to_ensembl$Uniprot_ID), ]
+
+uniprot_to_ensembl_unique <- aggregate.data.frame(x = uniprot_to_ensembl,
+                                                  by = list(uniprot_to_ensembl$Uniprot_ID),
+                                                  FUN = function(x) paste0(x, collapse = "||"))
+rm(uniprot_to_ensembl)
+uniprot_to_ensembl <- uniprot_to_ensembl_unique[, c("Group.1", "Ensembl_GeneID")]
+colnames(uniprot_to_ensembl) <- c("Uniprot_ID", "Ensembl_GeneID")
+rm(uniprot_to_ensembl_unique)
+
+```
+
+### Ensembl Protein ID
+
+```{r ensprot}
+
+# Uniprot annotations from Ensembl
+edb <- EnsDb.Hsapiens.v86
+txs <- genes(edb, columns = c("protein_id"))
+proteinID_to_ensembl <- mcols(txs)
+colnames(proteinID_to_ensembl) <- c("protein_id", "Ensembl_GeneID")
+
+# Remove genes that do not match any protein ID
+if(length(which(is.na(proteinID_to_ensembl$protein_id) == TRUE)) > 0) {
+ proteinID_to_ensembl <- proteinID_to_ensembl[-which(is.na(proteinID_to_ensembl$protein_id) == TRUE), ] 
+}
+rm(edb, txs)
+
+proteinID_to_ensembl <- proteinID_to_ensembl[order(proteinID_to_ensembl$protein_id), ]
+
+proteinID_to_ensembl_unique <- aggregate.data.frame(x = proteinID_to_ensembl,
+                                                  by = list(proteinID_to_ensembl$protein_id),
+                                                  FUN = function(x) paste0(x, collapse = "||"))
+rm(proteinID_to_ensembl)
+proteinID_to_ensembl <- proteinID_to_ensembl_unique[, c("Group.1", "Ensembl_GeneID")]
+colnames(proteinID_to_ensembl) <- c("Protein_ID", "Ensembl_GeneID")
+rm(proteinID_to_ensembl_unique)
+
+```
+
+
+## APID
+
+```{r eval=FALSE}
+
+# User friendly download through
+# http://cicblade.dep.usal.es:8080/APID/init.action
+# Organism Homo Sapiens
+# Level 0. all reported proteins pairs
+# filter out inter-species interactions select "YES"
+# File name 9606_noISI_Q3.txt
+
+dir.create(path = "./02_Datasets/APID/")
+
+```
+
+```{r eval=FALSE}
+
+# Apid #
+db <- read.delim("./02_Datasets/APID/9606_noISI_Q3.txt", sep = "\t", 
+                 quote = NULL, header = TRUE, stringsAsFactors = FALSE)
+
+# Mapping through uniprot
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$UniprotID_A, table = uniprot_to_ensembl$Uniprot_ID)],
+                 Ensembl_Gene_Interactor_B = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$UniprotID_B, table = uniprot_to_ensembl$Uniprot_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/APID/9606_noISI_Q3_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+## BIOGRID
+
+```{r eval=FALSE}
+
+# Download data from Biogrid by species
+dir.create(path = "./02_Datasets/BIOGRID/")
+download.file(url= "https://downloads.thebiogrid.org/Download/BioGRID/Release-Archive/BIOGRID-4.4.230/BIOGRID-ORGANISM-4.4.230.tab3.zip",
+              destfile = "./02_Datasets/BIOGRID/BIOGRID-ORGANISM-4.4.230.tab3.zip") 
+unzip(zipfile = "./02_Datasets/BIOGRID/BIOGRID-ORGANISM-4.4.230.tab3.zip", 
+      exdir = "./02_Datasets/BIOGRID/BIOGRID-ORGANISM-4.4.230.tab3")
+unlink(x = "./02_Datasets/BIOGRID/BIOGRID-ORGANISM-4.4.230.tab3.zip/", recursive = TRUE)
+
+# Keep only Homo sapiens 
+fn <- list.files(path = "./02_Datasets/BIOGRID/BIOGRID-ORGANISM-4.4.230.tab3/", full.names = TRUE)
+fn_hs <- fn[str_detect(string = fn, pattern = "Homo_sapiens")]
+fn_rm <- fn[str_detect(string = fn, pattern = "Homo_sapiens", negate = TRUE)]
+unlink(x = fn_rm)
+rm(fn, fn_rm)
+
+# BIOGRID files to system variables 
+Sys.setenv(BIOGRID_HS = fn_hs)
+Sys.setenv(BIOGRID_HS_4R = paste0(fn_hs, ".4R", sep = ""))
+
+```
+
+```{bash eval=FALSE}
+
+# Parse file to remove ' and # from file
+sed "s/'//g" $BIOGRID_HS > $BIOGRID_HS_4R
+sed "s/#//g" $BIOGRID_HS_4R > $BIOGRID_HS
+
+```
+
+```{r eval=FALSE}
+
+# Remove intermediate file
+unlink(x = paste0(fn_hs, ".4R", sep = ""))
+
+```
+
+```{r eval=FALSE}
+
+# Homo sapiens interactions from BIOGRID
+db <- read.table(file = fn_hs, sep = "\t", 
+                 header = TRUE, stringsAsFactors = FALSE)
+rm(fn_hs)
+
+# Keep only physical interactions between Homo sapiens  
+db <- db[which(db$Experimental.System.Type == "physical"), ]
+db <- db[which(db$Organism.Name.Interactor.A == "Homo sapiens"), ]
+db <- db[which(db$Organism.Name.Interactor.B == "Homo sapiens"), ]
+
+# Interactions from Entrez to Ensembl Gene IDs
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = entrez_to_ensembl$Ensembl_GeneID[match(x = db$Entrez.Gene.Interactor.A, table = entrez_to_ensembl$Entrez_ID)], 
+                 Ensembl_Gene_Interactor_B = entrez_to_ensembl$Ensembl_GeneID[match(x = db$Entrez.Gene.Interactor.B, table = entrez_to_ensembl$Entrez_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+  
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/BIOGRID/BIOGRID-ORGANISM-4.4.230.tab3_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+## BIOPLEX
+
+```{r eval=FALSE}
+
+# Data download
+dir.create(path = "./02_Datasets/BIOPLEX/")
+
+
+# Bioplex version 3.0 # 
+# Same name different file size for HCT116
+download.file(url = "https://bioplex.hms.harvard.edu/data/BioPlex_293T_Network_10K_Dec_2019.tsv",
+                            destfile = "./02_Datasets/BIOPLEX/BioPlex_293T_Network_10K_Dec_2019.tsv")
+download.file(url = "https://bioplex.hms.harvard.edu/data/BioPlex_HCT116_Network_5.5K_Dec_2019.tsv",
+              destfile = "./02_Datasets/BIOPLEX/BioPlex_HCT116_Network_5.5K_Dec_2019.tsv")
+
+```
+
+### 293T
+
+```{r eval=FALSE}
+
+# Bioplex
+db <- read.table(file = "./02_Datasets/BIOPLEX/BioPlex_293T_Network_10K_Dec_2019.tsv", sep = "\t", header = TRUE)
+
+# Remove isoform info to mapp Uniprot ID
+db$UniprotA <- sapply(str_split(string = db$UniprotA, pattern = "-"), "[", 1)
+db$UniprotB <- sapply(str_split(string = db$UniprotB, pattern = "-"), "[", 1)
+
+# Mapping through uniprot
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$UniprotA, table = uniprot_to_ensembl$Uniprot_ID)],
+                 Ensembl_Gene_Interactor_B = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$UniprotB, table = uniprot_to_ensembl$Uniprot_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/BIOPLEX/BioPlex_293T_Network_10K_Dec_2019_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+### HCT116
+
+```{r eval=FALSE}
+
+# Bioplex
+db <- read.table(file = "./02_Datasets/BIOPLEX/BioPlex_HCT116_Network_5.5K_Dec_2019.tsv", sep = "\t", header = TRUE)
+
+# Remove isoform info to mapp Uniprot ID
+db$UniprotA <- sapply(str_split(string = db$UniprotA, pattern = "-"), "[", 1)
+db$UniprotB <- sapply(str_split(string = db$UniprotB, pattern = "-"), "[", 1)
+
+# Mapping through uniprot
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$UniprotA, table = uniprot_to_ensembl$Uniprot_ID)],
+                 Ensembl_Gene_Interactor_B = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$UniprotB, table = uniprot_to_ensembl$Uniprot_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/BIOPLEX/BioPlex_HCT116_Network_5.5K_Dec_2019_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+## CORUM
+
+```{r eval=FALSE}
+
+dir.create("./02_Datasets/CORUM/")
+
+# Database is now (Feb 2024) online !
+
+# All complexes
+download.file("https://mips.helmholtz-muenchen.de/corum/download/releases/current/allComplexes.txt.zip", 
+              destfile = "./02_Datasets/CORUM/allComplex.zip")
+
+# Human complexes
+download.file("https://mips.helmholtz-muenchen.de/corum/download/releases/current/humanComplexes.txt.zip", 
+              destfile = "./02_Datasets/CORUM/humanComplexes.txt.zip")
+
+# Partial complexes
+download.file("https://mips.helmholtz-muenchen.de/corum/download/releases/current/partialComplexes.txt.zip", 
+              destfile = "./02_Datasets/CORUM/partialComplexes.txt.zip")
+
+# Unzip files
+gunzip(zipfile = "./02_Datasets/CORUM/allComplexes.txt.zip", remove = TRUE)
+gunzip(zipfile = "./02_Datasets/CORUM/humanComplexes.txt.zip", remove = TRUE)
+gunzip(zipfile = "./02_Datasets/CORUM/partialComplexes.txt.zip", remove = TRUE)
+
+Sys.setenv(CORUM_ALL = "./02_Datasets/CORUM/allComplexes.txt")
+Sys.setenv(CORUM_ALL_TMP = "./02_Datasets/CORUM/allComplexes_tmp.txt")
+
+Sys.setenv(CORUM_HUM = "./02_Datasets/CORUM/humanComplexes.txt")
+Sys.setenv(CORUM_HUM_TMP = "./02_Datasets/CORUM/humanComplexes_tmp.txt")
+
+Sys.setenv(CORUM_PAR = "./02_Datasets/CORUM/partialComplexes.txt")
+Sys.setenv(CORUM_PAR_TMP = "./02_Datasets/CORUM/partialComplexes_tmp.txt")
+
+
+```
+
+```{bash eval=FALSE}
+
+# Parse file to remove ' from file
+sed "s/'//g" $CORUM_ALL > $CORUM_ALL_TMP
+sed "s/'//g" $CORUM_HUM > $CORUM_HUM_TMP
+sed "s/'//g" $CORUM_PAR > $CORUM_PAR_TMP
+
+```
+
+```{r eval=FALSE}
+
+# Remove temporal file and rename
+unlink(x = "./02_Datasets/CORUM/allComplexes.txt")
+unlink(x = "./02_Datasets/CORUM/humanComplexes.txt")
+unlink(x = "./02_Datasets/CORUM/partialComplexes.txt")
+
+file.rename(from = "./02_Datasets/CORUM/allComplexes_tmp.txt", to = "./02_Datasets/CORUM/allComplexes.txt")
+file.rename(from = "./02_Datasets/CORUM/humanComplexes_tmp.txt", to = "./02_Datasets/CORUM/humanComplexes.txt")
+file.rename(from = "./02_Datasets/CORUM/partialComplexes_tmp.txt", to = "./02_Datasets/CORUM/partialComplexes.txt")
+
+```
+
+### All complexes
+
+```{r eval=FALSE}
+
+# CORUM
+db <- read.table(file = "./02_Datasets/CORUM/allComplexes.txt", sep = "\t", header = TRUE)
+
+# Rename column names 
+colnames(db) <- str_replace_all(string = colnames(db), pattern = "\\.", replacement = "_")
+
+# Reduce to human interactions
+db <- db[which(db$Organism == "Human"), ]
+
+# From complexes to pairs of interactions
+output <- matrix(NA, nrow = 1, ncol = 2, 
+                 dimnames = list("RemoveMe", c("Interactor_A", "Interactor_B")))
+
+for(i in 1:nrow(db)){
+  ci <- unlist(str_split(string = db$subunits_UniProt_IDs_[i], pattern = ";"))
+  if(length(ci) > 0){
+  output <- rbind(output, expand.grid("Interactor_A" = ci, "Interactor_B" = ci))  
+  }
+  rm(ci)
+}
+rm(i)
+output <- output[-1, ]
+rm(db)
+db <- output
+rm(output)
+rownames(db) <- 1:nrow(db)
+
+# Add ensembl annotations
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Interactor_A, table = uniprot_to_ensembl$Uniprot_ID)],
+                 Ensembl_Gene_Interactor_B = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Interactor_B, table = uniprot_to_ensembl$Uniprot_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/CORUM/allComplexes_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+### Human complexes
+
+```{r eval=FALSE}
+
+# CORUM
+db <- read.table(file = "./02_Datasets/CORUM/humanComplexes.txt", sep = "\t", header = TRUE)
+
+# Rename column names 
+colnames(db) <- str_replace_all(string = colnames(db), pattern = "\\.", replacement = "_")
+
+# Reduce to human interactions
+db <- db[which(db$Organism == "Human"), ]
+
+# From complexes to pairs of interactions
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("RemoveMe", c("Interactor_A", "Interactor_B")))
+for(i in 1:nrow(db)){
+  ci <- unlist(str_split(string = db$subunits_UniProt_IDs_[i], pattern = ";"))
+  if(length(ci) > 0){
+  output <- rbind(output, expand.grid("Interactor_A" = ci, "Interactor_B" = ci))  
+  }
+  rm(ci)
+}
+rm(i)
+output <- output[-1, ]
+rm(db)
+db <- output
+rm(output)
+rownames(db) <- 1:nrow(db)
+
+# Add ensembl annotations
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Interactor_A, table = uniprot_to_ensembl$Uniprot_ID)],
+                 Ensembl_Gene_Interactor_B = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Interactor_B, table = uniprot_to_ensembl$Uniprot_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/CORUM/humanComplexes_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+### Partial complexes
+
+```{r eval=FALSE}
+
+# CORUM
+db <- read.table(file = "./02_Datasets/CORUM/partialComplexes.txt", sep = "\t", header = TRUE)
+
+# Rename column names 
+colnames(db) <- str_replace_all(string = colnames(db), pattern = "\\.", replacement = "_")
+
+# Reduce to human interactions
+db <- db[which(db$Organism == "Human"), ]
+
+# From complexes to pairs of interactions
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("RemoveMe", c("Interactor_A", "Interactor_B")))
+for(i in 1:nrow(db)){
+  ci <- unlist(str_split(string = db$subunits_UniProt_IDs_[i], pattern = ";"))
+  if(length(ci) > 0){
+  output <- rbind(output, expand.grid("Interactor_A" = ci, "Interactor_B" = ci))  
+  }
+  rm(ci)
+}
+rm(i)
+output <- output[-1, ]
+rm(db)
+db <- output
+rm(output)
+rownames(db) <- 1:nrow(db)
+
+# Add ensembl annotations
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Interactor_A, table = uniprot_to_ensembl$Uniprot_ID)],
+                 Ensembl_Gene_Interactor_B = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Interactor_B, table = uniprot_to_ensembl$Uniprot_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/CORUM/partialComplexes_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+
+## HITPREDICT
+
+```{bash eval=FALSE}
+
+# Download interactions - # August 2023 last update.
+# You require to write an email to ashwini@combinatics.com to request access 
+# Just send name, affiliation and brief description of use to get access link.
+# tar zxvf ./02_Datasets/HITPREDICT/H_sapiens_interactions.txt.tgz
+# tar zxvf ./02_Datasets/HITPREDICT/HitPredict_interactions.txt.tgz
+
+```
+
+```{r eval=FALSE}
+
+# HitPredict latest
+db <- read.table(file = "./02_Datasets/HITPREDICT/H_sapiens_interactions.txt", sep = "\t", header = TRUE, skip = 4)
+
+# Mapping through uniprot
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Uniprot1, table = uniprot_to_ensembl$Uniprot_ID)],
+                 Ensembl_Gene_Interactor_B = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Uniprot2, table = uniprot_to_ensembl$Uniprot_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/HITPREDICT/H_sapiens_interactions_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+
+## HURI
+
+```{r eval=FALSE}
+
+dir.create(path = "./02_Datasets/HURI/")
+download.file(url = "http://www.interactome-atlas.org/data/HuRI.tsv",
+              destfile = "./02_Datasets/HURI/HuRI.tsv")
+
+download.file(url = "http://www.interactome-atlas.org/data/HI-union.tsv", 
+              destfile = "./02_Datasets/HURI/HI-union.tsv")
+
+download.file(url = "http://www.interactome-atlas.org/data/Test_space_screens-19.tsv", 
+              destfile = "./02_Datasets/HURI/Test_space_screens-19.tsv")
+
+download.file(url = "http://www.interactome-atlas.org/data/Lit-BM.tsv", 
+              destfile = "./02_Datasets/HURI/Lit-BM.tsv")
+
+download.file(url = "http://www.interactome-atlas.org/data/Yang-16.tsv", 
+              destfile = "./02_Datasets/HURI/Yang-16.tsv")
+
+download.file(url = "http://www.interactome-atlas.org/data/HI-II-14.tsv", 
+              destfile = "./02_Datasets/HURI/HI-II-14.tsv")
+
+download.file(url = "http://www.interactome-atlas.org/data/Venkatesan-09.tsv", 
+              destfile = "./02_Datasets/HURI/Venkatesan-09.tsv")
+
+download.file(url = "http://www.interactome-atlas.org/data/H-I-05.tsv",
+              destfile = "./02_Datasets/HURI/H-I-05.tsv")
+
+download.file(url = "http://www.interactome-atlas.org/data/Yu-11.tsv",
+              destfile = "./02_Datasets/HURI/Yu-11.tsv")
+
+fn <- list.files(path = "./02_Datasets/HURI/", full.names = TRUE)
+
+```
+
+```{r eval=FALSE}
+
+for (i in c(1:length(fn))){
+  
+  # HuRI
+  db_ens <- read.table(file = fn[i], sep = "\t", header = FALSE)
+
+  # Remove self interactions
+  mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+  if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+  rm(mark_self)
+
+  # Re-order interactions to remove duplicates
+  db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+  db_ens <- unique(db_ens_order) 
+  rm(db_ens_order)
+
+  out_name <- paste0(str_replace(string = fn[i], 
+                                 pattern = ".tsv", 
+                                 replacement = ""), 
+                     "_EnsemblGeneID.txt", collapse = "")
+
+  # Save as tab delimited file 
+  write.table(x = db_ens, 
+              file = out_name, 
+              sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+  rm(db_ens, out_name)
+}
+rm(fn, i)
+
+```
+
+
+## INTACT
+
+```{r eval=FALSE}
+
+# Data download
+dir.create(path = "./02_Datasets/INTACT/")
+download.file(url = "https://ftp.ebi.ac.uk/pub/databases/intact/current/psimitab/intact.zip",
+              destfile = "./02_Datasets/INTACT/intact.zip") 
+unzip(zipfile = "./02_Datasets/INTACT/intact.zip", exdir = "./02_Datasets/INTACT/")
+unlink(x = "./02_Datasets/INTACT/intact.zip")
+
+# INTACT files to system variables 
+Sys.setenv(INTACT = "./02_Datasets/INTACT/intact.txt")
+Sys.setenv(INTACT_TMP = "./02_Datasets/INTACT/intact_tmp.txt")
+
+```
+
+```{bash eval=FALSE}
+
+# Parse file to remove ' and # from file
+sed "s/'//g" $INTACT > $INTACT_TMP
+sed "s/#//g" $INTACT_TMP > $INTACT
+
+```
+
+```{r eval=FALSE}
+
+# Remove intermediate files
+unlink(x = "./02_Datasets/INTACT/intact_tmp.txt")
+
+```
+
+```{r eval=FALSE}
+
+# Intact db
+db <- read.table(file = "./02_Datasets/INTACT/intact.txt", sep = "\t", quote = "", header = TRUE)
+
+# Replace "." from colnames 
+colnames(db) <- str_replace_all(string = colnames(db), pattern = "\\.\\.", replacement = ".")
+colnames(db) <- str_replace_all(string = colnames(db), pattern = "\\.", replacement = "_")
+
+# Only within human interactions
+hsap <- intersect(which(str_detect(string = db$Taxid_interactor_A, pattern = "taxid:9606") == TRUE), 
+                  which(str_detect(string = db$Taxid_interactor_B, pattern = "taxid:9606") == TRUE))
+db <- db[hsap, ]
+rm(hsap)
+
+# Mapping through uniprot
+uni <- intersect(which(str_detect(string = db$ID_s_interactor_A, pattern = "uniprotkb") == TRUE),
+                 which(str_detect(string = db$ID_s_interactor_B, pattern = "uniprotkb") == TRUE))
+db <- db[uni, ]
+rm(uni)
+db$ID_s_interactor_A <- str_replace(string = db$ID_s_interactor_A, pattern = "uniprotkb:", replacement = "")
+db$ID_s_interactor_B <- str_replace(string = db$ID_s_interactor_B, pattern = "uniprotkb:", replacement = "")
+
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$ID_s_interactor_A, table = uniprot_to_ensembl$Uniprot_ID)],
+                 Ensembl_Gene_Interactor_B = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$ID_s_interactor_B, table = uniprot_to_ensembl$Uniprot_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/INTACT/intact_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+## MINT
+
+```{r eval=FALSE}
+
+# Data download
+dir.create(path = "./02_Datasets/MINT/")
+
+download.file(url = "http://www.ebi.ac.uk/Tools/webservices/psicquic/mint/webservices/current/search/query/species:human",
+              destfile = "./02_Datasets/MINT/species_human.txt")
+
+Sys.setenv(MINT = "./02_Datasets/MINT/species_human.txt")
+Sys.setenv(MINT_4R = "./02_Datasets/MINT/species_human_tmp.txt")
+
+```
+
+```{bash eval=FALSE}
+
+# Parse file to remove ' and # from file
+sed "s/'//g" $MINT > $MINT_4R
+sed "s/#//g" $MINT_4R > $MINT
+
+```
+
+```{r eval=FALSE}
+
+# Remove temporal file
+unlink(x = "./02_Datasets/MINT/species_human_tmp.txt")
+
+```
+
+```{r eval=FALSE}
+
+# Mint
+db <- read.delim("./02_Datasets/MINT/species_human.txt", sep = "\t", quote = NULL, header = FALSE, stringsAsFactors = FALSE)
+
+# Rename a few columns
+colnames(db)[1:2] <- c("Interactor_A", "Interactor_B")
+colnames(db)[10:11] <- c("Taxid_interactor_A", "Taxid_interactor_B")
+
+# Only within human interactions
+hsap <- intersect(which(str_detect(string = db$Taxid_interactor_A, pattern = "taxid:9606") == TRUE), 
+                  which(str_detect(string = db$Taxid_interactor_B, pattern = "taxid:9606") == TRUE))
+db <- db[hsap, ]
+rm(hsap)
+
+# Mapping through uniprot
+uni <- intersect(which(str_detect(string = db$Interactor_A, pattern = "uniprotkb") == TRUE),
+                 which(str_detect(string = db$Interactor_B, pattern = "uniprotkb") == TRUE))
+db <- db[uni, ]
+rm(uni)
+db$Interactor_A <- str_replace(string = db$Interactor_A, pattern = "uniprotkb:", replacement = "")
+db$Interactor_B <- str_replace(string = db$Interactor_B, pattern = "uniprotkb:", replacement = "")
+
+# Mapping through uniprot
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Interactor_A, table = uniprot_to_ensembl$Uniprot_ID)],
+                 Ensembl_Gene_Interactor_B = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Interactor_B, table = uniprot_to_ensembl$Uniprot_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/MINT/species_human_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+## REACTOME
+
+```{r eval=FALSE}
+
+# Data download
+dir.create(path = "./02_Datasets/REACTOME/")
+download.file(url = "https://reactome.org/download/current/interactors/reactome.homo_sapiens.interactions.tab-delimited.txt",
+              destfile = "./02_Datasets/REACTOME/reactome.homo_sapiens.interactions.tab-delimited.txt") 
+
+
+# REACTOME files to system variables 
+Sys.setenv(REACTOME = "./02_Datasets/REACTOME/reactome.homo_sapiens.interactions.tab-delimited.txt")
+Sys.setenv(REACTOME_TMP = "./02_Datasets/REACTOME/reactome.homo_sapiens.interactions.tab-delimited_tmp.txt")
+
+```
+
+```{bash eval=FALSE}
+
+# Parse file to remove ' and # from file
+sed "s/'//g" $REACTOME > $REACTOME_TMP
+sed "s/#//g" $REACTOME_TMP > $REACTOME
+
+```
+
+```{r eval=FALSE}
+
+# Remove intermediate files
+unlink(x = "./02_Datasets/REACTOME/reactome.homo_sapiens.interactions.tab-delimited_tmp.txt")
+
+```
+
+```{r eval=FALSE}
+
+# Reactome
+db <- read.table(file = "./02_Datasets/REACTOME/reactome.homo_sapiens.interactions.tab-delimited.txt", sep = "\t", quote = "", header = TRUE)
+
+# Replace "." from colnames 
+colnames(db) <- str_replace_all(string = colnames(db), pattern = "\\.", replacement = "_")
+
+# Mapping through uniprot
+uni <- intersect(which(str_detect(string = db$Interactor_1_uniprot_id, pattern = "uniprotkb") == TRUE),
+                 which(str_detect(string = db$Interactor_2_uniprot_id, pattern = "uniprotkb") == TRUE))
+db <- db[uni, ]
+rm(uni)
+db$Interactor_1_uniprot_id <- str_replace(string = db$Interactor_1_uniprot_id, pattern = "uniprotkb:", replacement = "")
+db$Interactor_2_uniprot_id <- str_replace(string = db$Interactor_2_uniprot_id, pattern = "uniprotkb:", replacement = "")
+
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Interactor_1_uniprot_id, table = uniprot_to_ensembl$Uniprot_ID)],
+                 Ensembl_Gene_Interactor_B = uniprot_to_ensembl$Ensembl_GeneID[match(x = db$Interactor_2_uniprot_id, table = uniprot_to_ensembl$Uniprot_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Separate into interactions with a single and multiple Ensembl Gene IDs
+db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+
+db_o2o <- setdiff(x = 1:nrow(db), y = db_m2m)
+db_m2m <- db[db_m2m, ]
+db_o2o <- db[db_o2o, ]
+
+# Expand interactions with multiple ensembl gene IDs
+output <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("ToRemove", c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")))
+for(i in c(1:nrow(db_m2m))){
+  in_a <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_A[i], pattern = "\\|\\|"))
+  in_b <- unlist(str_split(string = db_m2m$Ensembl_Gene_Interactor_B[i], pattern = "\\|\\|"))
+  ab <- expand.grid("Ensembl_Gene_Interactor_A" = in_a, "Ensembl_Gene_Interactor_B" = in_b)
+  output <- rbind(output, ab)
+}
+rm(in_a, in_b, ab, i)
+output <- output[-1, ]
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- rbind(db_o2o[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")], 
+                output)
+rm(db, db_m2m, db_o2o, output)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/REACTOME/reactome.homo_sapiens.interactions.tab-delimited_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+## STRING
+
+```{r eval=FALSE}
+
+# Data download
+dir.create(path = "./02_Datasets/STRING/")
+
+download.file(url = "https://stringdb-downloads.org/download/protein.links.v12.0/9606.protein.links.v12.0.txt.gz",
+              destfile = "./02_Datasets/STRING/9606.protein.links.v12.0.txt.gz")
+
+download.file(url = "https://stringdb-downloads.org/download/protein.physical.links.v12.0/9606.protein.physical.links.v12.0.txt.gz",
+              destfile = "./02_Datasets/STRING/9606.protein.physical.links.v12.0.txt.gz")
+
+gunzip("./02_Datasets/STRING/9606.protein.links.v12.0.txt.gz", remove = TRUE)
+gunzip("./02_Datasets/STRING/9606.protein.physical.links.v12.0.txt.gz", remove = TRUE)
+
+```
+
+### Protein links
+
+```{r eval=FALSE}
+
+# String
+db <- read.table(file = "./02_Datasets/STRING/9606.protein.links.v12.0.txt", header = TRUE)
+db$protein1 <- str_replace(string = db$protein1, pattern = "9606.", replacement = "")
+db$protein2 <- str_replace(string = db$protein2, pattern = "9606.", replacement = "")
+
+# Mapping through protein ID
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = proteinID_to_ensembl$Ensembl_GeneID[match(x = db$protein1, table = proteinID_to_ensembl$Protein_ID)],
+                 Ensembl_Gene_Interactor_B = proteinID_to_ensembl$Ensembl_GeneID[match(x = db$protein2, table = proteinID_to_ensembl$Protein_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Check if there are multiple Ensembl Gene IDs
+#db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+#                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+#length(db_m2m)
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- db[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")]
+rm(db)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/STRING/9606.protein.links.v12.0_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+### Protein physical
+
+```{r eval=FALSE}
+
+# String
+db <- read.table(file = "./02_Datasets/STRING/9606.protein.physical.links.v12.0.txt", header = TRUE)
+db$protein1 <- str_replace(string = db$protein1, pattern = "9606.", replacement = "")
+db$protein2 <- str_replace(string = db$protein2, pattern = "9606.", replacement = "")
+
+# Mapping through protein ID
+db <- data.frame(db, 
+                 Ensembl_Gene_Interactor_A = proteinID_to_ensembl$Ensembl_GeneID[match(x = db$protein1, table = proteinID_to_ensembl$Protein_ID)],
+                 Ensembl_Gene_Interactor_B = proteinID_to_ensembl$Ensembl_GeneID[match(x = db$protein2, table = proteinID_to_ensembl$Protein_ID)])
+
+# Remove interactions where either interactor cannot be mapped to Ensembl Gene IDs
+nm <- unique(c(which(is.na(db$Ensembl_Gene_Interactor_A) == TRUE),
+               which(is.na(db$Ensembl_Gene_Interactor_B) == TRUE)))
+if(length(nm)> 0){ db <- db[-nm, ]}
+rm(nm)
+
+# Check if there are multiple Ensembl Gene IDs
+#db_m2m <- unique(c(which(str_detect(string = db$Ensembl_Gene_Interactor_A, pattern = "\\|") == TRUE),
+#                   which(str_detect(string = db$Ensembl_Gene_Interactor_B, pattern = "\\|") == TRUE)))
+#length(db_m2m)
+
+# Combine interactions that map a single and multiple Ensembl Gene IDs 
+db_ens <- db[, c("Ensembl_Gene_Interactor_A", "Ensembl_Gene_Interactor_B")]
+rm(db)
+
+# Remove self interactions
+mark_self <- apply(db_ens, 1, FUN = function(x) length(unique(x)))
+if(length(which(mark_self == 1))> 0){db_ens <- db_ens[-which(mark_self == 1), ]}
+rm(mark_self)
+
+# Re-order interactions to remove duplicates
+db_ens_order <- t(apply(db_ens, 1, FUN = function(x) x[order(x)]))
+db_ens <- unique(db_ens_order) 
+rm(db_ens_order)
+
+# Convert to data frame
+rownames(db_ens) <- 1:nrow(db_ens)
+db_ens <- as.data.frame(db_ens)
+
+# Save as tab delimited file 
+write.table(x = db_ens, 
+            file = "./02_Datasets/STRING/9606.protein.physical.links.v12.0_EnsemblGeneID.txt", 
+            sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+```
+
+## Overview resources
+
+```{r}
+
+# List all protein protein interactions given in Ensembl Gene IDs
+fn <- list.files(path = "./02_Datasets/", recursive = TRUE, pattern = "EnsemblGeneID", full.names = TRUE)
+
+gfn <- sapply(str_split(string = fn, pattern = "\\/"), "[", 3)
+gfd <- str_replace(string = sapply(str_split(string = fn, pattern = "\\/"), "[", 4), 
+                   pattern = "_EnsemblGeneID.txt", replacement = "")
+
+# Relabel datasets # 
+names_datasets <- data.frame(fn_sub = c("9606_noISI_Q3", 
+                                        "BIOGRID-ORGANISM-Homo_sapiens-4.4.230.tab3",
+                                        "BioPlex_293T_Network_10K_Dec_2019", "BioPlex_HCT116_Network_5.5K_Dec_2019",
+                                        "allComplexes", "humanComplexes", "partialComplexes", 
+                                        "H_sapiens_interactions",
+                                        "H-I-05", "HI-II-14", "HI-union", "HuRI", "Lit-BM", 
+                                        "Test_space_screens-19", "Venkatesan-09", "Yang-16", "Yu-11",
+                                        "intact", 
+                                        "species_human",
+                                        "reactome.homo_sapiens.interactions.tab-delimited",
+                                        "9606.protein.links.v12.0", "9606.protein.physical.links.v12.0"),
+                             Dataset = c("APID", 
+                                         "BIOGRID", 
+                                         "BIOPLEX_293T", "BIOPLEX_HCT116",
+                                         "CORUM_All", "CORUM_human", "CORUM_partial",  
+                                         "HITPREDICT_latest",
+                                         "HURI_H-I-05", "HURI_HI-II-14", "HURI_HI-union", "HURI_HuRI", "HURI_Lit-BM",
+                                         "HURI_Test19", "HURI_Venkatesan", "HURI_Yang", "HURI_Yu",
+                                         "INTACT", 
+                                         "MINT", 
+                                         "REACTOME",
+                                         "STRING_Links", "STRING_Physical"))
+
+# Obtain an overview of each
+output <- matrix(NA, length(fn), 4, 
+                 dimnames = list(gfd, c("Genes", "Interactions", "Mean per gene", "Median per gene")))
+
+for (i in c(1:length(fn))){ 
+  fni <- read.table(file = fn[i], sep = "\t", stringsAsFactors = FALSE)
+  output[i, 1] <- length(unique(c(fni$V1, fni$V2)))
+  output[i, 2] <- nrow(fni)
+  output[i, 3] <- mean(table(c(fni$V1, fni$V2)))
+  output[i, 4] <- median(table(c(fni$V1, fni$V2)))
+}
+rm(fni, i)
+
+output <- data.frame(Source = gfn, fn_sub = gfd, output)
+output <- merge(output, names_datasets, by = "fn_sub")
+
+```
+
+```{r fig.height=4, fig.width=5.5}
+
+# Number of genes
+g1 <- ggplot(data = output, mapping = aes(x = Dataset, y = Genes, fill = Source, label = Genes)) + 
+  geom_col() + geom_text(angle = 90, size = 3) + theme_classic() +
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
+
+# Number of interactions
+g2 <- ggplot(data = output, mapping = aes(x = Dataset, y = Interactions, 
+                                          fill = Source, label = Interactions)) + 
+  geom_col() + geom_text(angle = 90, size = 3) + theme_classic() +
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
+
+# Mean interactions per gene
+g3 <- ggplot(data = output, mapping = aes(x = Dataset, y = Mean.per.gene, 
+                                          fill = Source)) + 
+  geom_col() + theme_classic() +
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
+
+# Median interactions per gene
+g4 <- ggplot(data = output, mapping = aes(x = Dataset, y = Median.per.gene, 
+                                          fill = Source)) + 
+  geom_col() + theme_classic() +
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0))
+
+# Overview
+g5 <- ggplot(data = output, mapping = aes(x = log10(Interactions), 
+                                          y = Genes, 
+                                          color = Source, 
+                                          size = Median.per.gene,
+                                          label = Dataset)) + 
+  geom_point() + 
+  geom_text_repel() + 
+  theme_classic() + 
+  scale_color_met_d(name = "Signac")
+
+g1
+g2
+g3
+g4
+g5
+
+rm(g1, g2, g3, g4, g5, output)
+
+```
+
+## Merged PPI network
+
+```{r eval=FALSE}
+
+# Create directory for merged PPI
+dir.create(path = "./03_PPIMerged/")
+
+```
+
+### All
+
+```{r}
+
+# Combine all datasets
+PPIall <- read.table(fn[1], header = FALSE)
+
+for(i in c(2:length(fn))){
+  ppi <- read.table(file = fn[i], header = FALSE)
+  PPIall <- rbind(PPIall, ppi)
+  rm(ppi)
+}
+
+# Keep only unique interactions
+PPIall <- unique(PPIall)
+
+fn_ppi <- paste0(c("./03_PPIMerged/",
+                   "MergedPPI_",
+                   paste0(sapply(str_split(date(), " "), "[", c(5, 2)), collapse = ""),
+                   # unique(gfn), # Optional to include names of datasets in output file
+                   ".txt"),
+                 collapse = "")
+
+write.table(x = PPIall, file = fn_ppi, sep = "\t", 
+            quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+rm(PPIall)
+
+```
+
+```{r}
+
+# Combine datasets except string links
+fn <- setdiff(fn, y = "./02_Datasets/STRING/9606.protein.links.v12.0_EnsemblGeneID.txt")
+
+PPIall <- read.table(fn[1], header = FALSE)
+
+for(i in c(2:length(fn))){
+  ppi <- read.table(file = fn[i], header = FALSE)
+  PPIall <- rbind(PPIall, ppi)
+  rm(ppi)
+}
+
+# Keep only unique interactions
+PPIall <- unique(PPIall)
+
+fn_ppi <- paste0(c("./03_PPIMerged/",
+                   "MergedPPI_",
+                   paste0(sapply(str_split(date(), " "), "[", c(5, 2)), collapse = ""),
+                   # unique(gfn), # Optional to include names of datasets in output file
+                   "_PIO_STRING.txt"),
+                 collapse = "")
+
+write.table(x = PPIall, file = fn_ppi, sep = "\t", 
+            quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+```
+
+
+## References
+
+1) [*APID* Alonso-Lopez, D., et al. (2019). "APID database: redefining protein-protein interaction experimental evidences and binary interactomes." Database (Oxford) 2019.](https://pubmed.ncbi.nlm.nih.gov/30715274/)
+
+2) [*APID* Alonso-Lopez, D., et al. (2016). "APID interactomes: providing proteome-based interactomes with controlled quality for multiple species and derived networks." Nucleic Acids Res 44(W1): W529-535.](https://pubmed.ncbi.nlm.nih.gov/27131791/)
+
+3) [*BIOGRID* Oughtred, R., et al. (2021). "The BioGRID database: A comprehensive biomedical resource of curated protein, genetic, and chemical interactions." Protein Sci 30(1): 187-200.](https://pubmed.ncbi.nlm.nih.gov/33070389/)
+
+4) [*BIOPLEX* Huttlin, E. L., et al. (2021). "Dual proteome-scale networks reveal cell-specific remodeling of the human interactome." Cell 184(11): 3022-3040 e3028.](https://pubmed.ncbi.nlm.nih.gov/33961781/)
+
+5) [*CORUM* Tsitsiridis, G., et al. (2023). "CORUM: the comprehensive resource of mammalian protein complexes-2022." Nucleic Acids Res 51(D1): D539-D545.](https://pubmed.ncbi.nlm.nih.gov/36382402/)
+
+6) [*CORUM* Giurgiu, M., et al. (2019). "CORUM: the comprehensive resource of mammalian protein complexes-2019." Nucleic Acids Res 47(D1): D559-D563.](https://pubmed.ncbi.nlm.nih.gov/30357367/)
+
+7) [*HITPREDICT* Lopez, Y., et al. (2015). "HitPredict version 4: comprehensive reliability scoring of physical protein-protein interactions from more than 100 species." Database (Oxford) 2015.](https://pubmed.ncbi.nlm.nih.gov/26708988/)
+
+8) [*HURI* Luck, K., et al. (2020). "A reference map of the human binary protein interactome." Nature 580(7803): 402-408.](https://pubmed.ncbi.nlm.nih.gov/32296183/)
+
+9) [*INTACT* Orchard, S., et al. (2014). "The MIntAct project--IntAct as a common curation platform for 11 molecular interaction databases." Nucleic Acids Res 42(Database issue): D358-363.](https://pubmed.ncbi.nlm.nih.gov/24234451/)
+
+10) [*MINT* Licata, L., et al. (2012). "MINT, the molecular interaction database: 2012 update." Nucleic Acids Res 40(Database issue): D857-861.](https://pubmed.ncbi.nlm.nih.gov/22096227/)
+
+11) [*REACTOME* Gillespie, M., et al. (2022). "The reactome pathway knowledgebase 2022." Nucleic Acids Res 50(D1): D687-D692.](https://pubmed.ncbi.nlm.nih.gov/34788843/)
+
+12) [*STRING* Szklarczyk, D., et al. (2023). "The STRING database in 2023: protein-protein association networks and functional enrichment analyses for any sequenced genome of interest." Nucleic Acids Res 51(D1): D638-D646.](https://pubmed.ncbi.nlm.nih.gov/36370105/)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
