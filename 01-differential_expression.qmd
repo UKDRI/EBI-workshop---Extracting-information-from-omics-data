@@ -497,7 +497,8 @@ top_genes_list <- map(results_list_entrez, ~.x[order(.x$pvalue), ]) %>%
 top_genes_list <- flatten(top_genes_list)
 ```
 
-MAGMA wants an input file with each row denoting a group to test (in single cell seq data this is typically celltypes). The row starts with the group label followed by a space and then a space seperated list of the entrez IDs, so now we get our data into that format and save each percent to a different file.
+
+MAGMA wants an input file with each row denoting a group to test (in single cell seq data this is typically celltypes). The row starts with the group label followed by a space and then a space separated list of the entrez IDs, so now we get our data into that format and save each percent to a different file.
 
 ```{r}
 # Merge list to one df and take the relevant columns
