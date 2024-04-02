@@ -47,7 +47,7 @@ library(apeglm)
 library(biomaRt)
 library(AnnotationHub)
 library(memes)
-library(GADEM)
+library(rGADEM)
 library(TFBSTools)
 library(JASPAR2024)
 ```
