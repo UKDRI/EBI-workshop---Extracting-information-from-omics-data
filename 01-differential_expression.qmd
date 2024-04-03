@@ -47,7 +47,6 @@ library(apeglm)
 library(biomaRt)
 library(AnnotationHub)
 library(memes)
-library(rGADEM)
 library(TFBSTools)
 library(JASPAR2024)
 ```
@@ -141,7 +140,6 @@ resultsNames(dds)
 ```
 
 We want genes that are overexpressed in brain compared to both lung and liver. In this set up this will be represented by genes that have a negative log2FoldChange in the comparisons named above.\
-
 \
 What kind of thresholds should we use for log2FoldChange and adjusted p value? Another visualization can help us to decide, let's have a look at volcano plots for both comparisons..\
 
@@ -222,6 +220,14 @@ length(brainliver)
 # get genes that appear in both lists
 brain_enriched = intersect(brainlung,brainliver) %>% unique()
 length(brain_enriched)
+
+# as a control set for later, lets pick out some liver enriched genes
+liver_enriched = lfcShrink(dds, coef="condition_LV_vs_BR", type="apeglm") %>%
+  as.data.frame() %>%
+  filter(padj<0.001 & log2FoldChange >= 2) %>%
+  rownames() %>% unique
+length(liver_enriched)
+
 ```
 
 ```{r}
@@ -278,18 +284,22 @@ options(scipen = 999)
 ggplot(atac_annot,aes(x=Distance.to.TSS)) + geom_density() + theme_few()
 ```
 
-Some peaks seem implausibly far from genes, let's restrict to +/- 1000 nt away - how many peaks do we lose?
+Some peaks seem implausibly far from genes, let's restrict to +/- 2000 nt away - how many peaks do we lose?
 
 ```{r}
-filt_atac_annot = atac_annot %>% filter(abs(Distance.to.TSS) <= 1000)
+filt_atac_annot = atac_annot %>% filter(abs(Distance.to.TSS) <= 2000)
 ```
 
 Are any of these ATAC peaks associated with our unique brain genes?
 
 ```{r}
-filt_atac_annot = atac_annot %>% mutate(brain_enriched=Entrez.ID %in% brain_enriched)
+filt_atac_annot = filt_atac_annot %>% mutate(brain_enriched=Entrez.ID %in% brain_enriched, liver_enriched=Entrez.ID %in% liver_enriched)
 filt_atac_annot %>%
   group_by(brain_enriched) %>% 
+  summarise(total=n())
+
+filt_atac_annot %>%
+  group_by(liver_enriched) %>% 
   summarise(total=n())
 ```
 
@@ -297,6 +307,7 @@ Let's get the sequences of these ATAC peaks to see if we can identify TF(s) that
 
 ```{r}
 brain_peaks = makeGRangesFromDataFrame(filt_atac_annot %>% filter(brain_enriched==TRUE), keep.extra.columns = TRUE)
+liver_peaks = makeGRangesFromDataFrame(filt_atac_annot %>% filter(liver_enriched==TRUE), keep.extra.columns = TRUE)
 ```
 
 How long are our peaks generally? Should we expand/reduce them?
@@ -315,19 +326,90 @@ brain_peaks = GenomicRanges::reduce(brain_peaks)
 length(brain_peaks)
 ```
 
-Let's resize our peaks to be 100bp long (+/- 50 from peak centers) and get the sequences.
+(We could resize our peaks at this point but in the manuscript they don't)\
+Here we load the mouse genome, then get sequences.
 
 ```{r}
-brain_peaks_resized = resize(brain_peaks, width = 100, fix='center')
-
 ah <- AnnotationHub()
 query(ah, c("Mus musculus","Ensembl","twobit"))
 mouse.genome = ah[["AH49773"]]
 ```
 
 ```{r}
-memes::get_sequence(brain_peaks_resized, mouse.genome)
+brain_peaks_Seqs = memes::get_sequence(brain_peaks, mouse.genome)
+liver_peaks_Seqs = memes::get_sequence(liver_peaks, mouse.genome)
+brain_peaks_Seqs 
 ```
+
+```{r}
+dreme_out <- runDreme(brain_peaks_Seqs, liver_peaks_Seqs,outdir = tempdir())
+```
+
+```{r}
+dreme_out
+```
+
+```{r}
+dreme_out$motif %>% 
+  purrr::map(universalmotif::view_motifs) %>% 
+  purrr::imap(~{
+    .x +
+      ggtitle(paste(.y, "Motifs")) +
+      theme(plot.title = element_text(hjust = 0.5, size = 14))
+  }) %>% 
+  patchwork::wrap_plots(ncol = 2) 
+
+```
+
+```{r}
+# convert the top motif to a PWM matrix
+unknown_pwm   = convert_motifs(dreme_out$motif[[1]],"TFBSTools-PWMatrix")
+
+# extract motifs corresponding to human transcription factors
+JASPAR2024 <- JASPAR2024()
+JASPAR2024 <- RSQLite::dbConnect(RSQLite::SQLite(), db(JASPAR2024))
+pwm_library = TFBSTools::getMatrixSet(
+  JASPAR2024,
+  opts=list(
+    collection = 'CORE',
+    species    = 'Mus musculus',
+    matrixtype = 'PWM'
+  ))
+
+# find the most similar motif to our motif
+pwm_sim = PWMSimilarity(
+  # JASPAR library
+  pwm_library, 
+  # out motif
+  unknown_pwm,
+  # measure for comparison
+  method = 'Pearson')
+
+# extract the motif names from the pwm library
+pwm_library_list = lapply(pwm_library, function(x){
+  data.frame(ID = ID(x), name = name(x))
+})
+
+# combine the list into one data frame
+pwm_library_dt = dplyr::bind_rows(pwm_library_list)
+
+# fetch the similarity of each motif to our unknown motif
+pwm_library_dt$similarity = pwm_sim[pwm_library_dt$ID]
+
+# find the most similar motif in the library
+pwm_library_dt = pwm_library_dt[order(-pwm_library_dt$similarity),]
+
+head(pwm_library_dt)
+```
+
+Is Nfe2l2/Nrf2 brain-specific in our RNA-Seq data?
+
+```{r}
+as.data.frame(assay(ntd)) %>%
+  filter(row.names(as.data.frame(assay(ntd))) %in% c("ENSMUSG00000015839"))
+```
+
+Maybe Nrf2 is important for blood brain barrier integrity -\> <https://www.jneurosci.org/content/27/38/10240.short>
 
 # Data for the PPI
 
