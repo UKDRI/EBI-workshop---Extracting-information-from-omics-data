@@ -4,14 +4,14 @@ Using flags:
 	--set-annot /scratch/scw1329/gmbh//magma_input_genes_10_percent.magma.txt
 	--out ./results/magma_input_genes_10_percent_pd_35k10k
 
-Start time is 10:29:08, Saturday 30 Mar 2024
+Start time is 17:10:52, Wednesday 03 Apr 2024
 
 Reading file /scratch/scw1329/gmbh/blood-brain-barrier-in-ad/03_data/994_magma_inputs/gwas_backgrounds//pd_35k10k.genes.raw... 
 	18473 genes read from file
 Loading gene-set annotation...
 Reading file /scratch/scw1329/gmbh//magma_input_genes_10_percent.magma.txt... 
 	3 gene-set definitions read from file
-	found 3 gene sets containing genes defined in genotype data (containing a total of 7096 unique genes)
+	found 3 gene sets containing genes defined in genotype data (containing a total of 5037 unique genes)
 Preparing variables for analysis...
 	truncating Z-scores 3 points below zero or 6 standard deviations above the mean
 	truncating covariate values more than 5 standard deviations from the mean
@@ -31,4 +31,4 @@ Performing regression analysis...
 	analysing single-variable models (number of models: 3)
 	writing results to file ./results/magma_input_genes_10_percent_pd_35k10k.gsa.out
 
-End time is 10:29:29, Saturday 30 Mar 2024 (elapsed: 00:00:21)
+End time is 17:11:15, Wednesday 03 Apr 2024 (elapsed: 00:00:23)

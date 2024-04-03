@@ -2,6 +2,6 @@
 # TEST_DIRECTION = one-sided, positive (set), two-sided (covar)
 # CONDITIONED_INTERNAL = gene size, gene density, inverse mac, log(gene size), log(gene density), log(inverse mac)
 VARIABLE      TYPE  NGENES         BETA     BETA_STD           SE            P
-BR_vs_LG       SET     433     0.073472     0.011147     0.043864     0.046979
-BR_vs_LV       SET     436   -0.0061117   -0.0009304     0.042586      0.55706
-LG_vs_LV       SET     429   -0.0009334  -0.00014098     0.042876      0.50868
+BR             SET     437    0.0085081    0.0012967     0.043012       0.4216
+LG             SET     429    -0.021963   -0.0033171     0.043404      0.69357
+LV             SET     427    -0.045397   -0.0068409     0.043363      0.85242
