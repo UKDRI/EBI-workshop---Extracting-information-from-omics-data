@@ -670,7 +670,7 @@ readr::write_lines(lines_to_write,
 if (length(result_list[[1]]) > 0) {
   dotplot(result_list[[1]])
 }
-dotplot(result_list$`Astrocyte-activated_module1`, split = "ONTOLOGY")
+dotplot(result_list$BR_module1, split = "ONTOLOGY")
 
 # Get semantic similarity of terms
 result_list <- map(result_list, pairwise_termsim)
