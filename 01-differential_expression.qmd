@@ -416,6 +416,7 @@ Maybe Nrf2 is important for blood brain barrier integrity -\> <https://www.jneur
 For the protein-protein interaction networks we want the differential gene lists for our various contrasts.
 
 ```{r}
+#| eval: false
 # Remind ourselves of the conditions we have
 unique(dds@colData$condition)
 # So we could get these contrast one by one:
@@ -431,6 +432,10 @@ lg_vs_lv <- results(dds, contrast = c("condition", "LG", "LV")) |>
   as.data.frame() |>
   dplyr::mutate(contrast = "LV_vs_BR") |>
   tibble::rownames_to_column(var = "gene")
+
+# Merge results to list
+results_list <- list(lg_vs_br, lv_vs_br, lg_vs_lv) |>
+  purrr::set_names(c("lg_vs_br"), "lv_vs_br", "lg_vs_lv")
 ```
 
 Note that repetitive code is generally a bad sign suggesting you should stop and consider making a more generalisable function that you can reuse. This functional code will be much easier to make changes to and reduces the chance of errors being introduced when copy pasting code around (did you notice the error in the above chunk?). A rule of thumb is to stop if you find yourself copying the same code more than 3 times, but it's always good practise to try and make your code as generalisable as possible, so you and others can more easily reuse it!
@@ -463,21 +468,57 @@ results_list <-
       tibble::rownames_to_column(var = "gene")
   }) |>
   purrr::set_names(list_names)
+```
 
-# Bind the dataframes by row
-res <- purrr::list_rbind(results_list) |>
-  # Filter to significant differential genes
-  dplyr::filter(padj < 0.05)
+Now if this was single cell seq data we'd normally do this kind of analysis per celltype, typically using a differential gene list from a case vs controls disease condition.
+In this case we have samples from different sources, so we'll combine the contrasts using the same sample (i.e. brain vs lung and brain vs liver) merging the pvals and log fold changes.
 
+Don't worry if this code is a little complex!
+
+```{r}
+# Get the levels of the condition
+conditions <- levels(dds$condition)
+
+# Function to perform pairwise comparisons and return results as a data frame
+pairwise_comparison <- function(cond1, cond2) {
+  res <- results(dds, contrast = c("condition", cond1, cond2))
+  as.data.frame(res) %>%
+    rownames_to_column(var = "gene") %>%
+    dplyr::select(gene, padj, log2FoldChange)
+}
+
+ # Function to combine results for a specific condition
+combine_condition_results <- function(condition, results_list) {
+  results_list %>%
+    reduce(~ left_join(.x, .y, by = "gene")) %>%
+    dplyr::mutate(
+      min_padj = pmin(!!!dplyr::select(., starts_with("padj"))),
+      mean_log2FoldChange = rowMeans(dplyr::select(., starts_with("log2FoldChange")))
+    ) %>%
+    dplyr::select(gene, min_padj, mean_log2FoldChange) %>%
+    arrange(min_padj) %>%
+    dplyr::mutate(condition = condition)
+}
+
+# Create a list of all pairwise comparisons for each condition
+all_comparisons <- map(conditions, ~map(setdiff(conditions, .x), pairwise_comparison, .x))
+# Combine results for each condition and rank by p-value
+condition_specific_genes <- map2(conditions, all_comparisons, combine_condition_results) |>
+  bind_rows()
+```
+
+```{r}
+res <- dplyr::filter(condition_specific_genes, min_padj < 0.05)
 # Check output
 head(res)
 str(res)
 # Get number of sig genes per contrast
-table(res$contrast)
+table(res$condition)
 
 # Save data
 readr::write_tsv(res, here::here("data/ppi/differential_genes.tsv"))
 ```
+
 
 # Data for MAGMA
 
@@ -494,28 +535,27 @@ ensembl <- useEnsembl(biomart = "ensembl", mirror = "www")
 mouse <- useDataset("mmusculus_gene_ensembl", mart = ensembl)
 human <- useDataset("hsapiens_gene_ensembl", mart = ensembl)
 
+# Convert Ensembl IDs to Entrez IDs for all the genes in the df
+genes <- unique(condition_specific_genes$gene)
+entrez_ids <-
+  getLDS(
+    attributes = c('ensembl_gene_id'),
+    filters = 'ensembl_gene_id',
+    values = genes,
+    mart = mouse,
+    attributesL = c("entrezgene_id"),
+    martL = human
+  )
+# Remove rows with NA Entrez IDs if present
+entrez_ids <- entrez_ids[!is.na(entrez_ids$entrezgene_id), ]
 
-# Convert Ensembl IDs to Entrez IDs for all the genes in the list
-results_list_entrez <- lapply(results_list, function(df) {
-  genes <- df$gene
-  entrez_ids <-
-    getLDS(
-      attributes = c('ensembl_gene_id'),
-      filters = 'ensembl_gene_id',
-      values = genes,
-      mart = mouse,
-      attributesL = c("entrezgene_id"),
-      martL = human
-    )
-  # Remove rows with NA Entrez IDs if present
-  entrez_ids <- entrez_ids[!is.na(entrez_ids$entrezgene_id),]
-  
-  # Get unique Ensembl-Entrez pairs by keeping the first occurrence
-  entrez_ids <- entrez_ids[!duplicated(entrez_ids$ensembl_gene_id),]
-  # Merge the data frames to include only genes with Entrez IDs
-  df <-
-    dplyr::left_join(df, unique(entrez_ids), by = join_by(gene == ensembl_gene_id))
-})
+# Get unique Ensembl-Entrez pairs by keeping the first occurrence
+entrez_ids <- entrez_ids[!duplicated(entrez_ids$ensembl_gene_id), ]
+# Merge the data frames to include only genes with Entrez IDs
+results_list_entrez <-
+  dplyr::left_join(condition_specific_genes,
+                   unique(entrez_ids),
+                   by = join_by(gene == ensembl_gene_id))
 ```
 
 If you get a server error when using bioMart, or it's taking too long we can manually download the current mouse ensembl IDs and their human orthologues, plus the human IDs and the corresponding entrez IDs and do it the old fashioned way...
@@ -544,23 +584,27 @@ joined_ids <- mouse_ids |>
 # Get unique Ensembl-Entrez pairs by keeping the first occurrence
 entrez_ids <- joined_ids[!duplicated(joined_ids$gene_stable_id),]
 
-results_list_entrez <- lapply(results_list, function(df) {
-  df <- df |>
+results_list_entrez <- condition_specific_genes |>
     dplyr::left_join(entrez_ids, by = join_by(gene == gene_stable_id)) |>
     dplyr::filter(!is.na(entrez_id))
-})
 ```
 
 Now we can get our top 10/5/1% of genes by pval for each contrast.
 
 ```{r}
+# Get all genes in this data - save for PPI background
+all_genes <- rownames(txi$counts)
+readr::write_lines(all_genes, here::here("data/ppi/background_genes.txt"))
 # Get the total number of genes for MAGMA
-total_gene_n <- nrow(txi$counts)
+total_gene_n <- length(all_genes)
 # Set percentages to get
 percentages <- c(10, 5, 1)
 
+results_list_entrez <- results_list_entrez |>
+  split(results_list_entrez$condition)
+
 # Rank genes and select top percentages for each comparison ordered by pval
-top_genes_list <- map(results_list_entrez, ~.x[order(.x$pvalue), ]) %>%
+top_genes_list <- map(results_list_entrez, ~.x[order(.x$min_padj), ]) %>%
   map(function(res_ordered) {
     map(percentages, function(percentage) {
       # Number of genes to get based on %
@@ -583,9 +627,11 @@ top_genes_list <- flatten(top_genes_list)
 MAGMA wants an input file with each row denoting a group to test (in single cell seq data this is typically celltypes). The row starts with the group label followed by a space and then a space separated list of the entrez IDs, so now we get our data into that format and save each percent to a different file.
 
 ```{r}
+#| results: hide
+#| message: false
 # Merge list to one df and take the relevant columns
 magma_genes <- purrr::list_rbind(top_genes_list) |>
-  dplyr::select(entrez_id, contrast, percent_genes)
+  dplyr::select(entrez_id, condition, percent_genes)
 
 head(magma_genes)
 
@@ -598,7 +644,7 @@ lapply(names(dfs_by_percent), function(percent) {
   subset_df <- dfs_by_percent[[percent]]
   
   # Split the subset by group
-  groups <- split(subset_df$entrez_id, subset_df$contrast)
+  groups <- split(subset_df$entrez_id, subset_df$condition)
   
   # Create lines for each group with the format: group_label ID1 ID2 ID3 ...
   lines <- sapply(names(groups), function(group) {

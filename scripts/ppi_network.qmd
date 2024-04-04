@@ -1595,15 +1595,3 @@ write.table(x = PPIall, file = fn_ppi, sep = "\t",
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
