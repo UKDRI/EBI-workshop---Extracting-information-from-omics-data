@@ -1,0 +1,29 @@
+# MEAN_SAMPLE_SIZE = 11226
+# TOTAL_GENES = 18369
+# TEST_DIRECTION = one-sided, positive (set), two-sided (covar)
+# CONDITIONED_INTERNAL = gene size, gene density, inverse mac, log(gene size), log(gene density), log(inverse mac)
+VARIABLE         TYPE  NGENES         BETA     BETA_STD           SE            P
+BR_module1        SET     754    0.0063932    0.0012684     0.032292      0.42153
+BR_module2        SET     505    -0.037751   -0.0061729     0.038642      0.83569
+BR_module3        SET     803  -0.00075772  -0.00015493     0.030972      0.50976
+BR_module4        SET     600     0.033639    0.0059797      0.03561      0.17242
+BR_module5        SET     218     0.034627    0.0037499     0.059099      0.27897
+BR_module6        SET     739     0.046364    0.0091108     0.032882     0.079281
+BR_module7        SET     116     0.089371    0.0070798     0.078554      0.12763
+BR_module8        SET     111     0.081049    0.0062815     0.086781      0.17517
+LG_module1        SET     519   -0.0069065   -0.0011444     0.038937      0.57039
+LG_module2        SET     577     0.010588    0.0018469     0.035637      0.38319
+LG_module3        SET     528     0.052028    0.0086933     0.038685     0.089339
+LG_module4        SET     202     0.014645    0.0015274     0.064659      0.41041
+LG_module5        SET     393     0.046091    0.0066694     0.042406      0.13855
+LG_module6        SET     484     0.048898    0.0078322     0.040173      0.11178
+LG_module7        SET     506     0.028581    0.0046779      0.03943      0.23428
+LG_module8        SET      60     0.036729    0.0020958      0.10284       0.3605
+LV_module1        SET       6      0.76213     0.013772      0.40889      0.03118
+LV_module2        SET       8     0.093375    0.0019483      0.39773       0.4072
+LV_module3        SET       6     -0.30499   -0.0055115      0.31807      0.83118
+LV_module6        SET       7    -0.051101  -0.00099738      0.31546      0.56434
+LV_module9        SET      10      0.39969    0.0093234      0.53407      0.22712
+LV_module10       SET       2       1.0433     0.010886      0.88017      0.11796
+LV_module11       SET       2     0.047143    0.0004919       0.7034      0.47328
+LV_module16       SET       2      -1.1738    -0.012248      0.67715      0.95848

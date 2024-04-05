@@ -1,14 +1,6 @@
-base
-methods
-utils
-datasets
-grDevices
-graphics
-stats
 igraph
 stringr
 DT
-parallel
 assertthat
 biomaRt
 dplyr
@@ -16,7 +8,6 @@ purrr
 future
 furrr
 clusterProfiler
-stats4
 BiocGenerics
 Biobase
 S4Vectors

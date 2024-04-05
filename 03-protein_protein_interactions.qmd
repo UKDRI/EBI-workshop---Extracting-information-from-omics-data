@@ -745,7 +745,8 @@ So there isn't really a particularly scientific or mathematical solution to assi
 So you just kind of eyeball the GO terms, hope you see a nice pattern of related terms highlighted and either pick one or create your own amalgamated term...
 
 Have a go at picking a few labels for some modules!
-Maybe have a chat with your neighbours about which to assign 
+Maybe have a chat with your neighbours about which to assign.
+As a cheeky hint, maybe go have a look at the MAGMA heatmaps of the PPI modules to decide which ones you might like to label :P
 
 ```{r}
 # Make vector of module labels
@@ -807,6 +808,3 @@ readr::write_csv(
 )
 ```
 
-# MAGMA on modules
-
-We can just use the same magma run code but provide the module gene lists this time!

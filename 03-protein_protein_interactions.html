@@ -86,7 +86,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="01-differential_expression.html"><i class="bi bi-file-code"></i>Data Prep Code</a></li><li><a href="scripts/ppi_network.html"><i class="bi bi-file-code"></i>Protein network background</a></li></ul></div></div>
+<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="01-differential_expression.html"><i class="bi bi-file-code"></i>Data Prep Code</a></li><li><a href="scripts/ppi_network.html"><i class="bi bi-file-code"></i>Protein network background</a></li><li><a href="scripts/magma_run.html"><i class="bi bi-file-code"></i>MAGMA Run Code</a></li></ul></div></div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -586,7 +586,7 @@ chr (2): Gene stable ID, Human gene stable ID
 <span id="cb66-19"><a href="#cb66-19" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(my_network)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>IGRAPH 4973212 UN-- 22651 1496213 -- 
+<pre><code>IGRAPH c7d20af UN-- 22651 1496213 -- 
 + attr: name (v/c)</code></pre>
 </div>
 <details open="" class="code-fold">
@@ -620,33 +620,38 @@ chr (2): Gene stable ID, Human gene stable ID
 <span id="cb69-21"><a href="#cb69-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PPI_Test1"</span></span>
 <span id="cb69-22"><a href="#cb69-22" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb69-23"><a href="#cb69-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-24"><a href="#cb69-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Min number of genes for a cluster</span></span>
-<span id="cb69-25"><a href="#cb69-25" aria-hidden="true" tabindex="-1"></a>min_cluster_size <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb69-26"><a href="#cb69-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-27"><a href="#cb69-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Output Louvain clusters</span></span>
-<span id="cb69-28"><a href="#cb69-28" aria-hidden="true" tabindex="-1"></a>output_file2 <span class="ot">&lt;-</span></span>
-<span id="cb69-29"><a href="#cb69-29" aria-hidden="true" tabindex="-1"></a>  here<span class="sc">::</span><span class="fu">here</span>(</span>
-<span id="cb69-30"><a href="#cb69-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/ppi"</span>,</span>
-<span id="cb69-31"><a href="#cb69-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PPI_Test1-Louvain_"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb69-24"><a href="#cb69-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Output Louvain clusters</span></span>
+<span id="cb69-25"><a href="#cb69-25" aria-hidden="true" tabindex="-1"></a>output_file2 <span class="ot">&lt;-</span></span>
+<span id="cb69-26"><a href="#cb69-26" aria-hidden="true" tabindex="-1"></a>  here<span class="sc">::</span><span class="fu">here</span>(</span>
+<span id="cb69-27"><a href="#cb69-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/ppi"</span>,</span>
+<span id="cb69-28"><a href="#cb69-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PPI_Test1-Louvain_"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here we set the minimum number of genes for clustering. Change this number to something other than 5 (I’d suggest a higher number)!</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Min number of genes for a cluster</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>min_cluster_size <span class="ot">&lt;-</span> <span class="dv">5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add test type to the output file name</span></span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(gene_attribute <span class="sc">==</span> <span class="st">"D"</span>) {</span>
-<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  output_file <span class="ot">&lt;-</span> <span class="fu">paste</span>(output_file, <span class="st">"MatchDegree"</span>, <span class="at">sep =</span> <span class="st">"_"</span>)} <span class="cf">else</span> {</span>
-<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(gene_attribute <span class="sc">==</span> <span class="st">"GL"</span>) {</span>
-<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>  output_file <span class="ot">&lt;-</span> <span class="fu">paste</span>(output_file, <span class="st">"MatchGenelength"</span>, <span class="at">sep =</span> <span class="st">"_"</span>)} <span class="cf">else</span> {</span>
-<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(gene_attribute <span class="sc">==</span> <span class="st">"B"</span>){</span>
-<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  output_file <span class="ot">&lt;-</span> <span class="fu">paste</span>(output_file, <span class="st">"MatchDegreeAndGenelength"</span>, <span class="at">sep =</span> <span class="st">"_"</span>)   </span>
-<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull out the ensembl list for each contrast</span></span>
-<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>my_gene_list <span class="ot">&lt;-</span> <span class="fu">map</span>(gene_list<span class="sc">$</span>data, <span class="sc">~</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(.x, human_gene_stable_id)) <span class="sc">|&gt;</span></span>
-<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(gene_list<span class="sc">$</span>condition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add test type to the output file name</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(gene_attribute <span class="sc">==</span> <span class="st">"D"</span>) {</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  output_file <span class="ot">&lt;-</span> <span class="fu">paste</span>(output_file, <span class="st">"MatchDegree"</span>, <span class="at">sep =</span> <span class="st">"_"</span>)} <span class="cf">else</span> {</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(gene_attribute <span class="sc">==</span> <span class="st">"GL"</span>) {</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>  output_file <span class="ot">&lt;-</span> <span class="fu">paste</span>(output_file, <span class="st">"MatchGenelength"</span>, <span class="at">sep =</span> <span class="st">"_"</span>)} <span class="cf">else</span> {</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(gene_attribute <span class="sc">==</span> <span class="st">"B"</span>){</span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>  output_file <span class="ot">&lt;-</span> <span class="fu">paste</span>(output_file, <span class="st">"MatchDegreeAndGenelength"</span>, <span class="at">sep =</span> <span class="st">"_"</span>)   </span>
+<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb71-9"><a href="#cb71-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb71-10"><a href="#cb71-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb71-11"><a href="#cb71-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb71-12"><a href="#cb71-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull out the ensembl list for each contrast</span></span>
+<span id="cb71-13"><a href="#cb71-13" aria-hidden="true" tabindex="-1"></a>my_gene_list <span class="ot">&lt;-</span> <span class="fu">map</span>(gene_list<span class="sc">$</span>data, <span class="sc">~</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(.x, human_gene_stable_id)) <span class="sc">|&gt;</span></span>
+<span id="cb71-14"><a href="#cb71-14" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(gene_list<span class="sc">$</span>condition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -655,51 +660,51 @@ chr (2): Gene stable ID, Human gene stable ID
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>process_network <span class="ot">&lt;-</span> <span class="cf">function</span>(background) {</span>
-<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Reduce my network to background population of genes tested #</span></span>
-<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  Gbg <span class="ot">&lt;-</span> <span class="fu">vertex_attr</span>(my_network)<span class="sc">$</span>name</span>
-<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>  BG <span class="ot">&lt;-</span> <span class="fu">intersect</span>(background, <span class="fu">intersect</span>(Gbg, gene_length<span class="sc">$</span>ensembl_gene_id))</span>
-<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>  my_network <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(<span class="at">graph =</span> my_network, <span class="at">vids =</span> BG)</span>
-<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create tables with the GENE attributes provided for the background population found in my network #</span></span>
-<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate and order genes according to their degree in my network #</span></span>
-<span id="cb71-9"><a href="#cb71-9" aria-hidden="true" tabindex="-1"></a>  D <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">degree</span>(my_network, <span class="at">mode =</span> <span class="st">"all"</span>)</span>
-<span id="cb71-10"><a href="#cb71-10" aria-hidden="true" tabindex="-1"></a>  D <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ensembl_gene_id =</span> <span class="fu">names</span>(D), <span class="at">degree =</span> D)</span>
-<span id="cb71-11"><a href="#cb71-11" aria-hidden="true" tabindex="-1"></a>  D <span class="ot">&lt;-</span> D[<span class="fu">order</span>(D<span class="sc">$</span>degree, <span class="at">decreasing =</span> <span class="cn">TRUE</span>),]</span>
-<span id="cb71-12"><a href="#cb71-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(D) <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(D)</span>
-<span id="cb71-13"><a href="#cb71-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb71-14"><a href="#cb71-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Order genes by Gene length #</span></span>
-<span id="cb71-15"><a href="#cb71-15" aria-hidden="true" tabindex="-1"></a>  gene_length <span class="ot">&lt;-</span> gene_length[gene_length<span class="sc">$</span>ensembl_gene_id <span class="sc">%in%</span> BG, ]</span>
-<span id="cb71-16"><a href="#cb71-16" aria-hidden="true" tabindex="-1"></a>  gene_length <span class="ot">&lt;-</span> gene_length[<span class="fu">order</span>(gene_length<span class="sc">$</span>gene_length, <span class="at">decreasing =</span> <span class="cn">TRUE</span>), ]</span>
-<span id="cb71-17"><a href="#cb71-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(gene_length) <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(gene_length)</span>
-<span id="cb71-18"><a href="#cb71-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb71-19"><a href="#cb71-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Combined score Degree and Gene length</span></span>
-<span id="cb71-20"><a href="#cb71-20" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">merge</span>(D, gene_length, <span class="at">by =</span> <span class="st">"ensembl_gene_id"</span>)</span>
-<span id="cb71-21"><a href="#cb71-21" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(B, </span>
-<span id="cb71-22"><a href="#cb71-22" aria-hidden="true" tabindex="-1"></a>                  <span class="at">scaled_degree =</span> <span class="fu">rescale01</span>(B<span class="sc">$</span>degree), </span>
-<span id="cb71-23"><a href="#cb71-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">scaled_gene_length =</span> <span class="fu">rescale01</span>(B<span class="sc">$</span>gene_length), </span>
-<span id="cb71-24"><a href="#cb71-24" aria-hidden="true" tabindex="-1"></a>                  <span class="at">score =</span> <span class="fu">rescale01</span>(B<span class="sc">$</span>degree) <span class="sc">+</span> <span class="fu">rescale01</span>(B<span class="sc">$</span>gene_length))</span>
-<span id="cb71-25"><a href="#cb71-25" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> B[<span class="fu">order</span>(B<span class="sc">$</span>score,  <span class="at">decreasing =</span> <span class="cn">TRUE</span>), ]</span>
-<span id="cb71-26"><a href="#cb71-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(B) <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(gene_length)</span>
-<span id="cb71-27"><a href="#cb71-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb71-28"><a href="#cb71-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Report numbers</span></span>
-<span id="cb71-29"><a href="#cb71-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Background population: "</span>, <span class="fu">length</span>(background), <span class="st">" genes"</span>))</span>
-<span id="cb71-30"><a href="#cb71-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Genes in the network: "</span>, <span class="fu">length</span>(Gbg), <span class="st">" genes"</span>))</span>
-<span id="cb71-31"><a href="#cb71-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(</span>
-<span id="cb71-32"><a href="#cb71-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
-<span id="cb71-33"><a href="#cb71-33" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Background population contained in the network and used for analysis: "</span>,</span>
-<span id="cb71-34"><a href="#cb71-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">length</span>(BG),</span>
-<span id="cb71-35"><a href="#cb71-35" aria-hidden="true" tabindex="-1"></a>      <span class="st">" genes"</span></span>
-<span id="cb71-36"><a href="#cb71-36" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb71-37"><a href="#cb71-37" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb71-38"><a href="#cb71-38" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb71-39"><a href="#cb71-39" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">map</span>(my_gene_list, <span class="sc">~</span> <span class="fu">length</span>(<span class="fu">intersect</span>(.x, BG)))</span>
-<span id="cb71-40"><a href="#cb71-40" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">map2</span>(x, <span class="fu">names</span>(my_gene_list), <span class="sc">~</span> <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Genes of interest contained in the network and used for analysis: "</span>, .x, <span class="st">" for condition"</span>, .y)))</span>
-<span id="cb71-41"><a href="#cb71-41" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb71-42"><a href="#cb71-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="st">"BG"</span> <span class="ot">=</span> BG, <span class="st">"network"</span> <span class="ot">=</span> my_network, <span class="st">"D"</span> <span class="ot">=</span> D, <span class="st">"B"</span> <span class="ot">=</span> B))</span>
-<span id="cb71-43"><a href="#cb71-43" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb71-44"><a href="#cb71-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb71-45"><a href="#cb71-45" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">process_network</span>(human_background)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>process_network <span class="ot">&lt;-</span> <span class="cf">function</span>(background) {</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Reduce my network to background population of genes tested #</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  Gbg <span class="ot">&lt;-</span> <span class="fu">vertex_attr</span>(my_network)<span class="sc">$</span>name</span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>  BG <span class="ot">&lt;-</span> <span class="fu">intersect</span>(background, <span class="fu">intersect</span>(Gbg, gene_length<span class="sc">$</span>ensembl_gene_id))</span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>  my_network <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(<span class="at">graph =</span> my_network, <span class="at">vids =</span> BG)</span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create tables with the GENE attributes provided for the background population found in my network #</span></span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate and order genes according to their degree in my network #</span></span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>  D <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">degree</span>(my_network, <span class="at">mode =</span> <span class="st">"all"</span>)</span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a>  D <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ensembl_gene_id =</span> <span class="fu">names</span>(D), <span class="at">degree =</span> D)</span>
+<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a>  D <span class="ot">&lt;-</span> D[<span class="fu">order</span>(D<span class="sc">$</span>degree, <span class="at">decreasing =</span> <span class="cn">TRUE</span>),]</span>
+<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(D) <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(D)</span>
+<span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb72-14"><a href="#cb72-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Order genes by Gene length #</span></span>
+<span id="cb72-15"><a href="#cb72-15" aria-hidden="true" tabindex="-1"></a>  gene_length <span class="ot">&lt;-</span> gene_length[gene_length<span class="sc">$</span>ensembl_gene_id <span class="sc">%in%</span> BG, ]</span>
+<span id="cb72-16"><a href="#cb72-16" aria-hidden="true" tabindex="-1"></a>  gene_length <span class="ot">&lt;-</span> gene_length[<span class="fu">order</span>(gene_length<span class="sc">$</span>gene_length, <span class="at">decreasing =</span> <span class="cn">TRUE</span>), ]</span>
+<span id="cb72-17"><a href="#cb72-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(gene_length) <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(gene_length)</span>
+<span id="cb72-18"><a href="#cb72-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb72-19"><a href="#cb72-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Combined score Degree and Gene length</span></span>
+<span id="cb72-20"><a href="#cb72-20" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">merge</span>(D, gene_length, <span class="at">by =</span> <span class="st">"ensembl_gene_id"</span>)</span>
+<span id="cb72-21"><a href="#cb72-21" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(B, </span>
+<span id="cb72-22"><a href="#cb72-22" aria-hidden="true" tabindex="-1"></a>                  <span class="at">scaled_degree =</span> <span class="fu">rescale01</span>(B<span class="sc">$</span>degree), </span>
+<span id="cb72-23"><a href="#cb72-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">scaled_gene_length =</span> <span class="fu">rescale01</span>(B<span class="sc">$</span>gene_length), </span>
+<span id="cb72-24"><a href="#cb72-24" aria-hidden="true" tabindex="-1"></a>                  <span class="at">score =</span> <span class="fu">rescale01</span>(B<span class="sc">$</span>degree) <span class="sc">+</span> <span class="fu">rescale01</span>(B<span class="sc">$</span>gene_length))</span>
+<span id="cb72-25"><a href="#cb72-25" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> B[<span class="fu">order</span>(B<span class="sc">$</span>score,  <span class="at">decreasing =</span> <span class="cn">TRUE</span>), ]</span>
+<span id="cb72-26"><a href="#cb72-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(B) <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(gene_length)</span>
+<span id="cb72-27"><a href="#cb72-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb72-28"><a href="#cb72-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Report numbers</span></span>
+<span id="cb72-29"><a href="#cb72-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Background population: "</span>, <span class="fu">length</span>(background), <span class="st">" genes"</span>))</span>
+<span id="cb72-30"><a href="#cb72-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Genes in the network: "</span>, <span class="fu">length</span>(Gbg), <span class="st">" genes"</span>))</span>
+<span id="cb72-31"><a href="#cb72-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(</span>
+<span id="cb72-32"><a href="#cb72-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb72-33"><a href="#cb72-33" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Background population contained in the network and used for analysis: "</span>,</span>
+<span id="cb72-34"><a href="#cb72-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">length</span>(BG),</span>
+<span id="cb72-35"><a href="#cb72-35" aria-hidden="true" tabindex="-1"></a>      <span class="st">" genes"</span></span>
+<span id="cb72-36"><a href="#cb72-36" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb72-37"><a href="#cb72-37" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb72-38"><a href="#cb72-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb72-39"><a href="#cb72-39" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">map</span>(my_gene_list, <span class="sc">~</span> <span class="fu">length</span>(<span class="fu">intersect</span>(.x, BG)))</span>
+<span id="cb72-40"><a href="#cb72-40" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">map2</span>(x, <span class="fu">names</span>(my_gene_list), <span class="sc">~</span> <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Genes of interest contained in the network and used for analysis: "</span>, .x, <span class="st">" for condition"</span>, .y)))</span>
+<span id="cb72-41"><a href="#cb72-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb72-42"><a href="#cb72-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="st">"BG"</span> <span class="ot">=</span> BG, <span class="st">"network"</span> <span class="ot">=</span> my_network, <span class="st">"D"</span> <span class="ot">=</span> D, <span class="st">"B"</span> <span class="ot">=</span> B))</span>
+<span id="cb72-43"><a href="#cb72-43" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb72-44"><a href="#cb72-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-45"><a href="#cb72-45" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">process_network</span>(human_background)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Background population: 18649 genes"
@@ -714,7 +719,7 @@ chr (2): Gene stable ID, Human gene stable ID
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">map2</span>(gene_list<span class="sc">$</span>condition, my_gene_list, <span class="sc">~</span> <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Genes of interest: "</span>, <span class="fu">length</span>(.y), <span class="st">" for condition "</span>, .x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">map2</span>(gene_list<span class="sc">$</span>condition, my_gene_list, <span class="sc">~</span> <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Genes of interest: "</span>, <span class="fu">length</span>(.y), <span class="st">" for condition "</span>, .x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Genes of interest: 5249 for condition BR"
@@ -731,59 +736,59 @@ chr (2): Gene stable ID, Human gene stable ID
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(background_population)</span>
-<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to intersect each cell type gene list with a single background list</span></span>
-<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>intersect_with_background <span class="ot">&lt;-</span> <span class="cf">function</span>(background_genes, cell_type_gene_list) {</span>
-<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(cell_type_gene_list, <span class="sc">~</span> <span class="fu">intersect</span>(.x, <span class="at">y =</span> background_genes))</span>
-<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a>my_gene_list <span class="ot">&lt;-</span> <span class="fu">intersect_with_background</span>(res<span class="sc">$</span>BG, my_gene_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(background_population)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to intersect each cell type gene list with a single background list</span></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>intersect_with_background <span class="ot">&lt;-</span> <span class="cf">function</span>(background_genes, cell_type_gene_list) {</span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(cell_type_gene_list, <span class="sc">~</span> <span class="fu">intersect</span>(.x, <span class="at">y =</span> background_genes))</span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>my_gene_list <span class="ot">&lt;-</span> <span class="fu">intersect_with_background</span>(res<span class="sc">$</span>BG, my_gene_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define subnetwork</span></span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>my_subgraph <span class="ot">&lt;-</span></span>
-<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(my_gene_list, <span class="sc">~</span> <span class="fu">induced_subgraph</span>(<span class="at">graph =</span> res<span class="sc">$</span>network, <span class="at">vids =</span> .x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define subnetwork</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>my_subgraph <span class="ot">&lt;-</span></span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(my_gene_list, <span class="sc">~</span> <span class="fu">induced_subgraph</span>(<span class="at">graph =</span> res<span class="sc">$</span>network, <span class="at">vids =</span> .x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>We can plot our networks at this stage, though the code can take a little while to run!</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot subnetwork</span></span>
-<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(my_subgraph, <span class="fu">names</span>(my_subgraph),</span>
-<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> <span class="fu">plot</span>(</span>
-<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>    .x,</span>
-<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">vertex.size =</span> <span class="dv">3</span>,</span>
-<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">vertex.color =</span> <span class="st">"darkslateblue"</span>,</span>
-<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">vertex.frame.color =</span> <span class="st">"darkslateblue"</span>,</span>
-<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">edge.color =</span> <span class="st">"grey"</span>,</span>
-<span id="cb77-9"><a href="#cb77-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">rescale =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb77-10"><a href="#cb77-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
-<span id="cb77-11"><a href="#cb77-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">"Condition: "</span>, .y)</span>
-<span id="cb77-12"><a href="#cb77-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb77-13"><a href="#cb77-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot subnetwork</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(my_subgraph, <span class="fu">names</span>(my_subgraph),</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span> <span class="fu">plot</span>(</span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>    .x,</span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">vertex.size =</span> <span class="dv">3</span>,</span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">vertex.color =</span> <span class="st">"darkslateblue"</span>,</span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">vertex.frame.color =</span> <span class="st">"darkslateblue"</span>,</span>
+<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">edge.color =</span> <span class="st">"grey"</span>,</span>
+<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">rescale =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb78-10"><a href="#cb78-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb78-11"><a href="#cb78-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">"Condition: "</span>, .y)</span>
+<span id="cb78-12"><a href="#cb78-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb78-13"><a href="#cb78-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-18-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-17-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-18-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -804,52 +809,52 @@ NULL</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>perform_permutation <span class="ot">&lt;-</span> <span class="cf">function</span>(gene_list, gene_list_name, my_network, BG, gene_attribute, m, <span class="at">num_cores =</span> <span class="fu">detectCores</span>() <span class="sc">-</span> <span class="dv">1</span>) {</span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Processing "</span>, gene_list_name))</span>
-<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Gene population of interest</span></span>
-<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>  gene_list_A <span class="ot">&lt;-</span> <span class="fu">intersect</span>(gene_list, BG)</span>
-<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sum of the edges within gene list A</span></span>
-<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a>  mynet_gl <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(my_network, <span class="at">vids =</span> gene_list_A)</span>
-<span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a>  w_mynet_gl <span class="ot">&lt;-</span> <span class="fu">edge.attributes</span>(mynet_gl)<span class="sc">$</span>weight</span>
-<span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a>  o <span class="ot">&lt;-</span> <span class="fu">sum</span>(w_mynet_gl)</span>
-<span id="cb79-12"><a href="#cb79-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb79-13"><a href="#cb79-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sum of the edges from within a random gene list size A</span></span>
-<span id="cb79-14"><a href="#cb79-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Use mclapply to parallelize the replicate function</span></span>
-<span id="cb79-15"><a href="#cb79-15" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">&lt;-</span> <span class="fu">mclapply</span>(<span class="dv">1</span><span class="sc">:</span>m, <span class="cf">function</span>(i) {</span>
-<span id="cb79-16"><a href="#cb79-16" aria-hidden="true" tabindex="-1"></a>    rnd_smpl <span class="ot">&lt;-</span> <span class="fu">similar_gene_list</span>(<span class="at">gene_list =</span> gene_list_A, <span class="at">attr_matrix =</span> gene_attribute, <span class="at">rango =</span> <span class="dv">100</span>)</span>
-<span id="cb79-17"><a href="#cb79-17" aria-hidden="true" tabindex="-1"></a>    rnd_mynet_gl <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(my_network, <span class="at">vids =</span> rnd_smpl)</span>
-<span id="cb79-18"><a href="#cb79-18" aria-hidden="true" tabindex="-1"></a>    rnd_w_mynet_gl <span class="ot">&lt;-</span> <span class="fu">edge.attributes</span>(rnd_mynet_gl)<span class="sc">$</span>weight</span>
-<span id="cb79-19"><a href="#cb79-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(rnd_w_mynet_gl)</span>
-<span id="cb79-20"><a href="#cb79-20" aria-hidden="true" tabindex="-1"></a>  }, <span class="at">mc.cores =</span> num_cores)</span>
-<span id="cb79-21"><a href="#cb79-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert the list to a vector</span></span>
-<span id="cb79-22"><a href="#cb79-22" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">&lt;-</span> <span class="fu">unlist</span>(e)</span>
-<span id="cb79-23"><a href="#cb79-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb79-24"><a href="#cb79-24" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">which</span>(e <span class="sc">&gt;=</span> o)) <span class="sc">/</span> m</span>
-<span id="cb79-25"><a href="#cb79-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb79-26"><a href="#cb79-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Write to dataframe</span></span>
-<span id="cb79-27"><a href="#cb79-27" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">"gene_list"</span> <span class="ot">=</span> gene_list_name, <span class="st">"o"</span> <span class="ot">=</span> o, <span class="st">"e"</span> <span class="ot">=</span> <span class="fu">mean</span>(e), <span class="st">"sem"</span> <span class="ot">=</span> <span class="fu">sd</span>(e), <span class="st">"p"</span> <span class="ot">=</span> p)</span>
-<span id="cb79-28"><a href="#cb79-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
-<span id="cb79-29"><a href="#cb79-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb79-30"><a href="#cb79-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Finished processing "</span>, gene_list_name))</span>
-<span id="cb79-31"><a href="#cb79-31" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb79-32"><a href="#cb79-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb79-33"><a href="#cb79-33" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
-<span id="cb79-34"><a href="#cb79-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map2</span>(</span>
-<span id="cb79-35"><a href="#cb79-35" aria-hidden="true" tabindex="-1"></a>    my_gene_list,</span>
-<span id="cb79-36"><a href="#cb79-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(my_gene_list),</span>
-<span id="cb79-37"><a href="#cb79-37" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">perform_permutation</span>(</span>
-<span id="cb79-38"><a href="#cb79-38" aria-hidden="true" tabindex="-1"></a>      .x,</span>
-<span id="cb79-39"><a href="#cb79-39" aria-hidden="true" tabindex="-1"></a>      .y,</span>
-<span id="cb79-40"><a href="#cb79-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">my_network =</span> res<span class="sc">$</span>network,</span>
-<span id="cb79-41"><a href="#cb79-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">BG =</span> res<span class="sc">$</span>BG,</span>
-<span id="cb79-42"><a href="#cb79-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">gene_attribute =</span> res[[gene_attribute]],</span>
-<span id="cb79-43"><a href="#cb79-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">m =</span> m</span>
-<span id="cb79-44"><a href="#cb79-44" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb79-45"><a href="#cb79-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb79-46"><a href="#cb79-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_rbind</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>perform_permutation <span class="ot">&lt;-</span> <span class="cf">function</span>(gene_list, gene_list_name, my_network, BG, gene_attribute, m, <span class="at">num_cores =</span> <span class="fu">detectCores</span>() <span class="sc">-</span> <span class="dv">1</span>) {</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Processing "</span>, gene_list_name))</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Gene population of interest</span></span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>  gene_list_A <span class="ot">&lt;-</span> <span class="fu">intersect</span>(gene_list, BG)</span>
+<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-8"><a href="#cb80-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sum of the edges within gene list A</span></span>
+<span id="cb80-9"><a href="#cb80-9" aria-hidden="true" tabindex="-1"></a>  mynet_gl <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(my_network, <span class="at">vids =</span> gene_list_A)</span>
+<span id="cb80-10"><a href="#cb80-10" aria-hidden="true" tabindex="-1"></a>  w_mynet_gl <span class="ot">&lt;-</span> <span class="fu">edge.attributes</span>(mynet_gl)<span class="sc">$</span>weight</span>
+<span id="cb80-11"><a href="#cb80-11" aria-hidden="true" tabindex="-1"></a>  o <span class="ot">&lt;-</span> <span class="fu">sum</span>(w_mynet_gl)</span>
+<span id="cb80-12"><a href="#cb80-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb80-13"><a href="#cb80-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sum of the edges from within a random gene list size A</span></span>
+<span id="cb80-14"><a href="#cb80-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Use mclapply to parallelize the replicate function</span></span>
+<span id="cb80-15"><a href="#cb80-15" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">&lt;-</span> <span class="fu">mclapply</span>(<span class="dv">1</span><span class="sc">:</span>m, <span class="cf">function</span>(i) {</span>
+<span id="cb80-16"><a href="#cb80-16" aria-hidden="true" tabindex="-1"></a>    rnd_smpl <span class="ot">&lt;-</span> <span class="fu">similar_gene_list</span>(<span class="at">gene_list =</span> gene_list_A, <span class="at">attr_matrix =</span> gene_attribute, <span class="at">rango =</span> <span class="dv">100</span>)</span>
+<span id="cb80-17"><a href="#cb80-17" aria-hidden="true" tabindex="-1"></a>    rnd_mynet_gl <span class="ot">&lt;-</span> <span class="fu">induced_subgraph</span>(my_network, <span class="at">vids =</span> rnd_smpl)</span>
+<span id="cb80-18"><a href="#cb80-18" aria-hidden="true" tabindex="-1"></a>    rnd_w_mynet_gl <span class="ot">&lt;-</span> <span class="fu">edge.attributes</span>(rnd_mynet_gl)<span class="sc">$</span>weight</span>
+<span id="cb80-19"><a href="#cb80-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(rnd_w_mynet_gl)</span>
+<span id="cb80-20"><a href="#cb80-20" aria-hidden="true" tabindex="-1"></a>  }, <span class="at">mc.cores =</span> num_cores)</span>
+<span id="cb80-21"><a href="#cb80-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert the list to a vector</span></span>
+<span id="cb80-22"><a href="#cb80-22" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">&lt;-</span> <span class="fu">unlist</span>(e)</span>
+<span id="cb80-23"><a href="#cb80-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-24"><a href="#cb80-24" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">which</span>(e <span class="sc">&gt;=</span> o)) <span class="sc">/</span> m</span>
+<span id="cb80-25"><a href="#cb80-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-26"><a href="#cb80-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Write to dataframe</span></span>
+<span id="cb80-27"><a href="#cb80-27" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">"gene_list"</span> <span class="ot">=</span> gene_list_name, <span class="st">"o"</span> <span class="ot">=</span> o, <span class="st">"e"</span> <span class="ot">=</span> <span class="fu">mean</span>(e), <span class="st">"sem"</span> <span class="ot">=</span> <span class="fu">sd</span>(e), <span class="st">"p"</span> <span class="ot">=</span> p)</span>
+<span id="cb80-28"><a href="#cb80-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb80-29"><a href="#cb80-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb80-30"><a href="#cb80-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Finished processing "</span>, gene_list_name))</span>
+<span id="cb80-31"><a href="#cb80-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb80-32"><a href="#cb80-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-33"><a href="#cb80-33" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
+<span id="cb80-34"><a href="#cb80-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map2</span>(</span>
+<span id="cb80-35"><a href="#cb80-35" aria-hidden="true" tabindex="-1"></a>    my_gene_list,</span>
+<span id="cb80-36"><a href="#cb80-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(my_gene_list),</span>
+<span id="cb80-37"><a href="#cb80-37" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">perform_permutation</span>(</span>
+<span id="cb80-38"><a href="#cb80-38" aria-hidden="true" tabindex="-1"></a>      .x,</span>
+<span id="cb80-39"><a href="#cb80-39" aria-hidden="true" tabindex="-1"></a>      .y,</span>
+<span id="cb80-40"><a href="#cb80-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">my_network =</span> res<span class="sc">$</span>network,</span>
+<span id="cb80-41"><a href="#cb80-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">BG =</span> res<span class="sc">$</span>BG,</span>
+<span id="cb80-42"><a href="#cb80-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">gene_attribute =</span> res[[gene_attribute]],</span>
+<span id="cb80-43"><a href="#cb80-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">m =</span> m</span>
+<span id="cb80-44"><a href="#cb80-44" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb80-45"><a href="#cb80-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb80-46"><a href="#cb80-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_rbind</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Processing BR"
@@ -862,20 +867,20 @@ NULL</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_tsv</span>(results, <span class="fu">paste0</span>(output_file, <span class="st">".tsv"</span>))</span>
-<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Add adjusted pvalues</span></span>
-<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>pval <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(results<span class="sc">$</span>p <span class="sc">==</span> <span class="dv">0</span>, <span class="fl">1e-8</span>, results<span class="sc">$</span>p)</span>
-<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>padj <span class="ot">&lt;-</span> <span class="fu">p.adjust</span>(results<span class="sc">$</span>pval, <span class="at">method =</span> <span class="st">"bonferroni"</span>)</span>
-<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Table with results of test</span></span>
-<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>  results,</span>
-<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Test if the number of interactions is higher than expected by chance"</span>,</span>
-<span id="cb81-9"><a href="#cb81-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">rownames =</span> <span class="cn">FALSE</span></span>
-<span id="cb81-10"><a href="#cb81-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"e"</span>, <span class="st">"sem"</span>, <span class="st">"padj"</span>), <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_tsv</span>(results, <span class="fu">paste0</span>(output_file, <span class="st">".tsv"</span>))</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Add adjusted pvalues</span></span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>pval <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(results<span class="sc">$</span>p <span class="sc">==</span> <span class="dv">0</span>, <span class="fl">1e-8</span>, results<span class="sc">$</span>p)</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>padj <span class="ot">&lt;-</span> <span class="fu">p.adjust</span>(results<span class="sc">$</span>pval, <span class="at">method =</span> <span class="st">"bonferroni"</span>)</span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Table with results of test</span></span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a>  results,</span>
+<span id="cb82-8"><a href="#cb82-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Test if the number of interactions is higher than expected by chance"</span>,</span>
+<span id="cb82-9"><a href="#cb82-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">rownames =</span> <span class="cn">FALSE</span></span>
+<span id="cb82-10"><a href="#cb82-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">formatRound</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"e"</span>, <span class="st">"sem"</span>, <span class="st">"padj"</span>), <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-6a9d28bb778b1a26c9b7" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-6a9d28bb778b1a26c9b7">{"x":{"filter":"none","vertical":false,"caption":"<caption>Test if the number of interactions is higher than expected by chance<\/caption>","data":[["BR","LG","LV"],[77042,55429,67],[71724.5589,51562.8833,15.7556],[1881.574520607262,1474.547395197312,4.82323491025473],[0.0027,0.0065,0],[0.0027,0.0065,1e-08],[0.0081,0.0195,3e-08]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>gene_list<\/th>\n      <th>o<\/th>\n      <th>e<\/th>\n      <th>sem<\/th>\n      <th>p<\/th>\n      <th>pval<\/th>\n      <th>padj<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6]},{"name":"gene_list","targets":0},{"name":"o","targets":1},{"name":"e","targets":2},{"name":"sem","targets":3},{"name":"p","targets":4},{"name":"pval","targets":5},{"name":"padj","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-c4d2978d2cb7e38bb015" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c4d2978d2cb7e38bb015">{"x":{"filter":"none","vertical":false,"caption":"<caption>Test if the number of interactions is higher than expected by chance<\/caption>","data":[["BR","LG","LV"],[77042,55429,67],[71749.7959,51574.9874,15.6938],[1908.780513403263,1491.095069971063,4.772097950784874],[0.0043,0.0069,0],[0.0043,0.0069,1e-08],[0.0129,0.0207,3e-08]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>gene_list<\/th>\n      <th>o<\/th>\n      <th>e<\/th>\n      <th>sem<\/th>\n      <th>p<\/th>\n      <th>pval<\/th>\n      <th>padj<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6]},{"name":"gene_list","targets":0},{"name":"o","targets":1},{"name":"e","targets":2},{"name":"sem","targets":3},{"name":"p","targets":4},{"name":"pval","targets":5},{"name":"padj","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render"],"jsHooks":[]}</script>
 </div>
 </div>
 <ul>
@@ -892,72 +897,72 @@ NULL</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>perform_louvain_clustering <span class="ot">&lt;-</span> <span class="cf">function</span>(subgraph, min_cluster_size, label) {</span>
-<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Louvain clustering</span></span>
-<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>  cl <span class="ot">&lt;-</span> <span class="fu">cluster_louvain</span>(subgraph)</span>
-<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Determine clusters smaller than the minimum size</span></span>
-<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>  cluster_sizes <span class="ot">&lt;-</span> <span class="fu">table</span>(cl<span class="sc">$</span>membership)</span>
-<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a>  not_assigned <span class="ot">&lt;-</span> <span class="fu">names</span>(cluster_sizes[cluster_sizes <span class="sc">&lt;</span> min_cluster_size])</span>
-<span id="cb82-8"><a href="#cb82-8" aria-hidden="true" tabindex="-1"></a>  num_clusters <span class="ot">&lt;-</span> <span class="fu">names</span>(cluster_sizes[cluster_sizes <span class="sc">&gt;=</span> min_cluster_size])</span>
-<span id="cb82-9"><a href="#cb82-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb82-10"><a href="#cb82-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Colour assignment</span></span>
-<span id="cb82-11"><a href="#cb82-11" aria-hidden="true" tabindex="-1"></a>  cl_cols <span class="ot">&lt;-</span> <span class="fu">rainbow</span>(<span class="at">n =</span> <span class="fu">length</span>(num_clusters))</span>
-<span id="cb82-12"><a href="#cb82-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb82-13"><a href="#cb82-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Vectorized color assignment</span></span>
-<span id="cb82-14"><a href="#cb82-14" aria-hidden="true" tabindex="-1"></a>  cl_colors <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">"grey"</span>, cl<span class="sc">$</span>vcount)</span>
-<span id="cb82-15"><a href="#cb82-15" aria-hidden="true" tabindex="-1"></a>  membership_to_color <span class="ot">&lt;-</span> <span class="fu">setNames</span>(cl_cols, num_clusters)</span>
-<span id="cb82-16"><a href="#cb82-16" aria-hidden="true" tabindex="-1"></a>  cl_colors[cl<span class="sc">$</span>membership <span class="sc">%in%</span> num_clusters] <span class="ot">&lt;-</span> membership_to_color[<span class="fu">as.character</span>(cl<span class="sc">$</span>membership[cl<span class="sc">$</span>membership <span class="sc">%in%</span> num_clusters])]</span>
-<span id="cb82-17"><a href="#cb82-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb82-18"><a href="#cb82-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Dataframe with clustering and colours</span></span>
-<span id="cb82-19"><a href="#cb82-19" aria-hidden="true" tabindex="-1"></a>  module_assignment <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">gene =</span> cl<span class="sc">$</span>names, </span>
-<span id="cb82-20"><a href="#cb82-20" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">module =</span> cl<span class="sc">$</span>membership, </span>
-<span id="cb82-21"><a href="#cb82-21" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">module_color =</span> cl_colors,</span>
-<span id="cb82-22"><a href="#cb82-22" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">label =</span> label)</span>
-<span id="cb82-23"><a href="#cb82-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb82-24"><a href="#cb82-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(module_assignment)</span>
-<span id="cb82-25"><a href="#cb82-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb82-26"><a href="#cb82-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-27"><a href="#cb82-27" aria-hidden="true" tabindex="-1"></a>module_assignment <span class="ot">&lt;-</span></span>
-<span id="cb82-28"><a href="#cb82-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map2</span>(</span>
-<span id="cb82-29"><a href="#cb82-29" aria-hidden="true" tabindex="-1"></a>    my_subgraph,</span>
-<span id="cb82-30"><a href="#cb82-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(my_subgraph),</span>
-<span id="cb82-31"><a href="#cb82-31" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">perform_louvain_clustering</span>(.x, min_cluster_size, .y)</span>
-<span id="cb82-32"><a href="#cb82-32" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>perform_louvain_clustering <span class="ot">&lt;-</span> <span class="cf">function</span>(subgraph, min_cluster_size, label) {</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Louvain clustering</span></span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>  cl <span class="ot">&lt;-</span> <span class="fu">cluster_louvain</span>(subgraph)</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Determine clusters smaller than the minimum size</span></span>
+<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a>  cluster_sizes <span class="ot">&lt;-</span> <span class="fu">table</span>(cl<span class="sc">$</span>membership)</span>
+<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a>  not_assigned <span class="ot">&lt;-</span> <span class="fu">names</span>(cluster_sizes[cluster_sizes <span class="sc">&lt;</span> min_cluster_size])</span>
+<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a>  num_clusters <span class="ot">&lt;-</span> <span class="fu">names</span>(cluster_sizes[cluster_sizes <span class="sc">&gt;=</span> min_cluster_size])</span>
+<span id="cb83-9"><a href="#cb83-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb83-10"><a href="#cb83-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Colour assignment</span></span>
+<span id="cb83-11"><a href="#cb83-11" aria-hidden="true" tabindex="-1"></a>  cl_cols <span class="ot">&lt;-</span> <span class="fu">rainbow</span>(<span class="at">n =</span> <span class="fu">length</span>(num_clusters))</span>
+<span id="cb83-12"><a href="#cb83-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb83-13"><a href="#cb83-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Vectorized color assignment</span></span>
+<span id="cb83-14"><a href="#cb83-14" aria-hidden="true" tabindex="-1"></a>  cl_colors <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">"grey"</span>, cl<span class="sc">$</span>vcount)</span>
+<span id="cb83-15"><a href="#cb83-15" aria-hidden="true" tabindex="-1"></a>  membership_to_color <span class="ot">&lt;-</span> <span class="fu">setNames</span>(cl_cols, num_clusters)</span>
+<span id="cb83-16"><a href="#cb83-16" aria-hidden="true" tabindex="-1"></a>  cl_colors[cl<span class="sc">$</span>membership <span class="sc">%in%</span> num_clusters] <span class="ot">&lt;-</span> membership_to_color[<span class="fu">as.character</span>(cl<span class="sc">$</span>membership[cl<span class="sc">$</span>membership <span class="sc">%in%</span> num_clusters])]</span>
+<span id="cb83-17"><a href="#cb83-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb83-18"><a href="#cb83-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Dataframe with clustering and colours</span></span>
+<span id="cb83-19"><a href="#cb83-19" aria-hidden="true" tabindex="-1"></a>  module_assignment <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">gene =</span> cl<span class="sc">$</span>names, </span>
+<span id="cb83-20"><a href="#cb83-20" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">module =</span> cl<span class="sc">$</span>membership, </span>
+<span id="cb83-21"><a href="#cb83-21" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">module_color =</span> cl_colors,</span>
+<span id="cb83-22"><a href="#cb83-22" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">label =</span> label)</span>
+<span id="cb83-23"><a href="#cb83-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb83-24"><a href="#cb83-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(module_assignment)</span>
+<span id="cb83-25"><a href="#cb83-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb83-26"><a href="#cb83-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-27"><a href="#cb83-27" aria-hidden="true" tabindex="-1"></a>module_assignment <span class="ot">&lt;-</span></span>
+<span id="cb83-28"><a href="#cb83-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map2</span>(</span>
+<span id="cb83-29"><a href="#cb83-29" aria-hidden="true" tabindex="-1"></a>    my_subgraph,</span>
+<span id="cb83-30"><a href="#cb83-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(my_subgraph),</span>
+<span id="cb83-31"><a href="#cb83-31" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">perform_louvain_clustering</span>(.x, min_cluster_size, .y)</span>
+<span id="cb83-32"><a href="#cb83-32" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Have a look at the network plots below. Do you notice anything about them?</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot clustering</span></span>
-<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(my_subgraph, module_assignment, <span class="sc">~</span> <span class="fu">plot</span>(.x, </span>
-<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">3</span>, </span>
-<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">as.character</span>(.y<span class="sc">$</span>module_color), </span>
-<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.frame.color =</span> .y<span class="sc">$</span>module_color, </span>
-<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.color =</span> <span class="st">"grey"</span>,  </span>
-<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">rescale =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
-<span id="cb83-9"><a href="#cb83-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">"Condition: "</span>, .y<span class="sc">$</span>label[<span class="dv">1</span>])))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot clustering</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(my_subgraph, module_assignment, <span class="sc">~</span> <span class="fu">plot</span>(.x, </span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">3</span>, </span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">as.character</span>(.y<span class="sc">$</span>module_color), </span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.frame.color =</span> .y<span class="sc">$</span>module_color, </span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.color =</span> <span class="st">"grey"</span>,  </span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">rescale =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label =</span> <span class="cn">NA</span>,</span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">"Condition: "</span>, .y<span class="sc">$</span>label[<span class="dv">1</span>])))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-22-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-21-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-22-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -973,14 +978,14 @@ NULL</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>output_file2 <span class="ot">&lt;-</span> <span class="fu">paste</span>(output_file2, <span class="fu">paste</span>(<span class="st">"MinSize"</span>), min_cluster_size, <span class="at">sep =</span> <span class="st">""</span>)</span>
-<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Save clustering as file</span></span>
-<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(<span class="fu">list_rbind</span>(module_assignment), </span>
-<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">file =</span> output_file2, </span>
-<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">col.names =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">row.names =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb85-8"><a href="#cb85-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">quote =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>output_file2 <span class="ot">&lt;-</span> <span class="fu">paste</span>(output_file2, <span class="fu">paste</span>(<span class="st">"MinSize"</span>), min_cluster_size, <span class="at">sep =</span> <span class="st">""</span>)</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Save clustering as file</span></span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(<span class="fu">list_rbind</span>(module_assignment), </span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">file =</span> output_file2, </span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">col.names =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">row.names =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb86-8"><a href="#cb86-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">quote =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -990,22 +995,22 @@ NULL</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get modules assignment</span></span>
-<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>modules <span class="ot">&lt;-</span> <span class="fu">list_rbind</span>(module_assignment)</span>
-<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get significant conditions</span></span>
-<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>sig_conditions <span class="ot">&lt;-</span> results <span class="sc">|&gt;</span></span>
-<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(p <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get modules assignment</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>modules <span class="ot">&lt;-</span> <span class="fu">list_rbind</span>(module_assignment)</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get significant conditions</span></span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>sig_conditions <span class="ot">&lt;-</span> results <span class="sc">|&gt;</span></span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(p <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>For cases where the number of genes is small, there isn’t a need to use the clusters, though there isn’t a rule of thumb for a cutoff for this. In this case there aren’t any with a very low number, but let’s have some code for skipping clustering for conditions that have less than 30 genes.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get number of genes per conditions</span></span>
-<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>gene_num <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(my_gene_list, length)</span>
-<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the gene numbers per conditions of interest</span></span>
-<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>gene_num <span class="ot">&lt;-</span> gene_num[<span class="fu">names</span>(gene_num) <span class="sc">%in%</span> sig_conditions<span class="sc">$</span>gene_list]</span>
-<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>gene_num</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get number of genes per conditions</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>gene_num <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(my_gene_list, length)</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the gene numbers per conditions of interest</span></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>gene_num <span class="ot">&lt;-</span> gene_num[<span class="fu">names</span>(gene_num) <span class="sc">%in%</span> sig_conditions<span class="sc">$</span>gene_list]</span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>gene_num</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>  BR   LG   LV 
@@ -1013,29 +1018,29 @@ NULL</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the conditions with fewer than 30 genes</span></span>
-<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>conditions_with_few_genes <span class="ot">&lt;-</span> <span class="fu">names</span>(gene_num)[gene_num <span class="sc">&lt;</span> <span class="dv">30</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the conditions with fewer than 30 genes</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>conditions_with_few_genes <span class="ot">&lt;-</span> <span class="fu">names</span>(gene_num)[gene_num <span class="sc">&lt;</span> <span class="dv">30</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>modules_sig <span class="ot">&lt;-</span> modules <span class="sc">|&gt;</span></span>
-<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filiter to sig conditions</span></span>
-<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(label <span class="sc">%in%</span> sig_conditions<span class="sc">$</span>gene_list) <span class="sc">|&gt;</span></span>
-<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Update modules for conditions with low number of genes to all be the same</span></span>
-<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">module_updated =</span> <span class="fu">case_when</span>(</span>
-<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>    label <span class="sc">%in%</span> conditions_with_few_genes <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> module</span>
-<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>modules_sig <span class="ot">&lt;-</span> modules <span class="sc">|&gt;</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filiter to sig conditions</span></span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(label <span class="sc">%in%</span> sig_conditions<span class="sc">$</span>gene_list) <span class="sc">|&gt;</span></span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Update modules for conditions with low number of genes to all be the same</span></span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">module_updated =</span> <span class="fu">case_when</span>(</span>
+<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>    label <span class="sc">%in%</span> conditions_with_few_genes <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> module</span>
+<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>gene_list <span class="ot">&lt;-</span> modules_sig <span class="sc">%&gt;%</span> </span>
-<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(label, module) <span class="sc">%&gt;%</span> </span>
-<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">nest</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>gene_list <span class="ot">&lt;-</span> modules_sig <span class="sc">%&gt;%</span> </span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(label, module) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">nest</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="go-enrichment" class="level3">
@@ -1046,24 +1051,31 @@ NULL</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>convert_to_entrez <span class="ot">&lt;-</span> <span class="cf">function</span>(gene_list) {</span>
-<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
-<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bitr</span>(gene_list, <span class="at">fromType =</span> <span class="st">"ENSEMBL"</span>, <span class="at">toType =</span> <span class="st">"ENTREZID"</span>, <span class="at">OrgDb =</span> org.Hs.eg.db)</span>
-<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
-<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"An error occurred: "</span>, e<span class="sc">$</span>message)</span>
-<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>) <span class="co"># Return NULL if the conversion fails</span></span>
-<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb92-9"><a href="#cb92-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Ensembl IDs to Entrez IDs</span></span>
-<span id="cb92-10"><a href="#cb92-10" aria-hidden="true" tabindex="-1"></a>gene_list_entrez <span class="ot">&lt;-</span> <span class="fu">map</span>(gene_list<span class="sc">$</span>data, <span class="sc">~</span> {</span>
-<span id="cb92-11"><a href="#cb92-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
-<span id="cb92-12"><a href="#cb92-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bitr</span>(.x<span class="sc">$</span>gene, <span class="at">fromType =</span> <span class="st">"ENSEMBL"</span>, <span class="at">toType =</span> <span class="st">"ENTREZID"</span>, <span class="at">OrgDb =</span> org.Hs.eg.db)</span>
-<span id="cb92-13"><a href="#cb92-13" aria-hidden="true" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
-<span id="cb92-14"><a href="#cb92-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"An error occurred: "</span>, e<span class="sc">$</span>message)</span>
-<span id="cb92-15"><a href="#cb92-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>) <span class="co"># Return NULL if the conversion fails</span></span>
-<span id="cb92-16"><a href="#cb92-16" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb92-17"><a href="#cb92-17" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>convert_to_entrez <span class="ot">&lt;-</span> <span class="cf">function</span>(gene_list) {</span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bitr</span>(gene_list, <span class="at">fromType =</span> <span class="st">"ENSEMBL"</span>, <span class="at">toType =</span> <span class="st">"ENTREZID"</span>, <span class="at">OrgDb =</span> org.Hs.eg.db)</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"An error occurred: "</span>, e<span class="sc">$</span>message)</span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>) <span class="co"># Return NULL if the conversion fails</span></span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb93-9"><a href="#cb93-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Ensembl IDs to Entrez IDs</span></span>
+<span id="cb93-10"><a href="#cb93-10" aria-hidden="true" tabindex="-1"></a>gene_list_entrez <span class="ot">&lt;-</span> <span class="fu">map</span>(gene_list<span class="sc">$</span>data, <span class="sc">~</span> {</span>
+<span id="cb93-11"><a href="#cb93-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
+<span id="cb93-12"><a href="#cb93-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bitr</span>(.x<span class="sc">$</span>gene, <span class="at">fromType =</span> <span class="st">"ENSEMBL"</span>, <span class="at">toType =</span> <span class="st">"ENTREZID"</span>, <span class="at">OrgDb =</span> org.Hs.eg.db)</span>
+<span id="cb93-13"><a href="#cb93-13" aria-hidden="true" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb93-14"><a href="#cb93-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"An error occurred: "</span>, e<span class="sc">$</span>message)</span>
+<span id="cb93-15"><a href="#cb93-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>) <span class="co"># Return NULL if the conversion fails</span></span>
+<span id="cb93-16"><a href="#cb93-16" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb93-17"><a href="#cb93-17" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stderr">
+<pre><code>'select()' returned 1:many mapping between keys and columns</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in bitr(.x$gene, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb =
+org.Hs.eg.db): 0.1% of input gene IDs are fail to map...</code></pre>
+</div>
 <div class="cell-output cell-output-stderr">
 <pre><code>'select()' returned 1:many mapping between keys and columns
 'select()' returned 1:many mapping between keys and columns
@@ -1072,20 +1084,9 @@ NULL</code></pre>
 'select()' returned 1:many mapping between keys and columns</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning in bitr(.x$gene, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb =
-org.Hs.eg.db): 0.16% of input gene IDs are fail to map...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>'select()' returned 1:many mapping between keys and columns</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>'select()' returned 1:1 mapping between keys and columns</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>'select()' returned 1:many mapping between keys and columns</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
 <pre><code>'select()' returned 1:1 mapping between keys and columns
+'select()' returned 1:1 mapping between keys and columns
+'select()' returned 1:1 mapping between keys and columns
 'select()' returned 1:1 mapping between keys and columns
 'select()' returned 1:1 mapping between keys and columns
 'select()' returned 1:1 mapping between keys and columns
@@ -1179,6 +1180,7 @@ org.Hs.eg.db): 0.16% of input gene IDs are fail to map...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>'select()' returned 1:many mapping between keys and columns
+'select()' returned 1:many mapping between keys and columns
 'select()' returned 1:many mapping between keys and columns</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
@@ -1186,19 +1188,18 @@ org.Hs.eg.db): 0.16% of input gene IDs are fail to map...</code></pre>
 org.Hs.eg.db): 0.18% of input gene IDs are fail to map...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>'select()' returned 1:many mapping between keys and columns
-'select()' returned 1:many mapping between keys and columns
-'select()' returned 1:many mapping between keys and columns</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>'select()' returned 1:1 mapping between keys and columns</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>'select()' returned 1:many mapping between keys and columns
-'select()' returned 1:many mapping between keys and columns</code></pre>
+<pre><code>'select()' returned 1:many mapping between keys and columns</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>'select()' returned 1:1 mapping between keys and columns
+'select()' returned 1:1 mapping between keys and columns</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>'select()' returned 1:many mapping between keys and columns</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>'select()' returned 1:1 mapping between keys and columns
+'select()' returned 1:1 mapping between keys and columns
 'select()' returned 1:1 mapping between keys and columns
 'select()' returned 1:1 mapping between keys and columns
 'select()' returned 1:1 mapping between keys and columns
@@ -1296,11 +1297,10 @@ org.Hs.eg.db): 0.18% of input gene IDs are fail to map...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in bitr(.x$gene, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb =
-org.Hs.eg.db): 11.11% of input gene IDs are fail to map...</code></pre>
+org.Hs.eg.db): 7.14% of input gene IDs are fail to map...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>'select()' returned 1:1 mapping between keys and columns
-'select()' returned 1:1 mapping between keys and columns
 'select()' returned 1:1 mapping between keys and columns
 'select()' returned 1:1 mapping between keys and columns
 'select()' returned 1:1 mapping between keys and columns
@@ -1338,133 +1338,95 @@ org.Hs.eg.db): 11.11% of input gene IDs are fail to map...</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out any NULL entries if there were conversion errors</span></span>
-<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a>gene_list_entrez <span class="ot">&lt;-</span> <span class="fu">map</span>(gene_list_entrez, <span class="sc">~</span> .x <span class="sc">|&gt;</span></span>
-<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>                          <span class="co"># remove any missing data</span></span>
-<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a>                          dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(ENTREZID)) <span class="sc">|&gt;</span></span>
-<span id="cb109-5"><a href="#cb109-5" aria-hidden="true" tabindex="-1"></a>                          dplyr<span class="sc">::</span><span class="fu">pull</span>(ENTREZID))</span>
-<span id="cb109-6"><a href="#cb109-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb109-7"><a href="#cb109-7" aria-hidden="true" tabindex="-1"></a>entrez_background <span class="ot">&lt;-</span> <span class="fu">convert_to_entrez</span>(gene_ensembl_ids<span class="sc">$</span>ensembl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out any NULL entries if there were conversion errors</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>gene_list_entrez <span class="ot">&lt;-</span> <span class="fu">map</span>(gene_list_entrez, <span class="sc">~</span> .x <span class="sc">|&gt;</span></span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>                          <span class="co"># remove any missing data</span></span>
+<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a>                          dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(ENTREZID)) <span class="sc">|&gt;</span></span>
+<span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a>                          dplyr<span class="sc">::</span><span class="fu">pull</span>(ENTREZID))</span>
+<span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-7"><a href="#cb108-7" aria-hidden="true" tabindex="-1"></a>entrez_background <span class="ot">&lt;-</span> <span class="fu">convert_to_entrez</span>(gene_ensembl_ids<span class="sc">$</span>ensembl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>An error occurred: object 'gene_ensembl_ids' not found</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save file - it takes a while to compute</span></span>
-<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span></span>
-<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a>  here<span class="sc">::</span><span class="fu">here</span>(</span>
-<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/ppi/module_go_terms.rds"</span></span>
-<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(file)) {</span>
-<span id="cb111-8"><a href="#cb111-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(multisession, <span class="at">workers =</span> <span class="fu">detectCores</span>() <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb111-9"><a href="#cb111-9" aria-hidden="true" tabindex="-1"></a>  result_list <span class="ot">&lt;-</span> <span class="fu">future_map</span>(</span>
-<span id="cb111-10"><a href="#cb111-10" aria-hidden="true" tabindex="-1"></a>    gene_list_entrez,</span>
-<span id="cb111-11"><a href="#cb111-11" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">enrichGO</span>(</span>
-<span id="cb111-12"><a href="#cb111-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">gene          =</span> .x,</span>
-<span id="cb111-13"><a href="#cb111-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">OrgDb         =</span> org.Hs.eg.db,</span>
-<span id="cb111-14"><a href="#cb111-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">keyType       =</span> <span class="st">"ENTREZID"</span>,</span>
-<span id="cb111-15"><a href="#cb111-15" aria-hidden="true" tabindex="-1"></a>      <span class="co"># "BP" for biological process, "MF" for molecular function, "CC" for cellular component</span></span>
-<span id="cb111-16"><a href="#cb111-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">ont           =</span> <span class="st">"ALL"</span>,</span>
-<span id="cb111-17"><a href="#cb111-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">universe      =</span> entrez_background,</span>
-<span id="cb111-18"><a href="#cb111-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,</span>
-<span id="cb111-19"><a href="#cb111-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">qvalueCutoff  =</span> <span class="fl">0.05</span>,</span>
-<span id="cb111-20"><a href="#cb111-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">readable      =</span> <span class="cn">TRUE</span></span>
-<span id="cb111-21"><a href="#cb111-21" aria-hidden="true" tabindex="-1"></a>    ), <span class="at">.options =</span> <span class="fu">furrr_options</span>(<span class="at">seed =</span> <span class="dv">123</span>)</span>
-<span id="cb111-22"><a href="#cb111-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb111-23"><a href="#cb111-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">paste0</span>(gene_list<span class="sc">$</span>label, <span class="st">"_module"</span>, gene_list<span class="sc">$</span>module))</span>
-<span id="cb111-24"><a href="#cb111-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb111-25"><a href="#cb111-25" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_rds</span>(result_list, file)</span>
-<span id="cb111-26"><a href="#cb111-26" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb111-27"><a href="#cb111-27" aria-hidden="true" tabindex="-1"></a>  result_list <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_rds</span>(file)</span>
-<span id="cb111-28"><a href="#cb111-28" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb111-29"><a href="#cb111-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb111-30"><a href="#cb111-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb111-31"><a href="#cb111-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove any NULL entries</span></span>
-<span id="cb111-32"><a href="#cb111-32" aria-hidden="true" tabindex="-1"></a>result_list <span class="ot">&lt;-</span> result_list[<span class="sc">!</span><span class="fu">sapply</span>(result_list, is.null)]</span>
-<span id="cb111-33"><a href="#cb111-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Assert that there are no nulls in list</span></span>
-<span id="cb111-34"><a href="#cb111-34" aria-hidden="true" tabindex="-1"></a>assertthat<span class="sc">::</span><span class="fu">see_if</span>(<span class="fu">sum</span>(<span class="fu">map_lgl</span>(result_list, is.null)) <span class="sc">==</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save file - it takes a while to compute</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span></span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>  here<span class="sc">::</span><span class="fu">here</span>(</span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/ppi/module_go_terms.rds"</span></span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-7"><a href="#cb110-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(file)) {</span>
+<span id="cb110-8"><a href="#cb110-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(multisession, <span class="at">workers =</span> <span class="fu">detectCores</span>() <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb110-9"><a href="#cb110-9" aria-hidden="true" tabindex="-1"></a>  result_list <span class="ot">&lt;-</span> <span class="fu">future_map</span>(</span>
+<span id="cb110-10"><a href="#cb110-10" aria-hidden="true" tabindex="-1"></a>    gene_list_entrez,</span>
+<span id="cb110-11"><a href="#cb110-11" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">enrichGO</span>(</span>
+<span id="cb110-12"><a href="#cb110-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">gene          =</span> .x,</span>
+<span id="cb110-13"><a href="#cb110-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">OrgDb         =</span> org.Hs.eg.db,</span>
+<span id="cb110-14"><a href="#cb110-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">keyType       =</span> <span class="st">"ENTREZID"</span>,</span>
+<span id="cb110-15"><a href="#cb110-15" aria-hidden="true" tabindex="-1"></a>      <span class="co"># "BP" for biological process, "MF" for molecular function, "CC" for cellular component</span></span>
+<span id="cb110-16"><a href="#cb110-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">ont           =</span> <span class="st">"ALL"</span>,</span>
+<span id="cb110-17"><a href="#cb110-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">universe      =</span> entrez_background,</span>
+<span id="cb110-18"><a href="#cb110-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,</span>
+<span id="cb110-19"><a href="#cb110-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">qvalueCutoff  =</span> <span class="fl">0.05</span>,</span>
+<span id="cb110-20"><a href="#cb110-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">readable      =</span> <span class="cn">TRUE</span></span>
+<span id="cb110-21"><a href="#cb110-21" aria-hidden="true" tabindex="-1"></a>    ), <span class="at">.options =</span> <span class="fu">furrr_options</span>(<span class="at">seed =</span> <span class="dv">123</span>)</span>
+<span id="cb110-22"><a href="#cb110-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb110-23"><a href="#cb110-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">paste0</span>(gene_list<span class="sc">$</span>label, <span class="st">"_module"</span>, gene_list<span class="sc">$</span>module))</span>
+<span id="cb110-24"><a href="#cb110-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb110-25"><a href="#cb110-25" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_rds</span>(result_list, file)</span>
+<span id="cb110-26"><a href="#cb110-26" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb110-27"><a href="#cb110-27" aria-hidden="true" tabindex="-1"></a>  result_list <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_rds</span>(file)</span>
+<span id="cb110-28"><a href="#cb110-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb110-29"><a href="#cb110-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-30"><a href="#cb110-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-31"><a href="#cb110-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove any NULL entries</span></span>
+<span id="cb110-32"><a href="#cb110-32" aria-hidden="true" tabindex="-1"></a>result_list <span class="ot">&lt;-</span> result_list[<span class="sc">!</span><span class="fu">sapply</span>(result_list, is.null)]</span>
+<span id="cb110-33"><a href="#cb110-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Assert that there are no nulls in list</span></span>
+<span id="cb110-34"><a href="#cb110-34" aria-hidden="true" tabindex="-1"></a>assertthat<span class="sc">::</span><span class="fu">see_if</span>(<span class="fu">sum</span>(<span class="fu">map_lgl</span>(result_list, is.null)) <span class="sc">==</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the list to keep only elements where the 'result' slot has rows</span></span>
-<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>result_list <span class="ot">&lt;-</span> result_list[<span class="fu">sapply</span>(result_list, <span class="cf">function</span>(x) <span class="fu">nrow</span>(x<span class="sc">@</span>result) <span class="sc">&gt;</span> <span class="dv">0</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the list to keep only elements where the 'result' slot has rows</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>result_list <span class="ot">&lt;-</span> result_list[<span class="fu">sapply</span>(result_list, <span class="cf">function</span>(x) <span class="fu">nrow</span>(x<span class="sc">@</span>result) <span class="sc">&gt;</span> <span class="dv">0</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
 <section id="save-for-magma" class="level3">
 <h3 class="anchored" data-anchor-id="save-for-magma">Save for MAGMA</h3>
-<p>Whilst we’ve got the entrez IDs handy we may as well save the lists to be run through MAGMA!</p>
+<p>Whilst we’ve got the entrez IDs handy we may as well save the lists to be run through MAGMA! Let’s exclude modules that only have one gene in them as well.</p>
+<p>Have a think about why we might do this and write your thoughts below</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to MAGMA</span></span>
-<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(gene_list_entrez) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(gene_list<span class="sc">$</span>label, <span class="st">"_module"</span>, gene_list<span class="sc">$</span>module)</span>
-<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(gene_list_entrez)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to MAGMA</span></span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(gene_list_entrez) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(gene_list<span class="sc">$</span>label, <span class="st">"_module"</span>, gene_list<span class="sc">$</span>module)</span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-4"><a href="#cb113-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude one gene modules</span></span>
+<span id="cb113-5"><a href="#cb113-5" aria-hidden="true" tabindex="-1"></a>gene_list_entrez <span class="ot">&lt;-</span> gene_list_entrez[<span class="fu">map_dbl</span>(gene_list<span class="sc">$</span>data, nrow) <span class="sc">!=</span> <span class="dv">1</span>]</span>
+<span id="cb113-6"><a href="#cb113-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(gene_list_entrez)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>  [1] "BR_module1"  "BR_module2"  "BR_module3"  "BR_module4"  "BR_module5" 
-  [6] "BR_module6"  "BR_module7"  "BR_module8"  "BR_module9"  "BR_module10"
- [11] "BR_module11" "BR_module12" "BR_module13" "BR_module14" "BR_module15"
- [16] "BR_module16" "BR_module17" "BR_module18" "BR_module19" "BR_module20"
- [21] "BR_module21" "BR_module22" "BR_module23" "BR_module24" "BR_module25"
- [26] "BR_module26" "BR_module27" "BR_module28" "BR_module29" "BR_module30"
- [31] "BR_module31" "BR_module32" "BR_module33" "BR_module34" "BR_module35"
- [36] "BR_module36" "BR_module37" "BR_module38" "BR_module39" "BR_module40"
- [41] "BR_module41" "BR_module42" "BR_module43" "BR_module44" "BR_module45"
- [46] "BR_module46" "BR_module47" "BR_module48" "BR_module49" "BR_module50"
- [51] "BR_module51" "BR_module52" "BR_module53" "BR_module54" "BR_module55"
- [56] "BR_module56" "BR_module57" "BR_module58" "BR_module59" "BR_module60"
- [61] "BR_module61" "BR_module62" "BR_module63" "BR_module64" "BR_module65"
- [66] "BR_module66" "BR_module67" "BR_module68" "BR_module69" "BR_module70"
- [71] "BR_module71" "BR_module72" "BR_module73" "BR_module74" "BR_module75"
- [76] "BR_module76" "BR_module77" "BR_module78" "BR_module79" "BR_module80"
- [81] "BR_module81" "BR_module82" "BR_module83" "BR_module84" "BR_module85"
- [86] "BR_module86" "BR_module87" "BR_module88" "BR_module89" "BR_module90"
- [91] "BR_module91" "BR_module92" "BR_module93" "BR_module94" "BR_module95"
- [96] "BR_module96" "BR_module97" "BR_module98" "BR_module99" "LG_module1" 
-[101] "LG_module2"  "LG_module3"  "LG_module4"  "LG_module5"  "LG_module6" 
-[106] "LG_module7"  "LG_module8"  "LG_module9"  "LG_module10" "LG_module11"
-[111] "LG_module12" "LG_module13" "LG_module14" "LG_module15" "LG_module16"
-[116] "LG_module17" "LG_module18" "LG_module19" "LG_module20" "LG_module21"
-[121] "LG_module22" "LG_module23" "LG_module24" "LG_module25" "LG_module26"
-[126] "LG_module27" "LG_module28" "LG_module29" "LG_module30" "LG_module31"
-[131] "LG_module32" "LG_module33" "LG_module34" "LG_module35" "LG_module36"
-[136] "LG_module37" "LG_module38" "LG_module39" "LG_module40" "LG_module41"
-[141] "LG_module42" "LG_module43" "LG_module44" "LG_module45" "LG_module46"
-[146] "LG_module47" "LG_module48" "LG_module49" "LG_module50" "LG_module51"
-[151] "LG_module52" "LG_module53" "LG_module54" "LG_module55" "LG_module56"
-[156] "LG_module57" "LG_module58" "LG_module59" "LG_module60" "LG_module61"
-[161] "LG_module62" "LG_module63" "LG_module64" "LG_module65" "LG_module66"
-[166] "LG_module67" "LG_module68" "LG_module69" "LG_module70" "LG_module71"
-[171] "LG_module72" "LG_module73" "LG_module74" "LG_module75" "LG_module76"
-[176] "LG_module77" "LG_module78" "LG_module79" "LG_module80" "LG_module81"
-[181] "LG_module82" "LG_module83" "LG_module84" "LG_module85" "LG_module86"
-[186] "LG_module87" "LG_module88" "LG_module89" "LG_module90" "LG_module91"
-[191] "LG_module92" "LG_module93" "LG_module94" "LG_module95" "LG_module96"
-[196] "LG_module97" "LV_module1"  "LV_module2"  "LV_module3"  "LV_module4" 
-[201] "LV_module5"  "LV_module6"  "LV_module7"  "LV_module8"  "LV_module9" 
-[206] "LV_module10" "LV_module11" "LV_module12" "LV_module13" "LV_module14"
-[211] "LV_module15" "LV_module16" "LV_module17" "LV_module18" "LV_module19"
-[216] "LV_module20" "LV_module21" "LV_module22" "LV_module23" "LV_module24"
-[221] "LV_module25" "LV_module26" "LV_module27" "LV_module28" "LV_module29"
-[226] "LV_module30" "LV_module31" "LV_module32" "LV_module33" "LV_module34"
-[231] "LV_module35" "LV_module36" "LV_module37" "LV_module38"</code></pre>
+<pre><code> [1] "BR_module1"  "BR_module2"  "BR_module3"  "BR_module4"  "BR_module5" 
+ [6] "BR_module6"  "BR_module7"  "BR_module9"  "BR_module16" "LG_module1" 
+[11] "LG_module2"  "LG_module3"  "LG_module4"  "LG_module5"  "LG_module6" 
+[16] "LG_module7"  "LG_module16" "LV_module1"  "LV_module2"  "LV_module3" 
+[21] "LV_module6"  "LV_module9"  "LV_module10" "LV_module15"</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a character vector where each element is a single string</span></span>
-<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>lines_to_write <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">names</span>(gene_list_entrez), <span class="cf">function</span>(name) {</span>
-<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste</span>(name, <span class="fu">paste</span>(gene_list_entrez[[name]], <span class="at">collapse =</span> <span class="st">" "</span>))</span>
-<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>}, <span class="at">USE.NAMES =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb116-6"><a href="#cb116-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the character vector to a file</span></span>
-<span id="cb116-7"><a href="#cb116-7" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_lines</span>(lines_to_write, </span>
-<span id="cb116-8"><a href="#cb116-8" aria-hidden="true" tabindex="-1"></a>                   here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/ppi/ppi_sig_modules.magma.txt"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a character vector where each element is a single string</span></span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>lines_to_write <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">names</span>(gene_list_entrez), <span class="cf">function</span>(name) {</span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste</span>(name, <span class="fu">paste</span>(gene_list_entrez[[name]], <span class="at">collapse =</span> <span class="st">" "</span>))</span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a>}, <span class="at">USE.NAMES =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the character vector to a file</span></span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_lines</span>(lines_to_write, </span>
+<span id="cb115-8"><a href="#cb115-8" aria-hidden="true" tabindex="-1"></a>                   here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/ppi/ppi_sig_modules.magma.txt"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -1474,34 +1436,34 @@ org.Hs.eg.db): 11.11% of input gene IDs are fail to map...</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the first module's GO enrichment result as an example</span></span>
-<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(result_list[[<span class="dv">1</span>]]) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dotplot</span>(result_list[[<span class="dv">1</span>]])</span>
-<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the first module's GO enrichment result as an example</span></span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(result_list[[<span class="dv">1</span>]]) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dotplot</span>(result_list[[<span class="dv">1</span>]])</span>
+<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(result_list<span class="sc">$</span>BR_module1, <span class="at">split =</span> <span class="st">"ONTOLOGY"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(result_list<span class="sc">$</span>BR_module1, <span class="at">split =</span> <span class="st">"ONTOLOGY"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-28-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-29-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get semantic similarity of terms</span></span>
-<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>result_list <span class="ot">&lt;-</span> <span class="fu">map</span>(result_list, pairwise_termsim)</span>
-<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a><span class="fu">treeplot</span>(result_list<span class="sc">$</span>BR_module2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get semantic similarity of terms</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>result_list <span class="ot">&lt;-</span> <span class="fu">map</span>(result_list, pairwise_termsim)</span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a><span class="fu">treeplot</span>(result_list<span class="sc">$</span>BR_module2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
@@ -1552,20 +1514,20 @@ org.Hs.eg.db): 11.11% of input gene IDs are fail to map...</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-28-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-29-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lots of the modules are just a single gene, it doesn't make sense to assign</span></span>
-<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a GO term to them, one should probably just apply the gene name as a label</span></span>
-<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a>result_list_subset <span class="ot">=</span> result_list[<span class="fu">sapply</span>(result_list, <span class="cf">function</span>(x) <span class="fu">length</span>(x<span class="sc">@</span>gene) <span class="sc">&gt;</span> <span class="dv">1</span>)]</span>
-<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a safe version of your treeplot function that returns NULL on error</span></span>
-<span id="cb121-6"><a href="#cb121-6" aria-hidden="true" tabindex="-1"></a>safe_treeplot <span class="ot">&lt;-</span> <span class="fu">possibly</span>(treeplot, <span class="at">otherwise =</span> <span class="cn">NULL</span>)</span>
-<span id="cb121-7"><a href="#cb121-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Use map with the safe version of the function</span></span>
-<span id="cb121-8"><a href="#cb121-8" aria-hidden="true" tabindex="-1"></a>treeplots <span class="ot">&lt;-</span> <span class="fu">map</span>(result_list_subset, safe_treeplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lots of the modules are just a single gene, it doesn't make sense to assign</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a GO term to them, one should probably just apply the gene name as a label</span></span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>result_list_subset <span class="ot">=</span> result_list[<span class="fu">sapply</span>(result_list, <span class="cf">function</span>(x) <span class="fu">length</span>(x<span class="sc">@</span>gene) <span class="sc">&gt;</span> <span class="dv">1</span>)]</span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a safe version of your treeplot function that returns NULL on error</span></span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a>safe_treeplot <span class="ot">&lt;-</span> <span class="fu">possibly</span>(treeplot, <span class="at">otherwise =</span> <span class="cn">NULL</span>)</span>
+<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Use map with the safe version of the function</span></span>
+<span id="cb120-8"><a href="#cb120-8" aria-hidden="true" tabindex="-1"></a>treeplots <span class="ot">&lt;-</span> <span class="fu">map</span>(result_list_subset, safe_treeplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>! # Invaild edge matrix for &lt;phylo&gt;. A &lt;tbl_df&gt; is returned.
@@ -2641,40 +2603,40 @@ org.Hs.eg.db): 11.11% of input gene IDs are fail to map...</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove any NULL entries</span></span>
-<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a>treeplots <span class="ot">&lt;-</span> treeplots[<span class="sc">!</span><span class="fu">sapply</span>(treeplots, is.null)]</span>
-<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Assert that there are no nulls in list</span></span>
-<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>assertthat<span class="sc">::</span><span class="fu">see_if</span>(<span class="fu">sum</span>(<span class="fu">map_lgl</span>(treeplots, is.null)) <span class="sc">==</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove any NULL entries</span></span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>treeplots <span class="ot">&lt;-</span> treeplots[<span class="sc">!</span><span class="fu">sapply</span>(treeplots, is.null)]</span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Assert that there are no nulls in list</span></span>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>assertthat<span class="sc">::</span><span class="fu">see_if</span>(<span class="fu">sum</span>(<span class="fu">map_lgl</span>(treeplots, is.null)) <span class="sc">==</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>treeplots <span class="ot">&lt;-</span> <span class="fu">map2</span>(treeplots, <span class="fu">names</span>(treeplots), <span class="sc">~</span> .x <span class="sc">+</span> <span class="fu">ggtitle</span>(.y))</span>
-<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Make patchwork of plots per condition</span></span>
-<span id="cb125-4"><a href="#cb125-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract unique cell types from the plot names</span></span>
-<span id="cb125-5"><a href="#cb125-5" aria-hidden="true" tabindex="-1"></a>conditions <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">sub</span>(<span class="st">"_module.*"</span>, <span class="st">""</span>, <span class="fu">names</span>(treeplots)))</span>
-<span id="cb125-6"><a href="#cb125-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-7"><a href="#cb125-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Split the list of plots into a nested list by condition</span></span>
-<span id="cb125-8"><a href="#cb125-8" aria-hidden="true" tabindex="-1"></a>plots_by_condition <span class="ot">&lt;-</span> <span class="fu">map</span>(conditions, <span class="sc">~</span>{</span>
-<span id="cb125-9"><a href="#cb125-9" aria-hidden="true" tabindex="-1"></a>  plots_for_type <span class="ot">&lt;-</span> treeplots[<span class="fu">grepl</span>(<span class="fu">paste0</span>(<span class="st">"^"</span>, .x, <span class="st">"_module"</span>), <span class="fu">names</span>(treeplots))]</span>
-<span id="cb125-10"><a href="#cb125-10" aria-hidden="true" tabindex="-1"></a>  combined_plot <span class="ot">&lt;-</span> <span class="fu">wrap_plots</span>(plots_for_type, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="co"># Adjust 'ncol' as needed</span></span>
-<span id="cb125-11"><a href="#cb125-11" aria-hidden="true" tabindex="-1"></a>  combined_plot</span>
-<span id="cb125-12"><a href="#cb125-12" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb125-13"><a href="#cb125-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-14"><a href="#cb125-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Name the list of combined plots by condition</span></span>
-<span id="cb125-15"><a href="#cb125-15" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(plots_by_condition) <span class="ot">&lt;-</span> conditions</span>
-<span id="cb125-16"><a href="#cb125-16" aria-hidden="true" tabindex="-1"></a><span class="co"># save the plots nice and tall</span></span>
-<span id="cb125-17"><a href="#cb125-17" aria-hidden="true" tabindex="-1"></a><span class="fu">walk2</span>(plots_by_condition, <span class="fu">names</span>(plots_by_condition), <span class="sc">~</span> <span class="fu">ggsave</span>(</span>
-<span id="cb125-18"><a href="#cb125-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/ppi/"</span>, <span class="fu">paste0</span>(.y, <span class="st">"_combined_plot.png"</span>)),</span>
-<span id="cb125-19"><a href="#cb125-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> .x,</span>
-<span id="cb125-20"><a href="#cb125-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">width =</span> <span class="dv">14</span>,</span>
-<span id="cb125-21"><a href="#cb125-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">height =</span> <span class="dv">38</span></span>
-<span id="cb125-22"><a href="#cb125-22" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb125-23"><a href="#cb125-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb125-24"><a href="#cb125-24" aria-hidden="true" tabindex="-1"></a>plots_by_condition</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>treeplots <span class="ot">&lt;-</span> <span class="fu">map2</span>(treeplots, <span class="fu">names</span>(treeplots), <span class="sc">~</span> .x <span class="sc">+</span> <span class="fu">ggtitle</span>(.y))</span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-3"><a href="#cb124-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Make patchwork of plots per condition</span></span>
+<span id="cb124-4"><a href="#cb124-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract unique cell types from the plot names</span></span>
+<span id="cb124-5"><a href="#cb124-5" aria-hidden="true" tabindex="-1"></a>conditions <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">sub</span>(<span class="st">"_module.*"</span>, <span class="st">""</span>, <span class="fu">names</span>(treeplots)))</span>
+<span id="cb124-6"><a href="#cb124-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-7"><a href="#cb124-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Split the list of plots into a nested list by condition</span></span>
+<span id="cb124-8"><a href="#cb124-8" aria-hidden="true" tabindex="-1"></a>plots_by_condition <span class="ot">&lt;-</span> <span class="fu">map</span>(conditions, <span class="sc">~</span>{</span>
+<span id="cb124-9"><a href="#cb124-9" aria-hidden="true" tabindex="-1"></a>  plots_for_type <span class="ot">&lt;-</span> treeplots[<span class="fu">grepl</span>(<span class="fu">paste0</span>(<span class="st">"^"</span>, .x, <span class="st">"_module"</span>), <span class="fu">names</span>(treeplots))]</span>
+<span id="cb124-10"><a href="#cb124-10" aria-hidden="true" tabindex="-1"></a>  combined_plot <span class="ot">&lt;-</span> <span class="fu">wrap_plots</span>(plots_for_type, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="co"># Adjust 'ncol' as needed</span></span>
+<span id="cb124-11"><a href="#cb124-11" aria-hidden="true" tabindex="-1"></a>  combined_plot</span>
+<span id="cb124-12"><a href="#cb124-12" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb124-13"><a href="#cb124-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-14"><a href="#cb124-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Name the list of combined plots by condition</span></span>
+<span id="cb124-15"><a href="#cb124-15" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(plots_by_condition) <span class="ot">&lt;-</span> conditions</span>
+<span id="cb124-16"><a href="#cb124-16" aria-hidden="true" tabindex="-1"></a><span class="co"># save the plots nice and tall</span></span>
+<span id="cb124-17"><a href="#cb124-17" aria-hidden="true" tabindex="-1"></a><span class="fu">walk2</span>(plots_by_condition, <span class="fu">names</span>(plots_by_condition), <span class="sc">~</span> <span class="fu">ggsave</span>(</span>
+<span id="cb124-18"><a href="#cb124-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/ppi/"</span>, <span class="fu">paste0</span>(.y, <span class="st">"_combined_plot.png"</span>)),</span>
+<span id="cb124-19"><a href="#cb124-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> .x,</span>
+<span id="cb124-20"><a href="#cb124-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">width =</span> <span class="dv">14</span>,</span>
+<span id="cb124-21"><a href="#cb124-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">height =</span> <span class="dv">38</span></span>
+<span id="cb124-22"><a href="#cb124-22" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb124-23"><a href="#cb124-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-24"><a href="#cb124-24" aria-hidden="true" tabindex="-1"></a>plots_by_condition</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>$BR</code></pre>
@@ -2682,7 +2644,7 @@ org.Hs.eg.db): 11.11% of input gene IDs are fail to map...</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-28-4.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-29-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2693,7 +2655,7 @@ $LG</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-28-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-29-5.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2704,7 +2666,7 @@ $LV</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-28-6.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-protein_protein_interactions_files/figure-html/unnamed-chunk-29-6.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2717,40 +2679,40 @@ $LV</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make vector of module labels</span></span>
-<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a>module_assignments <span class="ot">&lt;-</span></span>
-<span id="cb129-3"><a href="#cb129-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="co"># BR</span></span>
-<span id="cb129-4"><a href="#cb129-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"example_label"</span>,</span>
-<span id="cb129-5"><a href="#cb129-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># LV</span></span>
-<span id="cb129-6"><a href="#cb129-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"example_label"</span>,</span>
-<span id="cb129-7"><a href="#cb129-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># LG</span></span>
-<span id="cb129-8"><a href="#cb129-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"example_label"</span>)</span>
-<span id="cb129-9"><a href="#cb129-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb129-10"><a href="#cb129-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Get a vector of interim labels to use</span></span>
-<span id="cb129-11"><a href="#cb129-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Comment this line out if you assign labels yourself!</span></span>
-<span id="cb129-12"><a href="#cb129-12" aria-hidden="true" tabindex="-1"></a>module_assignments <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">"example_label"</span>, <span class="fu">length</span>(<span class="fu">names</span>(treeplots)))</span>
-<span id="cb129-13"><a href="#cb129-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb129-14"><a href="#cb129-14" aria-hidden="true" tabindex="-1"></a>module_assignments <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="st">"module"</span> <span class="ot">=</span> <span class="fu">names</span>(treeplots), <span class="st">"label"</span> <span class="ot">=</span> module_assignments)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make vector of module labels</span></span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>module_assignments <span class="ot">&lt;-</span></span>
+<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="co"># BR</span></span>
+<span id="cb128-4"><a href="#cb128-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"example_label"</span>,</span>
+<span id="cb128-5"><a href="#cb128-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># LV</span></span>
+<span id="cb128-6"><a href="#cb128-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"example_label"</span>,</span>
+<span id="cb128-7"><a href="#cb128-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># LG</span></span>
+<span id="cb128-8"><a href="#cb128-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"example_label"</span>)</span>
+<span id="cb128-9"><a href="#cb128-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb128-10"><a href="#cb128-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Get a vector of interim labels to use</span></span>
+<span id="cb128-11"><a href="#cb128-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Comment this line out if you assign labels yourself!</span></span>
+<span id="cb128-12"><a href="#cb128-12" aria-hidden="true" tabindex="-1"></a>module_assignments <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">"example_label"</span>, <span class="fu">length</span>(<span class="fu">names</span>(treeplots)))</span>
+<span id="cb128-13"><a href="#cb128-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb128-14"><a href="#cb128-14" aria-hidden="true" tabindex="-1"></a>module_assignments <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="st">"module"</span> <span class="ot">=</span> <span class="fu">names</span>(treeplots), <span class="st">"label"</span> <span class="ot">=</span> module_assignments)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Several of the modules have just one gene in them and I don’t trust any enrichment for GO terms there, so I’ll replace the module label with the gene label</p>
+<p>Now let’s get the gene symbol for the modules with only one gene.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>gene_num <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(result_list, <span class="sc">~</span> <span class="fu">length</span>(.x<span class="sc">@</span>gene))</span>
-<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a>one_gene <span class="ot">&lt;-</span> <span class="fu">names</span>(gene_num)[gene_num <span class="sc">==</span> <span class="dv">1</span>]</span>
-<span id="cb130-3"><a href="#cb130-3" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> <span class="fu">map_chr</span>(one_gene, <span class="sc">~</span> result_list[[.x]]<span class="sc">@</span>gene)</span>
-<span id="cb130-4"><a href="#cb130-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(genes) <span class="ot">&lt;-</span> one_gene</span>
-<span id="cb130-5"><a href="#cb130-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb130-6"><a href="#cb130-6" aria-hidden="true" tabindex="-1"></a>ensembl <span class="ot">&lt;-</span> <span class="fu">useMart</span>(<span class="st">"ensembl"</span>, <span class="at">dataset =</span> <span class="st">"hsapiens_gene_ensembl"</span>)</span>
-<span id="cb130-7"><a href="#cb130-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve gene symbols</span></span>
-<span id="cb130-8"><a href="#cb130-8" aria-hidden="true" tabindex="-1"></a>gene_info <span class="ot">&lt;-</span> <span class="fu">getBM</span>(<span class="at">attributes =</span> <span class="fu">c</span>(<span class="st">'entrezgene_id'</span>, <span class="st">'hgnc_symbol'</span>),</span>
-<span id="cb130-9"><a href="#cb130-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">filters =</span> <span class="st">'entrezgene_id'</span>,</span>
-<span id="cb130-10"><a href="#cb130-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">values =</span> genes,</span>
-<span id="cb130-11"><a href="#cb130-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">mart =</span> ensembl)</span>
-<span id="cb130-12"><a href="#cb130-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb130-13"><a href="#cb130-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the results</span></span>
-<span id="cb130-14"><a href="#cb130-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gene_info)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a>gene_num <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(result_list, <span class="sc">~</span> <span class="fu">length</span>(.x<span class="sc">@</span>gene))</span>
+<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a>one_gene <span class="ot">&lt;-</span> <span class="fu">names</span>(gene_num)[gene_num <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb129-3"><a href="#cb129-3" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> <span class="fu">map_chr</span>(one_gene, <span class="sc">~</span> result_list[[.x]]<span class="sc">@</span>gene)</span>
+<span id="cb129-4"><a href="#cb129-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(genes) <span class="ot">&lt;-</span> one_gene</span>
+<span id="cb129-5"><a href="#cb129-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb129-6"><a href="#cb129-6" aria-hidden="true" tabindex="-1"></a>ensembl <span class="ot">&lt;-</span> <span class="fu">useMart</span>(<span class="st">"ensembl"</span>, <span class="at">dataset =</span> <span class="st">"hsapiens_gene_ensembl"</span>)</span>
+<span id="cb129-7"><a href="#cb129-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve gene symbols</span></span>
+<span id="cb129-8"><a href="#cb129-8" aria-hidden="true" tabindex="-1"></a>gene_info <span class="ot">&lt;-</span> <span class="fu">getBM</span>(<span class="at">attributes =</span> <span class="fu">c</span>(<span class="st">'entrezgene_id'</span>, <span class="st">'hgnc_symbol'</span>),</span>
+<span id="cb129-9"><a href="#cb129-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">filters =</span> <span class="st">'entrezgene_id'</span>,</span>
+<span id="cb129-10"><a href="#cb129-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">values =</span> genes,</span>
+<span id="cb129-11"><a href="#cb129-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">mart =</span> ensembl)</span>
+<span id="cb129-12"><a href="#cb129-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb129-13"><a href="#cb129-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the results</span></span>
+<span id="cb129-14"><a href="#cb129-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gene_info)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>  entrezgene_id    hgnc_symbol
@@ -2763,34 +2725,44 @@ $LV</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make sure there's no NAs in the conversion</span></span>
-<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a>assertthat<span class="sc">::</span><span class="fu">noNA</span>(gene_info)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make sure there's no NAs in the conversion</span></span>
+<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a>assertthat<span class="sc">::</span><span class="fu">noNA</span>(gene_info)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make sure genes are arranged in the same way</span></span>
-<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>module_order <span class="ot">&lt;-</span> <span class="fu">names</span>(genes)[<span class="fu">match</span>(gene_info<span class="sc">$</span>entrezgene_id, genes)]</span>
-<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>gene_symbols <span class="ot">&lt;-</span> gene_info<span class="sc">$</span>hgnc_symbol</span>
-<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(gene_symbols) <span class="ot">&lt;-</span> module_order</span>
-<span id="cb134-5"><a href="#cb134-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb134-6"><a href="#cb134-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Update labels in the dataframe</span></span>
-<span id="cb134-7"><a href="#cb134-7" aria-hidden="true" tabindex="-1"></a>one_gene_labels <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">module =</span> <span class="fu">names</span>(gene_symbols), <span class="at">label =</span> gene_symbols)</span>
-<span id="cb134-8"><a href="#cb134-8" aria-hidden="true" tabindex="-1"></a>module_assignments <span class="ot">&lt;-</span> <span class="fu">rbind</span>(module_assignments, one_gene_labels)</span>
-<span id="cb134-9"><a href="#cb134-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Save module assignment</span></span>
-<span id="cb134-10"><a href="#cb134-10" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(</span>
-<span id="cb134-11"><a href="#cb134-11" aria-hidden="true" tabindex="-1"></a>  module_assignments,</span>
-<span id="cb134-12"><a href="#cb134-12" aria-hidden="true" tabindex="-1"></a>  here<span class="sc">::</span><span class="fu">here</span>(</span>
-<span id="cb134-13"><a href="#cb134-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/ppi/"</span>,</span>
-<span id="cb134-14"><a href="#cb134-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ppi_sig_module_labels.csv"</span></span>
-<span id="cb134-15"><a href="#cb134-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb134-16"><a href="#cb134-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make sure genes are arranged in the same way</span></span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>module_order <span class="ot">&lt;-</span> <span class="fu">names</span>(genes)[<span class="fu">match</span>(gene_info<span class="sc">$</span>entrezgene_id, genes)]</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>gene_symbols <span class="ot">&lt;-</span> gene_info<span class="sc">$</span>hgnc_symbol</span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(gene_symbols) <span class="ot">&lt;-</span> module_order</span>
+<span id="cb133-5"><a href="#cb133-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb133-6"><a href="#cb133-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Update labels in the dataframe</span></span>
+<span id="cb133-7"><a href="#cb133-7" aria-hidden="true" tabindex="-1"></a>one_gene_labels <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">module =</span> <span class="fu">names</span>(gene_symbols), <span class="at">label =</span> gene_symbols)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>And lastly we can combine our module labels and save them.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>module_assignments <span class="ot">&lt;-</span> <span class="fu">rbind</span>(module_assignments, one_gene_labels)</span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Save module assignment</span></span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(</span>
+<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a>  module_assignments,</span>
+<span id="cb134-5"><a href="#cb134-5" aria-hidden="true" tabindex="-1"></a>  here<span class="sc">::</span><span class="fu">here</span>(</span>
+<span id="cb134-6"><a href="#cb134-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/ppi/"</span>,</span>
+<span id="cb134-7"><a href="#cb134-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ppi_sig_module_labels.csv"</span></span>
+<span id="cb134-8"><a href="#cb134-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb134-9"><a href="#cb134-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
 </section>
+</section>
+<section id="magma-on-modules" class="level1">
+<h1>MAGMA on modules</h1>
+<p>We can just use the same magma run code but provide the module gene lists this time!</p>
 </section>
 
 </main>
