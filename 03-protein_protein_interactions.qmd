@@ -277,14 +277,19 @@ output_file <-
     "PPI_Test1"
   )
 
-# Min number of genes for a cluster
-min_cluster_size <- 5
-
 # Output Louvain clusters
 output_file2 <-
   here::here(
     "data/ppi",
     "PPI_Test1-Louvain_")
+```
+
+Here we set the minimum number of genes for clustering.
+Change this number to something other than 5 (I'd suggest a higher number)!
+
+```{r}
+# Min number of genes for a cluster
+min_cluster_size <- 5
 ```
 
 ```{r}
@@ -378,7 +383,6 @@ my_gene_list <- intersect_with_background(res$BG, my_gene_list)
 # Define subnetwork
 my_subgraph <-
   map(my_gene_list, ~ induced_subgraph(graph = res$network, vids = .x))
-
 ```
 
 We can plot our networks at this stage, though the code can take a little while to run!
@@ -547,7 +551,6 @@ modules <- list_rbind(module_assignment)
 # Get significant conditions
 sig_conditions <- results |>
   dplyr::filter(p < 0.05)
-
 ```
 
 For cases where the number of genes is small, there isn't a need to use the clusters, though there isn't a rule of thumb for a cutoff for this.
@@ -658,11 +661,18 @@ result_list <- result_list[sapply(result_list, function(x) nrow(x@result) > 0)]
 ### Save for MAGMA
 
 Whilst we've got the entrez IDs handy we may as well save the lists to be run through MAGMA!
+Let's exclude modules that only have one gene in them as well.
+
+Have a think about why we might do this and write your thoughts below
 
 ```{r}
 # Save to MAGMA
 names(gene_list_entrez) <- paste0(gene_list$label, "_module", gene_list$module)
+
+# Exclude one gene modules
+gene_list_entrez <- gene_list_entrez[map_dbl(gene_list$data, nrow) != 1]
 names(gene_list_entrez)
+
 # Create a character vector where each element is a single string
 lines_to_write <- sapply(names(gene_list_entrez), function(name) {
   paste(name, paste(gene_list_entrez[[name]], collapse = " "))
