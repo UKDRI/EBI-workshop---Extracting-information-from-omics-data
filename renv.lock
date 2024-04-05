@@ -1854,6 +1854,22 @@
       ],
       "Hash": "47b5f30c720c23999b913a1a635cf0bb"
     },
+    "furrr": {
+      "Package": "furrr",
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "future",
+        "globals",
+        "lifecycle",
+        "purrr",
+        "rlang",
+        "vctrs"
+      ],
+      "Hash": "da7a4c32196cb2262a41dd5a25d486ff"
+    },
     "futile.logger": {
       "Package": "futile.logger",
       "Version": "1.4.3",
@@ -1876,6 +1892,21 @@
         "R"
       ],
       "Hash": "0d9bf02413ddc2bbe8da9ce369dcdd2b"
+    },
+    "future": {
+      "Package": "future",
+      "Version": "1.33.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "digest",
+        "globals",
+        "listenv",
+        "parallel",
+        "parallelly",
+        "utils"
+      ],
+      "Hash": "fd7b1d69d16d0d114e4fa82db68f184c"
     },
     "generics": {
       "Package": "generics",
@@ -2128,6 +2159,17 @@
         "R"
       ],
       "Hash": "ab08ac61f3e1be454ae21911eb8bc2fe"
+    },
+    "globals": {
+      "Package": "globals",
+      "Version": "0.16.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "codetools"
+      ],
+      "Hash": "2580567908cafd4f187c1e5a91e98b7f"
     },
     "glue": {
       "Package": "glue",
@@ -2593,6 +2635,16 @@
       ],
       "Hash": "b8552d117e1b808b09a832f589b79035"
     },
+    "listenv": {
+      "Package": "listenv",
+      "Version": "0.9.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "e2fca3e12e4db979dccc6e519b10a7ee"
+    },
     "locfit": {
       "Package": "locfit",
       "Version": "1.5-9.9",
@@ -2741,19 +2793,6 @@
       ],
       "Hash": "17e96668f44a28aef0981d9e17c49b59"
     },
-    "networkD3": {
-      "Package": "networkD3",
-      "Version": "0.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "htmlwidgets",
-        "igraph",
-        "magrittr"
-      ],
-      "Hash": "38310ec4ddb1398359abdd603c151067"
-    },
     "nlme": {
       "Package": "nlme",
       "Version": "3.1-164",
@@ -2798,6 +2837,18 @@
         "methods"
       ],
       "Hash": "120d734b7c6eaed99d8f5f61e6c125ed"
+    },
+    "parallelly": {
+      "Package": "parallelly",
+      "Version": "1.37.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "parallel",
+        "tools",
+        "utils"
+      ],
+      "Hash": "5410df8d22bd36e616f2a2343dbb328c"
     },
     "patchwork": {
       "Package": "patchwork",
@@ -3095,22 +3146,6 @@
       ],
       "Hash": "76fc42834c44b69e4021f6ade524d299"
     },
-    "rGADEM": {
-      "Package": "rGADEM",
-      "Version": "2.50.0",
-      "Source": "Bioconductor",
-      "Requirements": [
-        "BSgenome",
-        "Biostrings",
-        "GenomicRanges",
-        "IRanges",
-        "R",
-        "graphics",
-        "methods",
-        "seqLogo"
-      ],
-      "Hash": "6dad0172698273a1250a9289c44e412b"
-    },
     "rappdirs": {
       "Package": "rappdirs",
       "Version": "0.3.3",
@@ -3340,7 +3375,7 @@
     },
     "scatterpie": {
       "Package": "scatterpie",
-      "Version": "0.2.1",
+      "Version": "0.2.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -3354,7 +3389,7 @@
         "tidyr",
         "utils"
       ],
-      "Hash": "a272b0f2f06b3aa01fa4f5a033f0cf4a"
+      "Hash": "5a6b2f02c942e71a06690a99cb51c060"
     },
     "seqLogo": {
       "Package": "seqLogo",
@@ -3397,7 +3432,7 @@
     },
     "shiny": {
       "Package": "shiny",
-      "Version": "1.8.1",
+      "Version": "1.8.1.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -3426,7 +3461,7 @@
         "withr",
         "xtable"
       ],
-      "Hash": "a49e145ac3d0d1299e19ab215504f88e"
+      "Hash": "54b26646816af9960a4c64d8ceec75d6"
     },
     "snakecase": {
       "Package": "snakecase",
