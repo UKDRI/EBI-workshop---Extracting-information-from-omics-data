@@ -6,6 +6,7 @@ author: "Gabriel Mateus Bernardo Harrington"
 format: 
   html:
     code-fold: show
+    toc: true
     code-links: 
       - text: Data Prep Code
         icon: file-code
@@ -25,6 +26,8 @@ here::i_am("03-protein_protein_interactions.qmd")
 # Load packages
 
 ```{r}
+#| warning: false
+#| results: hide
 library(igraph)
 library(stringr)
 library(DT)
@@ -594,6 +597,8 @@ Perhaps you could also return the gene IDs that failed to convert as well?
 Also note the handy little trick of using `file.exists` to only run certain code that might take a while to run if the results of that computation haven't already been generated.
 
 ```{r}
+#| warning: false
+#| message: false
 convert_to_entrez <- function(gene_list) {
   tryCatch({
     bitr(gene_list, fromType = "ENSEMBL", toType = "ENTREZID", OrgDb = org.Hs.eg.db)
@@ -690,6 +695,7 @@ It also includes a nice `treeplot` function to visualise the terms based on thei
 
 ```{r}
 #| cache: true
+#| warning: false
 # Plotting the first module's GO enrichment result as an example
 if (length(result_list[[1]]) > 0) {
   dotplot(result_list[[1]])
@@ -735,8 +741,24 @@ walk2(plots_by_condition, names(plots_by_condition), ~ ggsave(
   width = 14,
   height = 38
 ))
+```
 
-plots_by_condition
+```{r}
+#| fig-height: 30
+#| fig-width: 12
+plots_by_condition$BR
+```
+
+```{r}
+#| fig-height: 30
+#| fig-width: 12
+plots_by_condition$LG
+```
+
+```{r}
+#| fig-height: 30
+#| fig-width: 12
+plots_by_condition$LV
 ```
 
 ### Module labels

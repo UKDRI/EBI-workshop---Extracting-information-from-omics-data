@@ -29,6 +29,7 @@ editor: visual
 
 ```{r}
 #| warning: false
+#| message: false
 library(dplyr)
 library(ggplot2)
 library(ggthemes)

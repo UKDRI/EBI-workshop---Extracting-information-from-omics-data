@@ -72,10 +72,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#step-1---get-snp-to-gene-annotations" id="toc-step-1---get-snp-to-gene-annotations" class="nav-link active" data-scroll-target="#step-1---get-snp-to-gene-annotations">Step 1 - Get SNP to Gene annotations</a></li>
+  <li><a href="#step-2---process-gwas-summary-stats" id="toc-step-2---process-gwas-summary-stats" class="nav-link" data-scroll-target="#step-2---process-gwas-summary-stats">Step 2 - process GWAS summary stats</a></li>
+  <li><a href="#step-3---run-the-magma-regression" id="toc-step-3---run-the-magma-regression" class="nav-link" data-scroll-target="#step-3---run-the-magma-regression">Step 3 - Run the MAGMA regression</a></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -109,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">i_am</span>(<span class="st">"scripts/magma_run.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>here() starts at /Users/mateusbernardo-harrington/Documents/git_work/2024-03-29_ebi_workshop</code></pre>
+<pre><code>here() starts at /home/mateusharrington/Documents/git_work/EBI-workshop---Extracting-information-from-omics-data</code></pre>
 </div>
 </div>
 <p>Here is a rough outline of the steps one performs to prep the other input files for MAGMA and then ultimately run it with your gene lists. The first 2 chunks are preparing the GWAS summary stats your want to use. These 2 processing steps can take a little while to run, so we’ve generated the files for you in advance, but the last step is nice and quick as it’s just running the regression.</p>

@@ -7,7 +7,7 @@ author:
       - name: Cardiff University
         city: Cardiff
         url: www.cardiff.ac.uk
-date: 'Last update: `r date()`'
+date: 'Last update: `{r} Sys.Date()`'
 execute: 
   eval: false
 format: 
