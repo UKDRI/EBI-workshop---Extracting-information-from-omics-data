@@ -34,6 +34,10 @@ library(furrr)
 library(clusterProfiler)
 library(org.Hs.eg.db)
 library(future)
+library(enrichplot)
+library(patchwork)
+library(ggplot2)
+library(readr)
 ```
 
 # Functions
@@ -506,6 +510,9 @@ module_assignment <-
   )
 ```
 
+Have a look at the network plots below.
+Do you notice anything about them?
+
 ```{r}
 # Plot clustering
 map2(my_subgraph, module_assignment, ~ plot(.x, 
@@ -665,7 +672,11 @@ readr::write_lines(lines_to_write,
 
 ### Treeplots
 
+The `enrichplot` has a nice function to evaluate the similarity of GO terms as there's a lot of redundancy and overlap in the terms.
+It also includes a nice `treeplot` function to visualise the terms based on their similarity.
+
 ```{r}
+#| cache: true
 # Plotting the first module's GO enrichment result as an example
 if (length(result_list[[1]]) > 0) {
   dotplot(result_list[[1]])
@@ -674,12 +685,16 @@ dotplot(result_list$BR_module1, split = "ONTOLOGY")
 
 # Get semantic similarity of terms
 result_list <- map(result_list, pairwise_termsim)
-treeplot(result_list$`Astrocyte-activated_module5`)
+treeplot(result_list$BR_module2)
+
+# Lots of the modules are just a single gene, it doesn't make sense to assign
+# a GO term to them, one should probably just apply the gene name as a label
+result_list_subset = result_list[sapply(result_list, function(x) length(x@gene) > 1)]
 
 # Define a safe version of your treeplot function that returns NULL on error
 safe_treeplot <- possibly(treeplot, otherwise = NULL)
 # Use map with the safe version of the function
-treeplots <- map(result_list, safe_treeplot)
+treeplots <- map(result_list_subset, safe_treeplot)
 
 # Remove any NULL entries
 treeplots <- treeplots[!sapply(treeplots, is.null)]
@@ -687,25 +702,25 @@ treeplots <- treeplots[!sapply(treeplots, is.null)]
 assertthat::see_if(sum(map_lgl(treeplots, is.null)) == 0)
 treeplots <- map2(treeplots, names(treeplots), ~ .x + ggtitle(.y))
 
-# I want to make patchwork of plots per condition
+# Make patchwork of plots per condition
 # Extract unique cell types from the plot names
 conditions <- unique(sub("_module.*", "", names(treeplots)))
 
-# Split the list of plots into a nested list by cell type
+# Split the list of plots into a nested list by condition
 plots_by_condition <- map(conditions, ~{
   plots_for_type <- treeplots[grepl(paste0("^", .x, "_module"), names(treeplots))]
   combined_plot <- wrap_plots(plots_for_type, ncol = 1) # Adjust 'ncol' as needed
   combined_plot
 })
 
-# Name the list of combined plots by cell type
+# Name the list of combined plots by condition
 names(plots_by_condition) <- conditions
 # save the plots nice and tall
 walk2(plots_by_condition, names(plots_by_condition), ~ ggsave(
-  filename = here::here("05_figures/990_shared_figures/ppi_modules", paste0(.y, "_combined_plot.png")),
+  filename = here::here("data/ppi/", paste0(.y, "_combined_plot.png")),
   plot = .x,
   width = 14,
-  height = 34
+  height = 38
 ))
 
 plots_by_condition
@@ -713,91 +728,26 @@ plots_by_condition
 
 ### Module labels
 
-So there isn't really a mathematical solution to this other than eyeballing the plots and assigning module functions
+So there isn't really a particularly scientific or mathematical solution to assigning module labels.
+So you just kind of eyeball the GO terms, hope you see a nice pattern of related terms highlighted and either pick one or create your own amalgamated term...
+
+Have a go at picking a few labels for some modules!
+Maybe have a chat with your neighbours about which to assign 
 
 ```{r}
-# Astro module 1 has memory stuff
+# Make vector of module labels
 module_assignments <-
-  c(#astro-activ
-    "synapse_regulation-memory",
-    "Cul3_rna_binding_complex",
-    "cell_growth",
-    "bbb_transport",
-    "cell_leading_edge",
-    "negative_reg",
-    "methylation",
-    "cell_fate",
-    "angiogensis",
-    # astro-quie
-    "synaptic_transport",
-    "cytoskeleton-projection",
-    "glycosylation",
-    "positive_reg_leukocyte",
-    "extracellular_matrix",
-    "vascular_trasport-sodium",
-    "clathrin_vesicle",
-    "long_chain_fatty",
-    "negative_hypertrophy",
-    "meiosis",
-    # ex-neuron l2-3
-    "adhesion",
-    "dna_transcrip_activator",
-    "microtubule",
-    "extrinsic_membrane",
-    "postsynaptic_protein_local",
-    "carbohydrate_catabolic",
-    "rna_splicing",
-    "snrna_processing",
-    # ex-neuron-l4-5
-    "extracellular_matrix_organisation",
-    "synapse_transimission-learning",
-    "mitotic_spindle",
-    "glycosyltransferase",
-    "pain-salt",
-    "bbb_transport",
-    "actin",
-    "nucleoside_metabolic",
-    "postsynaptic_protein_reg",
-    # in-neuron
-    "calcium_channel",
-    "microtubule",
-    "purine_ribonucleotide",
-    "granule_transport_complex",
-    "osmotic_stress-salt",
-    # M-pericyte
-    "cell_sprouting_response",
-    "endo_retic",
-    "cellcell_adhesion",
-    "plasma_membrane",
-    "notch",
-    # microglia-activated
-    "amino_acid_transport-vascular",
-    "gtpase_pos",
-    "misfolded_protein",
-    "cholesterol",
-    "peptide_catabolic",
-    "gtpase_binding",
-    "positive_immune",
-    "pyrimidine_metabolic",
-    "glycosylation",
-    # t-pericyte
-    "glutamate-synaptic",
-    "basal_plasma",
-    "cellcell_adhesion-synapse_assembly",
-    "centriole_cohesion",
-    "long_chain_fatty",
-    "galactosyltransferase",
-    "lumen",
-    # trans-endo-to-mural
-    "carboxylic_acid_transport",
-    "synapce_reg-chemotaxis",
-    "membrane_permeability",
-    "cytoskeleton_actin",
-    "dendritic_spine",
-    "dna_replication",
-    "plasma_membrane",
-    "phospholibid_transporter",
-    "pyrimidine_metabolic")
+  c(# BR
+    "example_label",
+    # LV
+    "example_label",
+    # LG
+    "example_label")
+
+# Get a vector of interim labels to use
+# Comment this line out if you assign labels yourself!
+module_assignments <- rep("example_label", length(names(treeplots)))
+
 module_assignments <- tibble("module" = names(treeplots), "label" = module_assignments)
 ```
 
@@ -817,7 +767,7 @@ gene_info <- getBM(attributes = c('entrezgene_id', 'hgnc_symbol'),
                    mart = ensembl)
 
 # Print the results
-print(gene_info)
+head(gene_info)
 # Make sure there's no NAs in the conversion
 assertthat::noNA(gene_info)
 
@@ -825,15 +775,12 @@ assertthat::noNA(gene_info)
 module_order <- names(genes)[match(gene_info$entrezgene_id, genes)]
 gene_symbols <- gene_info$hgnc_symbol
 names(gene_symbols) <- module_order
-# There are some modules not in the module assignment as they didn't get trees 
-# for being to small. I'll exclude these modules and add them to dataframe
-extra_modules <- gene_symbols[!names(gene_symbols) %in% module_assignments$module]
-extra_modules <- data.frame(module = names(extra_modules), label = extra_modules)
-module_assignments <- rbind(module_assignments, extra_modules)
+
 # Update labels in the dataframe
-module_assignments$label[match(names(gene_symbols), module_assignments$module)] <- gene_symbols
+one_gene_labels <- tibble(module = names(gene_symbols), label = gene_symbols)
+module_assignments <- rbind(module_assignments, one_gene_labels)
 # Save module assignment
-write_csv(
+readr::write_csv(
   module_assignments,
   here::here(
     "data/ppi/",
