@@ -13,6 +13,9 @@ format:
       - text: Protein network background
         icon: file-code
         href: scripts/ppi_network.html
+      - text: MAGMA Run Code
+        icon: file-code
+        href: scripts/magma_run.html
 ---
 
 ```{r}
@@ -751,7 +754,7 @@ module_assignments <- rep("example_label", length(names(treeplots)))
 module_assignments <- tibble("module" = names(treeplots), "label" = module_assignments)
 ```
 
-Several of the modules have just one gene in them and I don't trust any enrichment for GO terms there, so I'll replace the module label with the gene label
+Now let's get the gene symbol for the modules with only one gene.
 
 ```{r}
 gene_num <- map_dbl(result_list, ~ length(.x@gene))
@@ -778,6 +781,11 @@ names(gene_symbols) <- module_order
 
 # Update labels in the dataframe
 one_gene_labels <- tibble(module = names(gene_symbols), label = gene_symbols)
+```
+
+And lastly we can combine our module labels and save them.
+
+```{r}
 module_assignments <- rbind(module_assignments, one_gene_labels)
 # Save module assignment
 readr::write_csv(
@@ -788,3 +796,7 @@ readr::write_csv(
   )
 )
 ```
+
+# MAGMA on modules
+
+We can just use the same magma run code but provide the module gene lists this time!
