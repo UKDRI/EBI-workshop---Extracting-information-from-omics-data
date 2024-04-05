@@ -270,7 +270,7 @@ You can read [the documentation](https://nf-co.re/atacseq/2.1.2) to find out how
 
 Can you find out what settings were used? by looking at the Github repo we can find the code of the [HOMER AnnotatePeaks module](https://github.com/nf-core/atacseq/blob/2.1.2/modules/nf-core/homer/annotatepeaks/main.nf).
 
-Extra arguments are passed in the args variable which in pipelines is usually set in conf/modules.config. We can see that the only extra arg that is set is '-gid', when we look at the HOMER documentation we can't actually find this parameter, it takes some extra googling to find this means "use gene_id instead of transcript_id when parsing GTF file". Welcome to bioinformatics! ;) \
+Extra arguments are passed in the args variable which in pipelines is usually set in conf/modules.config. We can see that the only extra arg that is set is '-gid', when we look at the HOMER documentation we can't actually find this parameter, it takes some extra googling to find this means "use gene_id instead of transcript_id when parsing GTF file". Welcome to bioinformatics! ;)\
 \
 In the nextflow module code we can see the version of HOMER used is homer=4.11 - so we have used whatever the default params are for HOMER v.4.11. We can learn about these by reading HOMER annotatepeaks docs.
 
@@ -447,33 +447,9 @@ The above block only has 3 repetitive bits where we process the 3 contrasts in t
 ```{r}
 # Add your code to functionalise the extraction of results dataframes from dds 
 # here
-
-# Define your conditions
-conditions <- unique(dds@colData$condition)
-
-# Use combn to get all unique pairwise combinations
-pairwise_combinations <- combn(as.character(conditions), 2, simplify = FALSE)
-
-# Now, pairwise_combinations is a list of vectors, each containing a pair of 
-# conditions
-
-# Generate a names for the results list
-list_names <- map_chr(pairwise_combinations, ~ paste0(.x, collapse = "_vs_"))
-
-# Use lapply to go through each combination and get the results
-results_list <-
-  lapply(seq_along(pairwise_combinations), function(i) {
-    pair <- pairwise_combinations[[i]]
-    results(dds, contrast = c("condition", pair[1], pair[2])) |>
-      as.data.frame() |>
-      dplyr::mutate(contrast = paste0(pair[1], "_vs_", pair[2])) |>
-      tibble::rownames_to_column(var = "gene")
-  }) |>
-  purrr::set_names(list_names)
 ```
 
-Now if this was single cell seq data we'd normally do this kind of analysis per celltype, typically using a differential gene list from a case vs controls disease condition.
-In this case we have samples from different sources, so we'll combine the contrasts using the same sample (i.e. brain vs lung and brain vs liver) merging the pvals and log fold changes.
+Now if this was single cell seq data we'd normally do this kind of analysis per celltype, typically using a differential gene list from a case vs controls disease condition. In this case we have samples from different sources, so we'll combine the contrasts using the same sample (i.e. brain vs lung and brain vs liver) merging the pvals and log fold changes.
 
 Don't worry if this code is a little complex!
 
@@ -520,7 +496,6 @@ table(res$condition)
 # Save data
 readr::write_tsv(res, here::here("data/ppi/differential_genes.tsv"))
 ```
-
 
 # Data for MAGMA
 
@@ -624,7 +599,6 @@ top_genes_list <- map(results_list_entrez, ~.x[order(.x$min_padj), ]) %>%
 # gene list
 top_genes_list <- flatten(top_genes_list)
 ```
-
 
 MAGMA wants an input file with each row denoting a group to test (in single cell seq data this is typically celltypes). The row starts with the group label followed by a space and then a space separated list of the entrez IDs, so now we get our data into that format and save each percent to a different file.
 
