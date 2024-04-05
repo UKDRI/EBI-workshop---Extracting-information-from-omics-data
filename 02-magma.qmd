@@ -4,6 +4,7 @@ author: "Gabriel Mateus Bernardo Harrington"
 format: 
   html:
     code-fold: show
+    toc: true
     code-links: 
       - text: Data Prep Code
         icon: file-code
@@ -34,13 +35,22 @@ library(ComplexHeatmap)
 ## Load the MAGMA outputs
 
 So in our case we're interested in the `.gsa.out` files MAGMA has produced as these contain the stats for if our gene lists were significantly enriched for our risk genes.
-A fun complication is the our schizophrenia and white matter hyperintensitie outputs have a 4 line header to skip when reading the file in, whereas all the others have a 3 line header.
+A fun complication is the our schizophrenia and white matter hyperintensities outputs have a 4 line header to skip when reading the file in, whereas all the others have a 3 line header.
+
+Also note that I process the ppi module lists here as well.
+What do you think the advantage of adding that data here for analysis is?
+Why not just copy all this code to a new file or just add it to the rest of the PPI code and just change the input data? 
+
+Add your thoughts below:
 
 ```{r}
 #| eval: true
 # List files
 files <- list.files(here::here("data/magma/results"), 
                     pattern = "*.gsa.out", full.names = TRUE)
+files_ppi <- list.files(here::here("data/ppi/magma_results"), 
+                    pattern = "*.gsa.out", full.names = TRUE)
+files <- c(files, files_ppi)
 # separate scz files
 files_scz <- files[grepl("_scz|_wmh_", files)]
 files_no_scz <- files[!files %in% files_scz]
@@ -85,9 +95,15 @@ df$percent_genes <- str_extract(df$group, "\\d+_percent")
 # clean up the group strings
 df$group <- basename(df$group) |>
   str_replace("magma_input_genes_", "") |>
+  str_replace("ppi_sig_modules_", "") |>
   str_replace("\\d+_percent_", "") |>
   str_replace("_gene_analysis", "") |>
   str_replace(".gsa.out", "")
+
+# Get label of PPI
+df$ppi <- ifelse(grepl("_module", df$VARIABLE), "PPI", "Not-PPI")
+df_ppi <- df[df$ppi == "PPI",]
+df <- df[df$ppi == "Not-PPI",]
 
 gt::gt(head(df))
 ```
@@ -113,7 +129,7 @@ df$log_p <- -log10(df$p_adj)
 
 # Nest data on broad groups
 df_nest <- df |> 
-  dplyr::arrange(group) |>
+  dplyr::arrange(group, ppi) |>
   dplyr::group_by(percent_genes) |>
   tidyr::nest()
 
@@ -207,9 +223,39 @@ hmap_list <- heatmaps$group_1_percent + heatmaps$group_5_percent + heatmaps$grou
 ```{r}
 #| label: fig-magma-heatmap
 #| fig-width: 10
-#| fig-cap: "Heatmap of log10 adjusted pvals from MAGMA ran against several GWAS backgrounds"
+#| fig-cap: "Heatmap of log10 adjusted pvals from MAGMA ran against several GWAS backgrounds with top genes from each condition"
 hmap_list
 ```
 
 Notice anything interesting about the results in @fig-magma-heatmap?
 Feel free to write up your thoughts below!
+
+## PPI modules
+
+Since we don't have different percentages of genes to think about, let's look at both the nominal and adjusted pvals.
+
+```{r}
+df_ppi$log_p <- -log10(df_ppi$p_adj)
+heatmap_data <- get_heatmap_data(df_ppi)
+```
+
+```{r}
+ppi_heatmap <- make_heatmap(heatmap_data, "PPI modules - p_adj")
+```
+
+```{r}
+#| warning: false
+df_ppi$log_p <- -log10(df_ppi$P)
+heatmap_data <- get_heatmap_data(df_ppi)
+ppi_heatmap_noadj <- make_heatmap(heatmap_data, "PPI modules - p_nominal")
+joined_plot <- ppi_heatmap + ppi_heatmap_noadj
+```
+
+```{r}
+#| label: fig-magma-heatmap-ppi
+#| fig-width: 10
+#| fig-height: 7
+#| fig-cap: "Heatmap of log10 adjusted/nominal pvals from MAGMA ran against several GWAS backgrounds with protein-protein interaction network modules"
+joined_plot
+```
+

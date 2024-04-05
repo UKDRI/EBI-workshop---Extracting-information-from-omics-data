@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jimena Monzón Sandoval">
-<meta name="dcterms.date" content="2024-04-02">
+<meta name="dcterms.date" content="2024-04-05">
 
 <title>Protein Protein Interaction (PPI) resources</title>
 <style>
@@ -73,10 +73,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#resources" id="toc-resources" class="nav-link active" data-scroll-target="#resources">Resources</a>
+  <ul class="collapse">
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
+  <li><a href="#id-mapping" id="toc-id-mapping" class="nav-link" data-scroll-target="#id-mapping">ID Mapping</a>
+  <ul class="collapse">
+  <li><a href="#entrez" id="toc-entrez" class="nav-link" data-scroll-target="#entrez">Entrez</a></li>
+  <li><a href="#uniprot" id="toc-uniprot" class="nav-link" data-scroll-target="#uniprot">Uniprot</a></li>
+  <li><a href="#ensembl-protein-id" id="toc-ensembl-protein-id" class="nav-link" data-scroll-target="#ensembl-protein-id">Ensembl Protein ID</a></li>
+  </ul></li>
+  <li><a href="#apid" id="toc-apid" class="nav-link" data-scroll-target="#apid">APID</a></li>
+  <li><a href="#biogrid" id="toc-biogrid" class="nav-link" data-scroll-target="#biogrid">BIOGRID</a></li>
+  <li><a href="#bioplex" id="toc-bioplex" class="nav-link" data-scroll-target="#bioplex">BIOPLEX</a>
+  <ul class="collapse">
+  <li><a href="#t" id="toc-t" class="nav-link" data-scroll-target="#t">293T</a></li>
+  <li><a href="#hct116" id="toc-hct116" class="nav-link" data-scroll-target="#hct116">HCT116</a></li>
+  </ul></li>
+  <li><a href="#corum" id="toc-corum" class="nav-link" data-scroll-target="#corum">CORUM</a>
+  <ul class="collapse">
+  <li><a href="#all-complexes" id="toc-all-complexes" class="nav-link" data-scroll-target="#all-complexes">All complexes</a></li>
+  <li><a href="#human-complexes" id="toc-human-complexes" class="nav-link" data-scroll-target="#human-complexes">Human complexes</a></li>
+  <li><a href="#partial-complexes" id="toc-partial-complexes" class="nav-link" data-scroll-target="#partial-complexes">Partial complexes</a></li>
+  </ul></li>
+  <li><a href="#hitpredict" id="toc-hitpredict" class="nav-link" data-scroll-target="#hitpredict">HITPREDICT</a></li>
+  <li><a href="#huri" id="toc-huri" class="nav-link" data-scroll-target="#huri">HURI</a></li>
+  <li><a href="#intact" id="toc-intact" class="nav-link" data-scroll-target="#intact">INTACT</a></li>
+  <li><a href="#mint" id="toc-mint" class="nav-link" data-scroll-target="#mint">MINT</a></li>
+  <li><a href="#reactome" id="toc-reactome" class="nav-link" data-scroll-target="#reactome">REACTOME</a></li>
+  <li><a href="#string" id="toc-string" class="nav-link" data-scroll-target="#string">STRING</a>
+  <ul class="collapse">
+  <li><a href="#protein-links" id="toc-protein-links" class="nav-link" data-scroll-target="#protein-links">Protein links</a></li>
+  <li><a href="#protein-physical" id="toc-protein-physical" class="nav-link" data-scroll-target="#protein-physical">Protein physical</a></li>
+  </ul></li>
+  <li><a href="#overview-resources" id="toc-overview-resources" class="nav-link" data-scroll-target="#overview-resources">Overview resources</a></li>
+  <li><a href="#merged-ppi-network" id="toc-merged-ppi-network" class="nav-link" data-scroll-target="#merged-ppi-network">Merged PPI network</a>
+  <ul class="collapse">
+  <li><a href="#all" id="toc-all" class="nav-link" data-scroll-target="#all">All</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -107,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 2, 2024</p>
+      <p class="date">April 5, 2024</p>
     </div>
   </div>
   
