@@ -1,0 +1,23 @@
+---
+title: "Extracting information from omics data workshop"
+author: 
+  - name: "Charlotte Capitanchik"
+    affiliation:
+      - id: dri
+        name: UK Dementia Research Institue
+        url: https://ukdri.ac.uk/
+  - name: "Gabriel Mateus Bernardo Harrington"
+    orcid: 0000-0001-6075-3619
+    affiliation: 
+      - name: Cardiff University
+        city: Cardiff
+        url: www.cardiff.ac.uk
+      - ref: dri
+license: "CC BY-SA"
+abstract: |
+  Welcome to the workshop home page!
+---
+
+This site is for the Extracting information from omics data session, which is part of the [Data-driven approaches to understanding dementia](https://www.ebi.ac.uk/training/events/data-driven-approaches-understanding-dementia/#vf-tabs__section--tab2).
+
+Your can find the first step of the workshop [here](01-differential_expression.qmd), or use the side-bar to navigate around.
