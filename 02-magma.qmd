@@ -1,10 +1,8 @@
 ---
-title: "MAGMA risk analysis"
+title: "Disease risk gene enrichment anlaysis via MAGMA"
 author: "Gabriel Mateus Bernardo Harrington"
 format: 
   html:
-    code-fold: show
-    toc: true
     code-links: 
       - text: Data Prep Code
         icon: file-code
@@ -13,6 +11,24 @@ format:
         icon: file-code
         href: scripts/magma_run.html
 ---
+
+# A little background
+
+So the idea of using a tool like MAGMA is to try and see if we observe enrichment for risk genes in particular groups.
+The common example is to look at celltypes with single cell seq data.
+Perhaps you've heard microglia come up a lot in AD as a major celltype of interest?
+A lot of that interest came about when we realised microglia are very enriched for the risk genes in AD, suggesting they play an important role in the disease.
+
+This type of approach relies on having decent GWAS data for your condition of interest so we know what risk genes exist. 
+This means it's important to be aware of the quality of the GWAS you're using, as there are many GWAS studies that aren't particularly well powered for example.
+The majority of GWAS studies are also done in largely white populations of European decent, so there's also a lack of representation of most of the worlds genetic diversity.
+
+In dementia, there's also the issue of unreliable diagnosis within GWAS.
+Some proportion of cases are probably mislabelled, for instance someone diagnosed with one type of dementia who actually has a different type, or someone who does have the disease they are diagnosed with, but also have additional dementia (like vascular dementia, the most common secondary dementia), either of which muddies the water of any GWAS data.
+Additionally there's the controversy around the use of proxy cases, where dementia status is inferred based on familiy history (often self-reported family history too...), so you may see analysis done with and without proxy cases included in the GWAS summary stats.
+
+Lastly, AD in particular is a funny case in that APOE is the biggest risk gene by a huge margin, so it can sometimes cover up the effect of smaller genes.
+So you may see folk doing analysis with and without APOE included in the summary stats for AD in the literature.
 
 ## Load libraries
 
