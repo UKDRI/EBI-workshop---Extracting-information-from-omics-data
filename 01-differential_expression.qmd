@@ -39,6 +39,33 @@ We use `renv` to manage our packages in this project, so you can run `renv::rest
 Note that `renv` is a nice way of making sure that you're using no just the right packages, but the right versions of those packages.
 Check out the renv docs [here](https://rstudio.github.io/renv/articles/renv.html) for more informations and guides.
 
+## A quick interlude - set up GitHub if needed
+
+When you try to push your changes RStudio will probably prompt you for your GitHub username and password.
+If that works and the push is successful when great, you can skip this chunck, but if you you can quickly set up Git and a PAT token to be able to push your changes.
+
+```{r}
+#| eval: false
+library(gitcreds)
+library(usethis)
+# Give Git your name and email to sign your commits
+usethis::use_git_config(user.name = "Jane Doe", user.email = "jane@example.org")
+# Make a pat token to be able to push to github recommended setting are "user" 
+# "repo" and "workflow", which should be enabled by default
+usethis::create_github_token()
+```
+
+Copy your token to your clipboard and then run:
+
+```{r}
+#| eval: false
+gitcreds::gitcreds_set()
+```
+
+And paste the token in.
+You should be able to make pushes to your forked repo now (hopefully!)
+Refer to the excellent [Happy Git with R](https://happygitwithr.com/https-pat) guide if needed or for more info.
+
 ## Load the RNA-Seq data
 
 We already pre-processed the RNA-Seq and ATAC-Seq data using nf-core/fetchngs, nf-core/rnaseq and nf-core/atacseq. We looked at the MultiQC reports to get an initial idea of the quality of the data.\
