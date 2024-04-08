@@ -41,6 +41,8 @@ We already pre-processed the RNA-Seq and ATAC-Seq data using nf-core/fetchngs, n
 \
 Now we'll load the RNA-Seq data to start to get an impression of what might be special about the brain endothelial cells and see if we can re-produce some of the results from the manuscript.
 
+Do you know the difference between absolute and relative file paths..?
+
 ```{r}
 tx2genefile = here::here('data/count_tables/tx2gene.tsv')
 tx2gene = read.delim(tx2genefile, header=FALSE)[, 1:3]
