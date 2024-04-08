@@ -160,7 +160,6 @@ Can you add an `assertthat` test to make sure we have no duplicated genes in our
 
 ```{r}
 background_population <- readr::read_lines(here::here("data/ppi/background_genes.txt"))
-assertthat::assert_that(sum(duplicated(background_population)) == 0)
 ```
 
 Our protein-protein-interaction network is human so let's convert our ensembl IDs from mouse to human.
