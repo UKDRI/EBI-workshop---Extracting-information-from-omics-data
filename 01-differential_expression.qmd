@@ -42,9 +42,10 @@ We already pre-processed the RNA-Seq and ATAC-Seq data using nf-core/fetchngs, n
 Now we'll load the RNA-Seq data to start to get an impression of what might be special about the brain endothelial cells and see if we can re-produce some of the results from the manuscript.
 
 Do you know the difference between absolute and relative file paths..?
+Maybe have a look at the `here` package docs [here](https://here.r-lib.org/)
 
 ```{r}
-tx2genefile = here::here('data/count_tables/tx2gene.tsv')
+tx2genefile = '/home/rookie/data/count_tables/tx2gene.tsv'
 tx2gene = read.delim(tx2genefile, header=FALSE)[, 1:3]
 
 directory_path <- here::here("data/count_tables")
