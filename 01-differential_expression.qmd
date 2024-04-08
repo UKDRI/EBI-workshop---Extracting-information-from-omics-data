@@ -1,28 +1,8 @@
 ---
 title: "Extracting information from omics data workshop"
-author: 
-  - name: "Charlotte Capitanchik"
-    affiliation:
-      - id: dri
-        name: UK Dementia Research Institue
-        url: https://ukdri.ac.uk/
-  - name: "Gabriel Mateus Bernardo Harrington"
-    orcid: 0000-0001-6075-3619
-    affiliation: 
-      - name: Cardiff University
-        city: Cardiff
-        url: www.cardiff.ac.uk
-      - ref: dri
 abstract: |
   The intro to the workshop! Here we have a look at some QC and do some 
   differential gene expression
-license: "CC BY-SA"
-format: 
-  html:
-    df-print: kable
-    code-fold: show
-    toc: true
-editor: visual
 ---
 
 ## Load libraries
@@ -51,6 +31,7 @@ library(AnnotationHub)
 library(memes)
 library(TFBSTools)
 library(JASPAR2024)
+library(universalmotif)
 ```
 
 ## Load the RNA-Seq data
@@ -59,6 +40,8 @@ We already pre-processed the RNA-Seq and ATAC-Seq data using nf-core/fetchngs, n
 
 \
 Now we'll load the RNA-Seq data to start to get an impression of what might be special about the brain endothelial cells and see if we can re-produce some of the results from the manuscript.
+
+Do you know the difference between absolute and relative file paths..?
 
 ```{r}
 tx2genefile = here::here('data/count_tables/tx2gene.tsv')
@@ -332,26 +315,31 @@ length(brain_peaks)
 Here we load the mouse genome, then get sequences.
 
 ```{r}
+#| eval: true
 ah <- AnnotationHub()
 query(ah, c("Mus musculus","Ensembl","twobit"))
 mouse.genome = ah[["AH49773"]]
 ```
 
 ```{r}
+#| eval: true
 brain_peaks_Seqs = memes::get_sequence(brain_peaks, mouse.genome)
 liver_peaks_Seqs = memes::get_sequence(liver_peaks, mouse.genome)
 brain_peaks_Seqs 
 ```
 
 ```{r}
+#| eval: true
 dreme_out <- runDreme(brain_peaks_Seqs, liver_peaks_Seqs,outdir = tempdir())
 ```
 
 ```{r}
+#| eval: true
 dreme_out
 ```
 
 ```{r}
+#| eval: true
 dreme_out$motif %>% 
   purrr::map(universalmotif::view_motifs) %>% 
   purrr::imap(~{
@@ -364,6 +352,7 @@ dreme_out$motif %>%
 ```
 
 ```{r}
+#| eval: true
 # convert the top motif to a PWM matrix
 unknown_pwm   = convert_motifs(dreme_out$motif[[1]],"TFBSTools-PWMatrix")
 
@@ -407,6 +396,7 @@ head(pwm_library_dt)
 Is Nfe2l2/Nrf2 brain-specific in our RNA-Seq data?
 
 ```{r}
+#| eval: true
 as.data.frame(assay(ntd)) %>%
   filter(row.names(as.data.frame(assay(ntd))) %in% c("ENSMUSG00000015839"))
 ```

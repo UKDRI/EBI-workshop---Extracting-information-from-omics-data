@@ -271,6 +271,9 @@ colnames(gene_length) <- c("ensembl_gene_id", "gene_length")
 
 # # # SETUP NUMBER OF RANDOM SAMPLES to create your NULL # # #
 m <- 10000
+# I'd normally default to 10K, but this can take a sec to run, so for the 
+# workshop let's use 1K
+m <- 1000
 
 # # # Set to "D" to take into account degree, 
 # # # "GL" to taken into account Gene length, 
@@ -794,6 +797,7 @@ module_assignments <- tibble("module" = names(treeplots), "label" = module_assig
 Now let's get the gene symbol for the modules with only one gene.
 
 ```{r}
+#| cache: true
 gene_num <- map_dbl(result_list, ~ length(.x@gene))
 one_gene <- names(gene_num)[gene_num == 1]
 genes <- map_chr(one_gene, ~ result_list[[.x]]@gene)
