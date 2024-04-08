@@ -41,3 +41,5 @@ You'll be surprised to learn it's 03-protein_protein_interactions.qmd for this o
 ### 7. Make a pull request to this repo!
 This whole time you have been commiting notes and comments to your forked version of our code. Now try making a pull request to this repository, we will review the request and either approve or deny it.
 
+
+The render course website can be found at [https://ukdri.github.io/EBI-workshop---Extracting-information-from-omics-data/](https://ukdri.github.io/EBI-workshop---Extracting-information-from-omics-data/).
