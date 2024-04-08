@@ -798,6 +798,7 @@ module_assignments <- tibble("module" = names(treeplots), "label" = module_assig
 Now let's get the gene symbol for the modules with only one gene.
 
 ```{r}
+#| cache: true
 gene_num <- map_dbl(result_list, ~ length(.x@gene))
 one_gene <- names(gene_num)[gene_num == 1]
 genes <- map_chr(one_gene, ~ result_list[[.x]]@gene)
