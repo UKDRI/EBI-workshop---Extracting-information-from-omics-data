@@ -34,6 +34,11 @@ library(JASPAR2024)
 library(universalmotif)
 ```
 
+Libraries not loading?
+We use `renv` to manage our packages in this project, so you can run `renv::restore()` in the console to set up the package environment from the renv.lock file.
+Note that `renv` is a nice way of making sure that you're using no just the right packages, but the right versions of those packages.
+Check out the renv docs [here](https://rstudio.github.io/renv/articles/renv.html) for more informations and guides.
+
 ## Load the RNA-Seq data
 
 We already pre-processed the RNA-Seq and ATAC-Seq data using nf-core/fetchngs, nf-core/rnaseq and nf-core/atacseq. We looked at the MultiQC reports to get an initial idea of the quality of the data.\
