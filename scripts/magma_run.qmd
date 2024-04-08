@@ -1,10 +1,5 @@
 ---
 title: "MAGMA Run"
-author: "Gabriel Mateus Bernardo Harrington"
-format: 
-  html:
-    code-fold: show
-    toc: true
 execute: 
   eval: false
 ---

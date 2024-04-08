@@ -1,12 +1,9 @@
 ---
-title: Protein-protein interactions
+title: Investigating protein-protein interaction networks
 execute:
   eval: true
-author: "Gabriel Mateus Bernardo Harrington"
 format: 
   html:
-    code-fold: show
-    toc: true
     code-links: 
       - text: Data Prep Code
         icon: file-code
@@ -22,6 +19,12 @@ format:
 ```{r}
 here::i_am("03-protein_protein_interactions.qmd")
 ```
+
+So the idea here is to look if we see more genes encoding proteins that interact with each other then we would expect to observe by chance.
+If we do, then this could imply some directed biological change in a pathway in that condition/celltype.
+
+The common way this is used is again with single cell seq data on celltype-specific differentially expressed genes by condition.
+So as an example, if we saw a bunch of interacting proteins in microglia from a AD differential expression, we might want to look more closely at what pathways those particular genes are associated with to try and pin-point some more specific biology underpinning the disease that could be investigated further.
 
 # Load packages
 
@@ -111,6 +114,8 @@ attribute_2_list20bins <- function(attr_matrix, gene_col = 1, attr_col = 2, do_l
 
 # Read in data
 
+Let's get our gene lists
+
 ```{r}
 #| eval: true
 #| message: false
@@ -122,7 +127,7 @@ res <- readr::read_tsv(here::here("data/ppi/differential_genes.tsv")) |>
 
 # Data prep
 
-Filter to significant genes
+And then filter to significant genes
 
 ```{r}
 # Filter to sig genes
@@ -150,6 +155,8 @@ This makes it immediately obvious what the issue is and we can debug, instead of
 
 We want a background list of genes to be able to test if our contrasts have more interacting proteins than we would expect by chance.
 Here we'll use the full list of genes we have in these samples.
+
+Can you add an `assertthat` test to make sure we have no duplicated genes in our background?
 
 ```{r}
 background_population <- readr::read_lines(here::here("data/ppi/background_genes.txt"))
@@ -192,8 +199,6 @@ human_background <-
   unique()
 human_background <- human_background[!is.na(human_background)]
 ```
-
-
 
 We also want gene length data since larger genes would theoretically have more domains and therefore more potential interactions, so by getting the gene length we can try to account for this in our analysis. 
 

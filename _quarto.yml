@@ -1,0 +1,40 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Extracting information from omics data"
+  repo-url: https://github.com/UKDRI/EBI-workshop---Extracting-information-from-omics-data/tree/main
+  repo-actions: [edit, issue]
+  sidebar: 
+    style: docked
+    search: true
+    contents: 
+      - section: "Step 1"
+        contents: 
+          - 01-differential_expression.qmd
+      - section: "Step 2"
+        contents: 
+          - 02-magma.qmd
+      - section: "Step 3"
+        contents: 
+          - 03-protein_protein_interactions.qmd
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+
+format:
+  html:
+    theme: 
+      light: flatly
+      dark: darkly
+    css: styles.css
+    toc: true
+    df-print: kable
+    code-fold: show
+
+execute: 
+  freeze: auto
+    
+editor: visual
