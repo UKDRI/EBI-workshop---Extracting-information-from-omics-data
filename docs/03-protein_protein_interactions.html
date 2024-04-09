@@ -279,7 +279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">i_am</span>(<span class="st">"03-protein_protein_interactions.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>here() starts at /home/training/Extracting_info_from_omics/EBI-workshop---Extracting-information-from-omics-data</code></pre>
+<pre><code>here() starts at /home/training/EBI-workshop---Extracting-information-from-omics-data</code></pre>
 </div>
 </div>
 <p>So the idea here is to look if we see more genes encoding proteins that interact with each other then we would expect to observe by chance. If we do, then this could imply some directed biological change in a pathway in that condition/celltype.</p>
@@ -525,7 +525,7 @@ chr (2): Gene stable ID, Human gene stable ID
 <span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(my_network)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>IGRAPH bb7e3ad UN-- 22651 1496213 -- 
+<pre><code>IGRAPH d820201 UN-- 22651 1496213 -- 
 + attr: name (v/c)</code></pre>
 </div>
 <details open="">
@@ -810,8 +810,8 @@ NULL</code></pre>
 </details>
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item" id="htmlwidget-fbb05f7c8592f39b9450" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-fbb05f7c8592f39b9450">{"x":{"filter":"none","vertical":false,"caption":"<caption>Test if the number of interactions is higher than expected by chance<\/caption>","data":[["BR","LG","LV"],[77042,55429,67],[71629.932,51629.204,15.591],[1916.583684161585,1492.785811784083,5.042335187603473],[0.002,0.011,0],[0.002,0.011,1e-08],[0.006,0.033,3e-08]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>gene_list<\/th>\n      <th>o<\/th>\n      <th>e<\/th>\n      <th>sem<\/th>\n      <th>p<\/th>\n      <th>pval<\/th>\n      <th>padj<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6]},{"name":"gene_list","targets":0},{"name":"o","targets":1},{"name":"e","targets":2},{"name":"sem","targets":3},{"name":"p","targets":4},{"name":"pval","targets":5},{"name":"padj","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-6fc32c867bc40e79baa0" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-6fc32c867bc40e79baa0">{"x":{"filter":"none","vertical":false,"caption":"<caption>Test if the number of interactions is higher than expected by chance<\/caption>","data":[["BR","LG","LV"],[77042,55429,67],[71751.11900000001,51641.92,16.071],[1925.37347438227,1510.232230151704,4.978025686930486],[0.004,0.006,0],[0.004,0.006,1e-08],[0.012,0.018,3e-08]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>gene_list<\/th>\n      <th>o<\/th>\n      <th>e<\/th>\n      <th>sem<\/th>\n      <th>p<\/th>\n      <th>pval<\/th>\n      <th>padj<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":6,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4,5,6]},{"name":"gene_list","targets":0},{"name":"o","targets":1},{"name":"e","targets":2},{"name":"sem","targets":3},{"name":"p","targets":4},{"name":"pval","targets":5},{"name":"padj","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render"],"jsHooks":[]}</script>
 </div>
 </div>
 <ul>
@@ -1057,11 +1057,10 @@ NULL</code></pre>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "BR_module1"  "BR_module2"  "BR_module3"  "BR_module4"  "BR_module5" 
- [6] "BR_module6"  "BR_module7"  "BR_module8"  "BR_module9"  "BR_module11"
-[11] "BR_module18" "LG_module1"  "LG_module2"  "LG_module3"  "LG_module4" 
-[16] "LG_module5"  "LG_module6"  "LG_module7"  "LG_module8"  "LV_module1" 
-[21] "LV_module2"  "LV_module3"  "LV_module6"  "LV_module9"  "LV_module10"
-[26] "LV_module15"</code></pre>
+ [6] "BR_module6"  "BR_module7"  "BR_module8"  "LG_module1"  "LG_module2" 
+[11] "LG_module3"  "LG_module4"  "LG_module5"  "LG_module6"  "LG_module7" 
+[16] "LG_module8"  "LG_module12" "LV_module1"  "LV_module2"  "LV_module3" 
+[21] "LV_module6"  "LV_module9"  "LV_module10" "LV_module15"</code></pre>
 </div>
 <details open="">
 <summary>Code</summary>
