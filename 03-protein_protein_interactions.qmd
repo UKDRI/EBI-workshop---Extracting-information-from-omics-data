@@ -51,7 +51,8 @@ library(readr)
 
 # Functions
 
-Credit to Jimena for these functions, and indeed the basis for almost all the subsequent code!
+Credit to [Jimena](https://orcid.org/0000-0002-4190-2188) for these functions, and indeed the basis for almost all the subsequent code!
+You can find the code she wrote to generate the protein-protein networks [here](scripts/ppi_network.qmd).
 
 ```{r}
 # Rescale data to range 0 to 1.
