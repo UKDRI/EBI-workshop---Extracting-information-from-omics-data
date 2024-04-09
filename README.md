@@ -2,7 +2,7 @@
 Part of the [Data-driven approaches to understanding dementia](https://www.ebi.ac.uk/training/events/data-driven-approaches-understanding-dementia/#vf-tabs__section--tab2) course. The session titled "Extracting information from omics data"
 # Lecture
 
-The lecture slides can be found [here](Extracting information from omics data Lecture.pdf)
+The lecture slides can be found [here](Extracting%20information%20from%20omics%20data%20Lecture.pdf).
 
 # Practical workshop:
 We are focusing on the data from:
