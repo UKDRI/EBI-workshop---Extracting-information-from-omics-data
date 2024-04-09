@@ -10,17 +10,24 @@ Yu, Min, et al. "Integrative multi-omic profiling of adult mouse brain endotheli
 
 In this workshop we will explore some of this data together
 
-
-### 0. Let's look at pre-processing of the RNA-Seq and ATAC-Seq from this paper
-[Slides to follow along.](https://docs.google.com/presentation/d/1MSrh01gnCiXreGWjnIFtRNezeCu32LW2NSv5sX_ZcOc/edit?usp=sharing)
-
-Next we will get started with some downstream analysis.
-### 1. Fork this repo!
+### 0. Fork this repo!
 /Quick-start guide to how Git works/
 
 Fork the dev branch of this repo to your Github account. This gives you your own copy to play with that doesn't have any impact on this main repository. As we proceed with the analysis we encourage you to make your own notes and comments in the document and commit them as you go.
 
 The [Happy Git with R](https://happygitwithr.com/) is a great resource for setting up and using Git with R if needed.
+
+Open .Rproj file, this will open RStudio.
+Open the first script, 01-differential_expression.qmd.
+Try to load the packages.
+Use renv::restore() to make sure all the packages are installed.
+
+Make sure you have all the packages that are needed in an renv
+
+### 1. Let's look at pre-processing of the RNA-Seq and ATAC-Seq from this paper
+[Slides to follow along.](https://docs.google.com/presentation/d/1MSrh01gnCiXreGWjnIFtRNezeCu32LW2NSv5sX_ZcOc/edit?usp=sharing)
+
+Next we will get started with some downstream analysis.
 
 ### 2. Try to run the first code block..
 
