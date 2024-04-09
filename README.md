@@ -5,7 +5,7 @@ Part of the [Data-driven approaches to understanding dementia](https://www.ebi.a
 The lecture slides can be found [here](Extracting%20information%20from%20omics%20data%20Lecture.pdf).
 
 # Practical workshop:
-Some slides for the practical session [here](Extracting%20information%20from%20omics%20data%20practical.pdf).
+Some slides for the practical session [here](Extracting%20info%20from%20omics%20data%20practical.pdf).
 
 We are focusing on the data from:
 Yu, Min, et al. "Integrative multi-omic profiling of adult mouse brain endothelial cells and potential implications in Alzheimer’s disease." Cell reports 42.11 (2023).
